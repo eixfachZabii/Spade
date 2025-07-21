@@ -1,5 +1,5 @@
 // ApiService.js
-const API_BASE_URL = "/api";
+import EnvironmentConfig from '../config/environment';
 
 /**
  * Service for handling all API calls to the backend
@@ -48,7 +48,7 @@ class ApiService {
    * @returns {Promise} API response
    */
   static async apiCall(endpoint, options = {}) {
-    const url = `${API_BASE_URL}${endpoint}`;
+    const url = `${EnvironmentConfig.getApiBaseUrl()}${endpoint}`;
 
     const fetchOptions = {
       ...options,
@@ -195,7 +195,7 @@ class ApiService {
    * @returns {Promise} Updated user profile
    */
   static async uploadAvatar(formData) {
-    const url = `${API_BASE_URL}/users/me/avatar`;
+    const url = `${EnvironmentConfig.getApiBaseUrl()}/users/me/avatar`;
 
     try {
       const response = await fetch(url, {
@@ -443,8 +443,7 @@ class ApiService {
 
 // WebSocket URL helper
 ApiService.getWebSocketUrl = () => {
-  const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-  return `${protocol}/ws`;
+  return EnvironmentConfig.getWebSocketUrl();
 };
 
 
