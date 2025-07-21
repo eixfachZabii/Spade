@@ -8,7 +8,7 @@ import VuiBox from "../../../../components/VuiBox";
 import VuiTypography from "../../../../components/VuiTypography";
 
 // Vision UI Dashboard React example components
-import DefaultNavbar from "../../../../examples/Navbars/DefaultNavbar";
+import AuthNavbar from "../AuthNavbar";
 import PageLayout from "../../../../examples/LayoutContainers/PageLayout";
 
 // Authentication layout components
@@ -42,13 +42,7 @@ function CoverLayout({
         gradients.cover.angle
       )}
     >
-      <DefaultNavbar
-        action={{
-          type: "external",
-          route: "https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley",
-          label: "BUY NOW",
-        }}
-      />
+      <AuthNavbar />
       <VuiBox
         height="100%"
         width="50vw"

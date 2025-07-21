@@ -8,15 +8,19 @@ import EnvironmentConfig from '../config/environment';
 class ApiService {
     static API_BASE_URL = EnvironmentConfig.getApiBaseUrl();
 
-    // Store the JWT token - using same key as webapp for consistency
-    static token = localStorage.getItem("token") || null;
+    /**
+     * Get authentication token
+     * @returns {string|null} JWT token
+     */
+    static getToken() {
+        return localStorage.getItem("token");
+    }
 
     /**
      * Set authentication token
      * @param {string} token - JWT token
      */
     static setToken(token) {
-        this.token = token;
         localStorage.setItem("token", token);
     }
 
@@ -24,7 +28,6 @@ class ApiService {
      * Clear authentication token
      */
     static clearToken() {
-        this.token = null;
         localStorage.removeItem("token");
     }
 
@@ -37,8 +40,9 @@ class ApiService {
             "Content-Type": "application/json",
         };
 
-        if (this.token) {
-            headers["Authorization"] = `Bearer ${this.token}`;
+        const token = this.getToken();
+        if (token) {
+            headers["Authorization"] = `Bearer ${token}`;
         }
 
         return headers;
@@ -161,7 +165,7 @@ class ApiService {
             const response = await fetch(url, {
                 method: "PUT",
                 headers: {
-                    "Authorization": `Bearer ${this.token}`,
+                    "Authorization": `Bearer ${this.getToken()}`,
                     // Note: Do NOT set Content-Type here for multipart/form-data
                 },
                 body: formData,
@@ -191,7 +195,7 @@ class ApiService {
      * @returns {boolean} True if authenticated
      */
     static isAuthenticated() {
-        return !!this.token;
+        return !!this.getToken();
     }
 
     // ============ Player API ============

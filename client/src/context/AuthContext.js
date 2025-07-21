@@ -13,27 +13,10 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Migrate old token to new format
-  const migrateToken = () => {
-    const oldToken = localStorage.getItem("spade_token");
-    const newToken = localStorage.getItem("token");
-
-    if (oldToken && !newToken) {
-      // Migrate old token to new format
-      localStorage.setItem("token", oldToken);
-      localStorage.removeItem("spade_token");
-      ApiService.token = oldToken;
-      console.log("Migrated token from spade_token to token");
-    }
-  };
-
   useEffect(() => {
     // Check if user is already authenticated
     const checkAuth = async () => {
       try {
-        // First, migrate any old tokens
-        migrateToken();
-
         if (ApiService.isAuthenticated()) {
           const userData = await ApiService.getCurrentUser();
           setUser(userData);

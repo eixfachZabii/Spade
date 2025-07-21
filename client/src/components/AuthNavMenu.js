@@ -77,6 +77,14 @@ function AuthNavMenu() {
     return (names[0].charAt(0) + names[names.length - 1].charAt(0)).toUpperCase();
   };
 
+  // Get user's profile picture or fallback to initials
+  const getUserAvatarSrc = () => {
+    if (user?.avatarBase64) {
+      return `data:image/jpeg;base64,${user.avatarBase64}`;
+    }
+    return null; // Will show initials instead
+  };
+
   return (
     <VuiBox>
       <Tooltip title={isAuthenticated ? user?.username || 'Account' : 'Login'}>
@@ -98,6 +106,7 @@ function AuthNavMenu() {
         >
           {isAuthenticated ? (
             <Avatar
+              src={getUserAvatarSrc()}
               sx={{
                 width: 36,
                 height: 36,

@@ -20,7 +20,6 @@ import palette from "../../../assets/theme/base/colors";
 import borders from "../../../assets/theme/base/borders";
 
 // Authentication layout components
-import IllustrationLayout from "../components/IllustrationLayout";
 
 // Authentication context
 import { useAuth } from "../../../context/AuthContext";
@@ -96,7 +95,7 @@ function SignIn() {
           title="Welcome back"
           color="white"
           description="Enter your username and password to sign in"
-          premotto="SPADE BOOT"
+          premotto="SPADE"
           motto="YOUR POKER DASHBOARD"
           image={bgSignIn}
       >
