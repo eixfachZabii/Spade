@@ -100,7 +100,9 @@ const PokerGameUI = ({ isFullscreen, isMobile }) => {
           const currentVisibleCards = transformedData.communityCards.filter(card => card !== null);
           const prevVisibleCards = prevCommunityCards.filter(card => card !== null);
 
-          if (currentVisibleCards.length > prevVisibleCards.length) {
+          // Only trigger animation if we have genuinely new cards (more cards than before)
+          // AND the previous state wasn't empty (to avoid animating on initial load)
+          if (currentVisibleCards.length > prevVisibleCards.length && prevVisibleCards.length > 0) {
             const newCardIndices = [];
             for (let i = prevVisibleCards.length; i < currentVisibleCards.length; i++) {
               newCardIndices.push(i);

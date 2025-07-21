@@ -37,10 +37,7 @@ class GameWebSocketService {
                 };
 
                 const headers = {
-                    Authorization: `Bearer ${token}`,
-                    // Additional headers for CORS
-                    'Access-Control-Allow-Origin': 'https://localhost:3000',
-                    'Access-Control-Allow-Credentials': 'true'
+                    Authorization: `Bearer ${token}`
                 };
 
                 this.stompClient.connect(
