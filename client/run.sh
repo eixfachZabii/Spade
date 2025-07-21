@@ -1,0 +1,1 @@
+HTTPS=true SSL_CRT_FILE=../client/cert.pem SSL_KEY_FILE=../client/key.pem npm start

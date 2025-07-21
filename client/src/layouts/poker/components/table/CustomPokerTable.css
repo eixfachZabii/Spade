@@ -1,0 +1,170 @@
+/* Main container */
+.custom-table-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* Table wooden edge */
+.table-edge {
+  position: absolute;
+  top: 5%;
+  left: 5%;
+  width: 90%;
+  height: 90%;
+  border-radius: 200px;
+  background: linear-gradient(135deg, #5D4037 0%, #3E2723 100%);
+  box-shadow:
+    inset 0 0 20px rgba(0, 0, 0, 0.8),
+    0 10px 30px rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Table padding/cushion */
+.table-padding {
+  width: 94%;
+  height: 92%;
+  border-radius: 180px;
+  background: linear-gradient(to bottom, #054D36 0%, #043024 100%);
+  box-shadow:
+    inset 0 0 10px rgba(0, 0, 0, 0.5),
+    0 0 5px rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+/* Spade pattern on the padding */
+.table-padding::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3E%3Cpath d='M15,5 C13,10 9,12 9,16 C9,18 11,19 13,19 C14,19 15,18.5 15,17 C15,18.5 16,19 17,19 C19,19 21,18 21,16 C21,12 17,10 15,5 Z M15,19 L15,23 L19,23 L19,25 L11,25 L11,23 L15,23 L15,19 Z' fill='rgba(255,255,255,0.04)'/%3E%3C/svg%3E");
+  background-size: 30px 30px;
+}
+
+/* Table felt */
+.table-felt {
+  width: 96%;
+  height: 95%;
+  border-radius: 175px;
+  position: relative;
+  background-color: #046546;
+  overflow: hidden;
+}
+
+/* Felt spade pattern */
+.felt-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath d='M30,10 C25,20 15,25 15,35 C15,40 20,45 25,45 C27,45 29,44 30,40 C31,44 33,45 35,45 C40,45 45,40 45,35 C45,25 35,20 30,10 Z M30,45 L30,50 L35,50 L35,52 L25,52 L25,50 L30,50 L30,45 Z' fill='rgba(0,0,0,0.04)'/%3E%3C/svg%3E");
+  background-size: 60px 60px;
+  opacity: 0.6;
+}
+
+
+
+/* Felt texture overlay */
+.felt-texture {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.4;
+  background-image:
+    radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.3) 100%),
+    repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(0, 0, 0, 0.05) 3px, transparent 4px),
+    repeating-linear-gradient(-45deg, transparent, transparent 2px, rgba(0, 0, 0, 0.05) 3px, transparent 4px);
+  mix-blend-mode: multiply;
+  z-index: 4;
+}
+
+/* Center emblem */
+.table-emblem {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 55%;
+  height: 55%;
+  z-index: 2;
+}
+
+.emblem-svg {
+  width: 100%;
+  height: 100%;
+}
+
+
+/* Light reflection effects */
+.light-reflection {
+  position: absolute;
+  width: 60%;
+  height: 60%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.07) 0%, transparent 70%);
+  z-index: 5;
+}
+
+.light-reflection.top-left {
+  top: -30%;
+  left: -30%;
+}
+
+.light-reflection.bottom-right {
+  bottom: -30%;
+  right: -30%;
+  width: 70%;
+  height: 70%;
+  opacity: 0.5;
+}
+
+/* Animations */
+@keyframes slow-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Media queries for responsiveness */
+@media (max-width: 768px) {
+  .table-edge {
+    border-radius: 150px;
+  }
+
+  .table-padding {
+    border-radius: 130px;
+  }
+
+  .table-felt {
+    border-radius: 125px;
+  }
+}
+
+@media (max-width: 480px) {
+  .table-edge {
+    border-radius: 100px;
+  }
+
+  .table-padding {
+    border-radius: 90px;
+  }
+
+  .table-felt {
+    border-radius: 85px;
+  }
+}

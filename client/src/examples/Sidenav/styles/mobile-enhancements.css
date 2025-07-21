@@ -1,0 +1,101 @@
+/* client/src/examples/Sidenav/mobile-enhancements.css */
+
+/* Enhanced mobile touch interactions for the logo toggle */
+.sidenav-logo-toggle {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+/* Smooth transitions for mobile viewport changes */
+@media (max-width: 1199px) {
+    .MuiDrawer-paper {
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+
+    /* Enhanced mobile overlay */
+    .sidenav-mobile-overlay {
+        transition: opacity 0.3s ease !important;
+        will-change: opacity;
+    }
+
+    /* Prevent body scroll when sidenav is open on mobile */
+    body.sidenav-open {
+        overflow: hidden;
+        position: fixed;
+        width: 100%;
+    }
+}
+
+/* Improved touch feedback for the logo */
+.sidenav-logo-toggle:active {
+    transform: scale(0.95);
+    transition: transform 0.1s ease;
+}
+
+/* Enhanced visual feedback for the toggle state */
+.sidenav-toggle-indicator {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform, opacity;
+}
+
+/* Accessibility improvements */
+.sidenav-logo-toggle:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.5);
+    outline-offset: 2px;
+    border-radius: 8px;
+}
+
+/* Smooth logo animations */
+.sidenav-logo-icon {
+    will-change: transform, margin;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidenav-logo-text {
+    will-change: opacity, transform, max-width;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Enhanced performance for animations */
+.MuiDrawer-paper,
+.sidenav-logo-toggle,
+.sidenav-logo-icon,
+.sidenav-logo-text {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+/* Responsive adjustments for very small screens */
+@media (max-width: 480px) {
+    .sidenav-logo-toggle {
+        padding: 12px 8px;
+        margin: 0 -8px;
+    }
+
+    .MuiDrawer-paper {
+        width: 280px !important;
+    }
+}
+
+/* Dark mode optimizations */
+@media (prefers-color-scheme: dark) {
+    .sidenav-logo-toggle:hover {
+        background: rgba(255, 255, 255, 0.08) !important;
+    }
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    .MuiDrawer-paper,
+    .sidenav-logo-toggle,
+    .sidenav-logo-icon,
+    .sidenav-logo-text,
+    .sidenav-toggle-indicator {
+        transition: none !important;
+        animation: none !important;
+    }
+}

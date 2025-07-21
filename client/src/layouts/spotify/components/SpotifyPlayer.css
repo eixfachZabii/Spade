@@ -1,0 +1,661 @@
+.root {
+  --fill-level: 0;
+  --hover-position: 0;
+  --tooltip-position: 0;
+}
+
+.spotify-player-container {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Teilt das Layout in zwei gleiche Spalten */
+  gap: 20px; /* Abstand zwischen den Spalten */
+  align-items: stretch; /* Beide Spalten bekommen dieselbe Höhe */
+  height: 100%; /* Ermöglicht, dass beide Container gleich hoch werden */
+}
+
+.playback-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Zentriert den Inhalt vertikal */
+  padding: 20px;
+  align-items: center; /* Zentriert den Inhalt horizontal */
+  border-radius: 8px;
+  transform: translateY(-50%); /* Verschiebt um 50% nach oben */
+  position: relative; /* Stellt sicher, dass transform für dieses Element korrekt funktioniert */
+  top: 50%; /* Setzt den Container 50% vom übergeordneten Element */
+}
+
+.track-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+  .track-image {
+  width: 300px;
+  height: auto;
+  border-radius: 12px;
+  object-fit: cover; /* Sorgt für sauberes Resizing */
+}
+
+  .track-details {
+  width: 100%; /* Nimmt die gesamte verfügbare Breite ein */
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+}
+
+  .track-name {
+    font-size: 25px;
+    margin: 0;
+     color: #d5cfcf;
+
+  }
+
+  .track-artist {
+    margin-top: 10px;
+    font-size: 20px;
+    color: #d5cfcf;
+  }
+
+  .track-duration {
+    margin-top: 10px;
+    font-size: 16px;
+    color: #d5cfcf;
+  }
+
+
+  .play-pause-button:hover {
+    background-color: #11d8d8;
+  }
+
+
+
+  .logout-button:hover {
+    background-color: #ff1a1a;
+  }
+
+
+  .track-controls {
+    margin: 30px 10px 15px 10px ;
+    padding: 6px 15px;
+    min-width: 80px;
+    background-color: #1262a3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .track-controls button:hover {
+    background-color: #1e1870;
+  }
+
+  .progress-bar-container {
+    width: 100%;
+    height: 10px;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    margin-top: 10px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .progress-bar {
+    height: 100%;
+    background-color: #0be2e2;
+    transition: width 0.2s ease;
+    border-radius: 5px;
+  }
+
+  .play-pause-button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #1d2db9;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100px;
+    margin-right: 25px;
+  }
+
+  .button-container {
+    display: flex;
+    justify-content: center; /* Zentriert die Buttons horizontal */
+    margin-top: 10px; /* Fügt Abstand zur Fortschrittsleiste hinzu */
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .play-pause-button {
+    margin: 0 5px; /* Fügt horizontalen Abstand zwischen den Buttons hinzu */
+  }
+
+
+.play-pause-button.is-shuffle-active {
+  position: relative;
+}
+
+.play-pause-button.is-shuffle-active:after {
+  content: "";
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 7px;
+  height: 7px;
+  background-color: currentColor;
+  border-radius: 50%;
+}
+
+.lyrics-container {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: 80vh; /* Dynamisch: Begrenze die Höhe auf 80% des Viewports */
+  padding: 10px 20px;
+  border-radius: 15px;
+  overflow: auto; /* Ermöglicht Scrollen, falls der Inhalt zu groß wird */
+}
+
+.lyrics-box {
+  width: 100%;
+  max-height: 100%; /* Begrenze die Höhe der einzelnen Boxen auf einen Anteil des Containers */
+  overflow-y: auto; /* Verhindert Überlauf, aber keine Schallleiste */
+}
+
+.lyrics-container h3 {
+  color: white; /* Überschrift "Lyrics:" in Weiß */
+  font-size: 30px; /* Angenehm lesbare Schriftgröße */
+}
+
+
+.lyrics-text {
+  color: #eaeaea; /* Weicher weißer Farbton */
+  font-size: 20px; /* Angenehm lesbare Schriftgröße */
+  line-height: 1.8; /* Optimierter Zeilenabstand */
+  white-space: pre-wrap; /* Bricht lange Zeilen korrekt */
+  margin: 0; /* Keine zusätzlichen Außenabstände */
+  font-family: "Gotham Circular", "Proxima Nova", "Arial", sans-serif; /* Alternativen bei Nichtverfügbarkeit */
+  font-weight: 400; /* Normales Gewicht für klare Lesbarkeit */
+}
+
+.lyrics-container p {
+  color: white; /* Ladeanzeige "Loading lyrics..." in Weiß */
+}
+
+/* Volume Controls */
+.volume-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-top: 20px;
+  width: 100%;
+  justify-content: left; /* Same centering as button container */
+}
+
+.volume-button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: #e0e0e0; /* Dark blue matching other icons */
+  display: flex;
+  align-items: center;
+  transition: all 0.2s ease;
+  width: 50px; /* Matching button sizing */
+  height: 50px;
+  justify-content: right;
+}
+
+.volume-button:hover {
+  color: #2a3ec7; /* Lighter blue for hover */
+}
+
+.volume-slider {
+  -webkit-appearance: none;
+  width: 160px; /* Slightly wider for better control */
+  height: 6px;
+  border-radius: 5px;
+  background-size: var(--fill-level) 100%;
+  background: #d5cfcf linear-gradient(#1d2db9, #1d2db9) no-repeat;
+  margin: 0;
+}
+
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background: #1d2db9;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid #1d2db9; /* Dark blue border */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.volume-slider::-webkit-slider-thumb:hover {
+  background: #1d2db9;
+  transform: scale(1.15);
+  border-color: #2a3ec7;
+}
+
+.volume-slider::-moz-range-thumb {
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background: #e0e0e0;
+  cursor: pointer;
+  border: 3px solid #e0e0e0;
+}
+
+.volume-slider::-moz-range-progress {
+  background-color: #0be2e2;
+  height: 6px;
+  border-radius: 3px;
+}
+
+/* Added subtle transition for smooth interactions */
+.volume-slider {
+  transition: background-color 0.2s ease;
+}
+
+/* Progress Bar Styling Enhancement */
+.progress-bar-container {
+  width: 100%;
+  height: 10px;
+  background-color: rgba(224, 224, 224, 0.3); /* Slightly transparent background */
+  border-radius: 10px;
+  margin-top: 15px;
+  overflow: hidden;
+  position: relative;
+  transition: background-color 0.3s ease;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.progress-bar-container:hover {
+  background-color: rgba(224, 224, 224, 0.4); /* Lighter on hover */
+  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.progress-bar-container:active {
+  background-color: rgba(224, 224, 224, 0.5); /* Even lighter when clicked */
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #0be2e2, #1d2db9); /* Gradient progress bar */
+  transition: width 0.2s ease;
+  border-radius: 10px;
+  position: relative;
+}
+
+/* PlayReady indicator that appears on hover */
+.progress-bar-container:hover::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: calc(var(--hover-position, 0) * 100%);
+  transform: translate(-50%, -50%);
+  width: 12px;
+  height: 12px;
+  background-color: white;
+  border-radius: 50%;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+
+/* Tooltip showing time on hover */
+.progress-tooltip {
+  position: absolute;
+  top: -25px;
+  left: var(--tooltip-position, 0);
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 3px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 10;
+}
+
+.progress-bar-container:hover .progress-tooltip {
+  opacity: 1;
+}
+
+/* Add a subtle pulse animation to the progress bar when seeking */
+@keyframes seek-pulse {
+  0% { transform: scaleY(1); }
+  50% { transform: scaleY(1.2); }
+  100% { transform: scaleY(1); }
+}
+
+.progress-bar.seeking {
+  animation: seek-pulse 0.3s ease;
+}
+
+/* Add to the end of your existing SpotifyPlayer.css file */
+
+/* Disabled controls */
+.disabled-control {
+  opacity: 0.6;
+  cursor: not-allowed !important;
+  position: relative;
+}
+
+.disabled-control:hover {
+  background-color: #1d2db9 !important; /* Prevent hover effect */
+  transform: none !important;
+}
+
+.player-status {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  margin: 6px 0;
+  border-radius: 20px;
+  font-size: 12px;
+  width: fit-content;
+}
+
+.player-status.warning {
+  background-color: rgba(255, 150, 0, 0.2);
+  color: #ffa500;
+  border: 1px solid rgba(255, 150, 0, 0.3);
+}
+
+/* Add animation for controls that are busy */
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 0.9; }
+  100% { opacity: 0.6; }
+}
+
+.disabled-control {
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+/* Add a subtle cursor change for disabled controls */
+.disabled-control,
+.disabled-control * {
+  cursor: not-allowed !important;
+}
+
+/* Also style the volume slider when disabled */
+.volume-slider:disabled {
+  opacity: 0.6;
+}
+
+/* Add styles for reconnection message */
+.reconnecting-message {
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 14px;
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.reconnecting-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top: 2px solid white;
+  animation: spin 1s ease infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Style updates for mini player */
+.mini-player-disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Add these styles to your SpotifyPlayer.css file */
+
+/* Progress Bar Enhancements */
+.progress-bar-container {
+  width: 100%;
+  height: 10px;
+  background-color: rgba(224, 224, 224, 0.3);
+  border-radius: 10px;
+  margin-top: 15px;
+  overflow: visible; /* Allow handle to extend outside the bar */
+  position: relative;
+  transition: height 0.2s ease;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+  touch-action: none; /* Prevent scrolling on mobile when dragging */
+}
+
+/* Make the progress bar taller when seeking for easier manipulation */
+.progress-bar-container.seeking {
+  height: 12px;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #0be2e2, #1d2db9);
+  transition: width 0.1s ease;
+  border-radius: 10px;
+  position: relative;
+}
+
+/* Progress handle that appears during dragging */
+.progress-handle {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 16px;
+  height: 16px;
+  background-color: white;
+  border-radius: 50%;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Tooltip that shows the current time during dragging */
+.progress-tooltip {
+  position: absolute;
+  top: -25px;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Hover effects for the progress bar */
+.progress-bar-container:hover {
+  background-color: rgba(224, 224, 224, 0.4);
+}
+
+/* Track-specific hover styling */
+.progress-bar-container:not(.seeking):hover .progress-bar::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translate(50%, -50%);
+  width: 8px;
+  height: 8px;
+  background-color: white;
+  border-radius: 50%;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+  opacity: 0.9;
+}
+
+/* Animations for the seeking state */
+@keyframes pulse-handle {
+  0% { box-shadow: 0 0 4px rgba(0, 0, 0, 0.3); }
+  50% { box-shadow: 0 0 8px rgba(29, 45, 185, 0.6); }
+  100% { box-shadow: 0 0 4px rgba(0, 0, 0, 0.3); }
+}
+
+.progress-handle {
+  animation: pulse-handle 1.5s infinite;
+}
+
+/* Ensure the entire container is responsive to touch */
+.progress-bar-container {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .progress-handle {
+    width: 20px; /* Larger handle for touch screens */
+    height: 20px;
+  }
+
+  .progress-bar-container {
+    height: 12px; /* Slightly taller bar for mobile */
+  }
+
+  .progress-bar-container.seeking {
+    height: 14px;
+  }
+}
+
+/* Add these styles to your SpotifyPlayer.css file */
+
+/* Custom Volume Slider */
+.custom-volume-slider {
+  width: 160px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  touch-action: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.volume-slider-track {
+  width: 100%;
+  height: 6px;
+  background-color: rgba(224, 224, 224, 0.3);
+  border-radius: 3px;
+  position: relative;
+  overflow: visible;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.volume-slider-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #0be2e2, #1d2db9);
+  border-radius: 3px;
+  transition: width 0.1s ease;
+}
+
+.volume-slider-handle {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 12px;
+  height: 12px;
+  background-color: white;
+  border-radius: 50%;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  transition: opacity 0.2s ease, width 0.2s ease, height 0.2s ease;
+  z-index: 2;
+}
+
+/* Show handle when active or on hover */
+.volume-slider-handle.active,
+.custom-volume-slider:hover .volume-slider-handle {
+  opacity: 1;
+}
+
+/* Active state for dragging */
+.volume-slider-handle.active {
+  width: 16px;
+  height: 16px;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
+}
+
+/* Dragging state */
+.custom-volume-slider.dragging .volume-slider-track {
+  background-color: rgba(224, 224, 224, 0.4);
+}
+
+/* Hover effects */
+.custom-volume-slider:hover .volume-slider-track {
+  background-color: rgba(224, 224, 224, 0.4);
+}
+
+/* Animation for the handle when dragging */
+@keyframes pulse-volume-handle {
+  0% { box-shadow: 0 0 4px rgba(0, 0, 0, 0.3); }
+  50% { box-shadow: 0 0 8px rgba(29, 45, 185, 0.6); }
+  100% { box-shadow: 0 0 4px rgba(0, 0, 0, 0.3); }
+}
+
+.volume-slider-handle.active {
+  animation: pulse-volume-handle 1.5s infinite;
+}
+
+/* Disabled state */
+.custom-volume-slider.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .custom-volume-slider {
+    width: 120px; /* Slightly smaller on mobile */
+  }
+
+  .volume-slider-handle {
+    width: 16px; /* Larger handle for touch */
+    height: 16px;
+  }
+
+  .volume-slider-handle.active {
+    width: 20px;
+    height: 20px;
+  }
+
+  .volume-slider-track {
+    height: 8px; /* Slightly taller track for easier touch */
+  }
+}

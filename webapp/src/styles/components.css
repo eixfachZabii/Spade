@@ -1,0 +1,888 @@
+/*----------------------------------------
+  components.css - Styles for UI components
+-----------------------------------------*/
+
+/*----------------------------------------
+  6. CARD SCANNER SECTION
+-----------------------------------------*/
+.scanner-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+}
+
+.scanner-overlay {
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.scan-area {
+  width: 100%;
+  height: 300px;
+  border: 2px dashed var(--border-color);
+  border-radius: var(--border-radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.scan-area.active {
+  border-style: solid;
+  border-color: var(--secondary-color);
+}
+
+
+@media (min-width: 768px) {
+  .card-scanner, .action-panel {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .scanner-container {
+    flex: 1;
+  }
+
+  .scan-area {
+    height: 100%;
+    min-height: 300px;
+  }
+}
+
+/* Card and panel base styles */
+.card-scanner,
+.action-panel,
+.profile-card,
+.calibration-card {
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  box-shadow: var(--card-shadow);
+  width: 100%;
+}
+
+/* Scanner animation */
+.scanning-animation {
+  position: absolute;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(
+          to right,
+          transparent,
+          var(--secondary-color),
+          transparent
+  );
+  top: 0;
+  left: 0;
+  animation: scanning 2s infinite linear;
+  will-change: top;
+}
+
+.cam-container {
+  width: 100%;
+  height: 100%;
+}
+
+.cam-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.scanning-status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.scanning-status span {
+  margin-bottom: 1rem;
+  color: var(--info-color);
+  font-weight: 500;
+}
+
+.webcam-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 1;
+  z-index: 1;
+}
+
+/* Scan button */
+.scan-button {
+  background: var(--primary-gradient);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(106, 17, 203, 0.2);
+}
+
+.scan-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(106, 17, 203, 0.3);
+}
+
+.scan-button.active {
+  background: linear-gradient(to right, #ef4444, #dc2626);
+  box-shadow: 0 4px 6px rgba(239, 68, 68, 0.2);
+}
+
+/* Scanned Result */
+.scanned-result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  animation: fadeIn 0.3s ease;
+}
+
+.scanned-result h2 {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+/*----------------------------------------
+  7. POKER CARDS & GAME ELEMENTS
+-----------------------------------------*/
+/* Poker card display */
+.poker-cards {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin: 1.5rem 0;
+  position: relative;
+}
+
+.poker-cards.clickable {
+  cursor: pointer;
+}
+
+.poker-cards:not(.clickable) {
+  cursor: default;
+}
+
+.poker-cards.clickable::after {
+  content: attr(data-action-hint);
+  position: absolute;
+  bottom: -25px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.poker-cards.clickable:hover::after {
+  opacity: 1;
+}
+
+.poker-card {
+  background: var(--bg-secondary);
+  border: 2px solid var(--primary-color);
+  border-radius: 8px;
+  width: 80px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  perspective: 1000px;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+  will-change: transform;
+  transform-style: preserve-3d;
+}
+
+.poker-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.1) 0%,
+          rgba(255, 255, 255, 0) 100%
+  );
+  z-index: 1;
+}
+
+.poker-card:hover {
+  transform: translateY(-5px);
+}
+
+.poker-cards:not(.clickable) .poker-card:hover {
+  transform: none;
+}
+
+/* Card content */
+.card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 5px;
+}
+
+.card-rank {
+  font-size: 2.2rem;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.card-suit {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+/* Card colors */
+.red-card .card-rank,
+.red-card .card-suit {
+  color: #e74c3c;
+}
+
+.black-card .card-rank,
+.black-card .card-suit {
+  color: #cccccc;
+}
+
+.light-theme .black-card .card-rank,
+.light-theme .black-card .card-suit {
+  color: #1a202c;
+}
+
+/* Card styling elements */
+.poker-card::after {
+  content: "";
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: calc(100% - 10px);
+  height: calc(100% - 10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+/* Covered Card Styles */
+.poker-card.covered {
+  background: var(--bg-secondary);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  animation: cardFlipOut 0.8s ease-out forwards;
+}
+
+.poker-card:not(.covered) {
+  animation: cardFlipIn 0.8s ease-out forwards;
+}
+
+.poker-card:not(.covered) .card-content {
+  transform: rotateY(180deg);
+}
+
+.poker-card.covered::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+          45deg,
+          var(--primary-color),
+          var(--primary-color) 10px,
+          var(--bg-secondary) 10px,
+          var(--bg-secondary) 20px
+  );
+  opacity: 0.8;
+  z-index: 1;
+  animation: pulse 2s infinite ease-in-out;
+}
+
+.poker-card.covered::after {
+  content: "♠";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
+  z-index: 2;
+  color: var(--text-primary);
+}
+
+.card-back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.reveal-hint {
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 0.7rem;
+  color: var(--text-primary);
+  opacity: 0.7;
+  z-index: 3;
+}
+
+.poker-card .hide-hint {
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 0.7rem;
+  color: var(--text-primary);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.poker-card:hover .hide-hint {
+  opacity: 0.7;
+}
+
+/* Card verification styles */
+.card-verification {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  animation: fadeIn 0.3s ease;
+}
+
+.verification-text {
+  font-size: 1.1rem;
+  color: var(--warning-color);
+  font-weight: 500;
+}
+
+.verification-buttons {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+  max-width: 400px;
+}
+
+.confirm-button {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(to bottom right, #10b981, #059669);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.retry-button {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(to bottom right, #f59e0b, #d97706);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.confirm-button:hover,
+.retry-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.confirm-button:active,
+.retry-button:active {
+  transform: translateY(0);
+}
+
+.toggle-hint {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-top: 1rem;
+  font-style: italic;
+  text-align: center;
+  animation: fadeIn 0.3s ease;
+}
+
+.reset-button {
+  margin-top: 1rem;
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  animation: fadeIn 0.3s ease;
+}
+
+.reset-button:hover {
+  background-color: var(--border-color);
+}
+
+/*----------------------------------------
+  11. FORM ELEMENTS & CONTROLS
+-----------------------------------------*/
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.form-group input {
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 1rem;
+}
+
+.form-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+/* Button styles */
+button {
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.primary-button {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  background: var(--primary-gradient);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.secondary-button {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.primary-button:hover,
+.secondary-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.primary-button:active,
+.secondary-button:active {
+  transform: translateY(0);
+}
+
+/* Danger button style */
+.primary-button.danger {
+  background: linear-gradient(to right, #ef4444, #b91c1c);
+  box-shadow: 0 4px 6px rgba(239, 68, 68, 0.2);
+}
+
+.primary-button.danger:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(239, 68, 68, 0.3);
+}
+
+/* Enhanced input styling */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+textarea {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 1rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input:focus,
+textarea:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(106, 17, 203, 0.2);
+  outline: none;
+}
+
+/* Checkbox styling */
+.checkbox-group {
+  display: flex;
+  align-items: center;
+}
+
+.checkbox-group label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.checkbox-group input[type="checkbox"] {
+  width: 1.2rem;
+  height: 1.2rem;
+  accent-color: var(--primary-color);
+}
+
+/* Form row */
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+/* Slider input for player count */
+.slider-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.slider-container input[type="range"] {
+  flex: 1;
+  -webkit-appearance: none;
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--bg-tertiary);
+  outline: none;
+}
+
+.slider-container input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.slider-container input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  cursor: pointer;
+  transition: background 0.2s;
+  border: none;
+}
+
+.slider-container input[type="range"]:hover::-webkit-slider-thumb,
+.slider-container input[type="range"]:focus::-webkit-slider-thumb {
+  background: var(--secondary-color);
+}
+
+.slider-container input[type="range"]:hover::-moz-range-thumb,
+.slider-container input[type="range"]:focus::-moz-range-thumb {
+  background: var(--secondary-color);
+}
+
+.slider-value {
+  font-weight: 600;
+  min-width: 24px;
+  text-align: center;
+  color: var(--primary-color);
+}
+
+/*----------------------------------------
+  12. MODAL & DIALOG STYLES
+-----------------------------------------*/
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  animation: fadeIn 0.2s ease;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+  padding: 2rem;
+  width: 100%;
+  max-width: 550px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-content h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-weight: 700;
+  background: var(--primary-gradient);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Confirmation modal */
+.confirmation-modal {
+  max-width: 480px;
+}
+
+.confirmation-message {
+  background-color: rgba(239, 68, 68, 0.05);
+  border-left: 3px solid var(--danger-color);
+  padding: 1rem;
+  margin: 1.5rem 0;
+  border-radius: 0 var(--border-radius) var(--border-radius) 0;
+}
+
+.confirmation-message p {
+  margin: 0;
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+/* Security warning modal */
+.camera-security-warning {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.warning-content {
+  padding: 25px;
+  border-radius: 10px;
+  max-width: 500px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.warning-content h3 {
+  color: #f44336;
+  margin-top: 0;
+}
+
+.warning-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.warning-actions button {
+  padding: 10px 15px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.https-link {
+  display: inline-block;
+  padding: 10px 15px;
+  background-color: #4CAF50;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+}
+
+/* Add these styles to components.css */
+
+/*----------------------------------------
+  Privacy features for card scanning
+-----------------------------------------*/
+.privacy-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  position: relative;
+  border-radius: var(--border-radius);
+  padding: 2rem;
+  text-align: center;
+  overflow: hidden;
+}
+
+.privacy-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: var(--primary-color);
+  animation: pulse 2s infinite ease-in-out;
+}
+
+.privacy-placeholder p {
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.privacy-placeholder::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+          45deg,
+          var(--bg-tertiary),
+          var(--bg-tertiary) 10px,
+          var(--bg-secondary) 10px,
+          var(--bg-secondary) 20px
+  );
+  opacity: 0.1;
+  z-index: 0;
+}
+
+.privacy-placeholder .scanning-animation {
+  position: absolute;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(
+          to right,
+          transparent,
+          var(--primary-color),
+          transparent
+  );
+  top: 0;
+  left: 0;
+  animation: scanning 2s infinite linear;
+  will-change: top;
+  z-index: 1;
+}
+
+/* Position the webcam off-screen but still functional */
+.hidden-webcam {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+}
+
+.webcam-container.hidden {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+}
+
+/* Card suits background pattern */
+.privacy-placeholder::after {
+  content: "♠ ♥ ♦ ♣";
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  font-size: 1.5rem;
+  opacity: 0.1;
+  color: var(--primary-color);
+}
