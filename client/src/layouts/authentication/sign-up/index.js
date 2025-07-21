@@ -122,7 +122,7 @@ function SignUp() {
       color="white"
       description="Create your SPADE account and start tracking your poker stats"
       image={bgSignUp}
-      premotto="SPADE BOOT"
+      premotto="SPADE"
       motto="YOUR POKER DASHBOARD"
       cardContent
     >

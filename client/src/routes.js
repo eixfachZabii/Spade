@@ -6,6 +6,7 @@ import Spotify from "./layouts/spotify"
 import Analytics from "./layouts/analytics"
 import Cheatsheet from "./layouts/cheatsheet"
 import Profile from "./layouts/profile"
+import About from "./layouts/about";
 
 // Import authentication components
 import SignIn from "./layouts/authentication/sign-in";
@@ -86,6 +87,12 @@ const routes = [
   },
 
   // Public routes (no authentication required)
+  {
+    route: "/about",
+    component: About,
+    key: "about",
+    requiresAuth: false,
+  },
   {
     route: "/authentication/sign-in",
     component: SignIn,
