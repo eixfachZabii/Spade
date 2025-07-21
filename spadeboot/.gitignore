@@ -25,6 +25,7 @@ gradle-app.setting
 out/
 .idea_modules/
 *.log
+.DS_Store
 
 # Eclipse / STS
 .apt_generated
