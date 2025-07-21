@@ -1,0 +1,229 @@
+/* Enhanced Lyrics Container */
+.spotify-lyrics-container {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(29, 45, 185, 0.8) 0%, rgba(11, 226, 226, 0.4) 100%);
+  border-radius: 15px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* Overlay gradient for text readability */
+.spotify-lyrics-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at center, transparent 30%, rgba(0, 0, 0, 0.4) 100%);
+  pointer-events: none;
+}
+
+/* Scroll Container - Improved for smoother scrolling */
+.lyrics-scroll-container {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  padding: 30px 20px;
+  box-sizing: border-box;
+  position: relative;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+}
+
+.lyrics-scroll-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.lyrics-scroll-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.lyrics-scroll-container::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+}
+
+.lyrics-scroll-container::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Lyrics Content - Better spacing */
+.lyrics-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 16px; /* Slightly reduced for more consistent spacing */
+  padding: 40px 0;
+  min-height: 100%;
+}
+
+/* Individual Lyrics Lines - Smoother transitions */
+.lyrics-line {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-align: center;
+  opacity: 0.6;
+  transition: all 0.5s ease; /* Slower, smoother transition */
+  max-width: 85%;
+  word-wrap: break-word;
+  line-height: 1.6;
+  position: relative;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transform-origin: center;
+  letter-spacing: 0.02em;
+}
+
+/* Inactive lines (before current line) */
+.lyrics-line.passed {
+  opacity: 0.4;
+  font-size: 1.1rem;
+}
+
+/* Active lines (current line) - Enhanced styling */
+.lyrics-line.current-line {
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 500;
+  opacity: 1;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  transform: scale(1.05);
+  background-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 15px rgba(0, 136, 255, 0.2);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  transform: scale(1.08);
+  background: linear-gradient(90deg, rgba(29,185,84,0.15) 0%, rgba(11,226,226,0.1) 100%);
+  padding: 12px 20px;
+  margin: 8px 0;
+  border-left: 3px solid #1DB954;
+  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1); /* Custom easing for smoother transitions */
+}
+
+/* Immediate neighboring lines - Slightly highlighted */
+.lyrics-line.secondary-highlight {
+  opacity: 0.8;
+  font-size: 1.15rem;
+  color: white;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  transform: scale(1.03);
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  border-radius: 8px;
+  padding: 10px 16px;
+  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+/* Slightly further lines - Faded highlight */
+.lyrics-line.secondary-highlight-faded {
+  opacity: 0.6;
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.8);
+  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+/* Metadata styling (non-lyric lines) */
+.lyrics-line.metadata {
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 1rem;
+  opacity: 0.6;
+  font-weight: 300;
+}
+
+.lyrics-line.metadata.current-line {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1.15rem;
+}
+
+/* Current line progress indicator - Smoother animation */
+.current-line-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #1DB954, #4EEBC5);
+  border-radius: 2px;
+  transition: width 0.3s linear; /* Smoother progress updates */
+}
+
+/* Title at the top */
+.lyrics-title {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  color: white;
+  padding: 12px 0;
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-bottom: 20px;
+  z-index: 10;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Empty state */
+.no-lyrics {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1.2rem;
+  text-align: center;
+  padding: 20px;
+}
+
+/* Loading state - Improved animation */
+.lyrics-loading {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+
+.lyrics-loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite; /* More dynamic animation */
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .lyrics-line {
+    font-size: 1rem;
+    max-width: 95%;
+  }
+
+  .lyrics-line.current-line {
+    font-size: 1.2rem;
+  }
+
+  .lyrics-title {
+    font-size: 1.2rem;
+    padding: 8px 0;
+  }
+}

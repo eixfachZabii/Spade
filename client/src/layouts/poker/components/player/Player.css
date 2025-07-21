@@ -1,0 +1,241 @@
+/* Player Container */
+.player-container {
+  position: absolute;
+  width: 140px; /* Reduced from 160px */
+  height: 140px; /* Reduced from 160px */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.3s ease-in-out;
+  z-index: 10;
+}
+
+/* Active player highlighting */
+.player-container.active {
+  z-index: 20;
+}
+
+.player-container.active .player-info {
+  box-shadow: 0 0 25px rgba(82, 172, 250, 0.8); /* Reduced intensity */
+  border: 1px solid rgba(82, 172, 250, 0.8);
+  animation: pulse 2s infinite;
+}
+
+.player-container.folded {
+  opacity: 0.7;
+  filter: saturate(0.6) brightness(0.8);
+}
+
+.player-container.folded .player-info {
+  background-color: rgba(83, 30, 30, 0.8);
+  border-color: rgba(180, 30, 30, 0.4);
+}
+
+/* Dealer Button */
+.dealer-button {
+  position: absolute;
+  top: 80%;
+  right: -20px; /* Moved closer */
+  transform: translateY(-50%);
+  width: 28px; /* Reduced from 32px */
+  height: 28px; /* Reduced from 32px */
+  background: linear-gradient(135deg, #ffd700, #ffa500);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: #000;
+  font-size: 12px; /* Reduced from 14px */
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
+  border: 2px solid #fff;
+  z-index: 30;
+}
+
+/* Status Indicator */
+.status-indicator {
+  position: absolute;
+  top: -15px; /* Moved closer */
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 2px 8px; /* Reduced padding */
+  border-radius: 10px; /* Reduced from 12px */
+  font-size: 10px; /* Reduced from 12px */
+  font-weight: bold;
+  text-transform: uppercase;
+  color: white;
+  letter-spacing: 0.8px; /* Reduced from 1px */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  z-index: 25;
+  white-space: nowrap;
+}
+
+.status-indicator.active {
+  background-color: #1e88e5;
+  animation: blink 1.5s infinite;
+  top: +55px; /* Moved closer */
+}
+
+.status-indicator.folded {
+  background-color: #e53935;
+  top: +55px; /* Moved closer */
+}
+
+.status-indicator.call {
+  background-color: #43a047;
+}
+
+.status-indicator.raise {
+  background-color: #fb8c00;
+}
+
+.status-indicator.check {
+  background-color: #7e57c2;
+}
+
+/* Player Cards */
+.player-cards {
+  position: relative;
+  display: flex;
+  transform: translateY(15px) scale(1); /* Reduced scale */
+  transition: all 0.3s ease;
+}
+
+.player-container.active .player-cards {
+  transform: translateY(+25px) scale(1); /* Reduced scale */
+}
+
+/* Player Information */
+.player-info {
+  width: 100%;
+  padding: 6px; /* Reduced from 8px */
+  background-color: rgba(25, 33, 38, 0.85);
+  backdrop-filter: blur(4px);
+  border-radius: 8px; /* Reduced from 10px */
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.3); /* Reduced intensity */
+  border: 1px solid rgba(82, 172, 250, 0.2);
+  transition: all 0.3s ease;
+}
+
+/* Player Name */
+.player-name-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px; /* Reduced from 8px */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 4px; /* Reduced from 5px */
+}
+
+.player-name {
+  margin: 0;
+  font-size: 14px; /* Reduced from 14px */
+  font-weight: 600;
+  color: white;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 70%;
+}
+
+.win-probability {
+  font-size: 12px; /* Reduced from 12px */
+  font-weight: 700;
+  color: #ffcc00;
+  background-color: rgba(0, 0, 0, 0.2);
+  padding: 1px 5px; /* Reduced padding */
+  border-radius: 6px; /* Reduced from 8px */
+}
+
+/* Player Stats */
+.player-stats {
+  display: flex;
+  justify-content: space-between;
+}
+
+.bet-amount, .balance-amount {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-label {
+  font-size: 10px; /* Reduced from 10px */
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 1px; /* Reduced from 2px */
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-value {
+  font-size: 14px; /* Reduced from 14px */
+  font-weight: 700;
+  color: white;
+  position: relative;
+}
+
+.negative {
+  color: #ff5252;
+}
+
+.negative-indicator {
+  position: absolute;
+  left: -8px;
+  top: 0;
+}
+
+/* Bet Visualization */
+.player-bet-visualization {
+  position: absolute;
+  top: 65%;
+  left: 92%; /* Moved closer */
+  transform: translate(-50%, -20px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 5;
+}
+
+/* Animations */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 8px rgba(82, 172, 250, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(82, 172, 250, 0.9);
+  }
+  100% {
+    box-shadow: 0 0 8px rgba(82, 172, 250, 0.6);
+  }
+}
+
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
+/* Media Queries */
+@media (max-width: 1200px) {
+  .player-container {
+    width: 130px; /* Reduced size for medium screens */
+  }
+
+  .player-name {
+    font-size: 11px;
+  }
+
+  .stat-value {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 768px) {
+  .player-container {
+    width: 120px; /* Reduced size for small screens */
+  }
+
+  .player-info {
+    padding: 5px;
+  }
+}

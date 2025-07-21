@@ -1,0 +1,377 @@
+/*----------------------------------------
+  base.css - Variables, animations, and global styles
+-----------------------------------------*/
+
+/*----------------------------------------
+  1. VARIABLES & THEME SETTINGS
+-----------------------------------------*/
+:root {
+  /* Color palette */
+  --primary-color: #6a11cb;
+  --primary-gradient: linear-gradient(to right, #6a11cb, #2575fc);
+  --secondary-color: #2575fc;
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --danger-color: #ef4444;
+  --info-color: #3b82f6;
+
+  /* Dark theme defaults */
+  --text-primary: #f3f4f6;
+  --text-secondary: #9ca3af;
+  --bg-primary: #111827;
+  --bg-secondary: #1f2937;
+  --bg-tertiary: #374151;
+  --card-bg: #1e293b;
+  --border-color: #4b5563;
+
+  /* UI properties */
+  --transition-speed: 0.3s;
+  --border-radius: 12px;
+  --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+  0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Light Theme Variables */
+.light-theme {
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  --bg-primary: #f9fafb;
+  --bg-secondary: #f3f4f6;
+  --bg-tertiary: #e5e7eb;
+  --card-bg: #ffffff;
+  --border-color: #d1d5db;
+
+  /* Adjusted colors for light theme */
+  --success-color: #059669;
+  --warning-color: #d97706;
+  --danger-color: #dc2626;
+  --info-color: #2563eb;
+}
+
+/*----------------------------------------
+  2. ANIMATIONS & KEYFRAMES
+-----------------------------------------*/
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scanning {
+  0% { top: 0; }
+  50% { top: calc(100% - 4px); }
+  100% { top: 0; }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes cardFlipIn {
+  0% {
+    transform: rotateY(0deg) translateY(0);
+    opacity: 0.7;
+  }
+  50% {
+    transform: rotateY(90deg) translateY(-10px);
+    opacity: 0.9;
+  }
+  100% {
+    transform: rotateY(180deg) translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes cardFlipOut {
+  0% {
+    transform: rotateY(180deg) translateY(0);
+    opacity: 1;
+  }
+  50% {
+    transform: rotateY(90deg) translateY(-10px);
+    opacity: 0.9;
+  }
+  100% {
+    transform: rotateY(0deg) translateY(0);
+    opacity: 0.7;
+  }
+}
+
+@keyframes shine {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+/*----------------------------------------
+  3. GLOBAL STYLES
+-----------------------------------------*/
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  transition: background-color var(--transition-speed),
+  color var(--transition-speed);
+}
+
+body {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+  Oxygen, Ubuntu, Cantarell, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  line-height: 1.5;
+}
+
+.app {
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+/* Animation utility classes */
+.animate-fade-in { animation: fadeIn 0.3s ease forwards; }
+.animate-pulse { animation: pulse 1.5s infinite ease-in-out; }
+.animate-spin { animation: spin 1s linear infinite; }
+.rotating { animation: spin 1s linear infinite; }
+
+/* Card and panel base styles */
+.card-scanner,
+.action-panel,
+.profile-card,
+.calibration-card {
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  box-shadow: var(--card-shadow);
+}
+
+/* Status messages */
+.error-message {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  padding: 0.75rem;
+  border-radius: var(--border-radius);
+  margin-bottom: 1rem;
+  text-align: center;
+  animation: fadeIn 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.error-message.global-error {
+  position: fixed;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  min-width: 250px;
+  max-width: 90%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.success-message {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+  padding: 0.75rem;
+  border-radius: var(--border-radius);
+  margin-bottom: 1rem;
+  text-align: center;
+  animation: fadeIn 0.3s ease;
+}
+
+/* Loading indicators */
+.loading-spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top-color: var(--primary-color);
+  animation: spin 1s linear infinite;
+  will-change: transform;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+  gap: 1rem;
+}
+
+.loading-container .loading-spinner {
+  width: 40px;
+  height: 40px;
+  border-width: 4px;
+}
+
+.button-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s linear infinite;
+  margin-right: 8px;
+  display: inline-block;
+}
+
+/*----------------------------------------
+  15. RESPONSIVE DESIGN
+-----------------------------------------*/
+@media (max-width: 768px) {
+  .app-header {
+    padding: 1rem 0;
+  }
+
+  .header-controls {
+    gap: 0.7rem;
+  }
+
+  /* Ensure nav buttons remain easily tappable */
+  .nav-button {
+    padding: 0.5rem;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .nav-icon {
+    font-size: 1.5rem; /* Maintain original size */
+  }
+
+  .theme-toggle {
+    font-size: 1.5rem; /* Maintain original size */
+    padding: 0.5rem;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .lobby-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .table-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .create-table-button {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .buy-in-limits {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .calibration-card h2::after {
+    position: relative;
+    display: block;
+    right: auto;
+    top: auto;
+    margin-top: 0.5rem;
+    text-align: center;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .action-buttons {
+    grid-template-columns: 1fr;
+  }
+
+  .poker-cards {
+    flex-wrap: wrap;
+  }
+
+  .profile-header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .stats-container {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-actions {
+    flex-direction: column;
+  }
+
+  .verification-buttons {
+    flex-direction: column;
+  }
+
+  .calibration-frame {
+    height: 300px;
+  }
+
+  .table-info {
+    gap: 0.5rem;
+  }
+
+  .form-buttons {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-header {
+    padding: 1.05rem 0; /* 15% larger */
+  }
+
+  .logo-icon {
+    font-size: 2.875rem; /* 15% larger than 2.5rem */
+  }
+
+  .header-controls {
+    gap: 0.575rem; /* 15% larger than 0.5rem */
+  }
+
+  /* Ensure touch targets remain adequately sized but 15% larger */
+  .nav-button,
+  .theme-toggle {
+    padding: 0.575rem; /* 15% larger than 0.5rem */
+    min-width: 51px; /* 15% larger than 44px */
+    min-height: 51px; /* 15% larger than 44px */
+  }
+
+  .nav-icon,
+  .theme-toggle {
+    font-size: 1.725rem; /* 15% larger than 1.5rem */
+  }
+
+  .status-circle {
+    width: 0.92rem; /* 15% larger than 0.8rem */
+    height: 0.92rem; /* 15% larger than 0.8rem */
+  }
+}

@@ -1,0 +1,369 @@
+/*----------------------------------------
+  layout.css - Layout and structure styles
+-----------------------------------------*/
+
+/*----------------------------------------
+  4. LAYOUT COMPONENTS
+-----------------------------------------*/
+/* Main Content Layout */
+.main-content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  width: 100%;
+}
+
+
+
+
+/* For poker table layout specifically */
+.poker-table-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto auto auto;
+  grid-template-areas:
+    "header"
+    "scanner"
+    "actions";
+  gap: 1rem;
+  width: 100%;
+  max-width: 100%;
+  grid-column: 1 / -1; /* Make it span all columns */
+}
+
+@media (min-width: 768px) {
+  .main-content {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* Adjust poker table layout for larger screens */
+  .poker-table-layout {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    grid-template-areas:
+      "header header"
+      "scanner actions";
+    grid-column: 1 / -1; /* Make it span all columns in the parent grid */
+  }
+}
+
+/* Lobby-specific layout */
+.lobby-layout {
+  display: flex;
+  justify-content: center;
+  grid-template-columns: 1fr !important; /* Override the grid columns */
+}
+
+.lobby-layout .lobby-container {
+  max-width: 1200px;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .lobby-layout {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/*----------------------------------------
+  5. NAVIGATION & HEADER
+-----------------------------------------*/
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 2rem;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+/* Logo styles */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.logo-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.logo-icon {
+  font-size: 2.5rem;
+  color: var(--primary-color);
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.logo:hover .logo-icon {
+  transform: rotate(10deg);
+  color: var(--secondary-color);
+}
+
+.logo-title {
+  font-size: 2rem;
+  font-weight: 800;
+  background: var(--primary-gradient);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 2px;
+  transition: opacity 0.3s ease, transform 0.3s ease, max-width 0.3s ease;
+  white-space: nowrap;
+}
+
+/* Compact mode for the logo - hides the title */
+.logo.compact .logo-title {
+  max-width: 0;
+  opacity: 0;
+  transform: translateX(-10px);
+  margin: 0;
+  padding: 0;
+}
+
+.logo.compact .logo-icon-container {
+  transform: scale(1.1);
+}
+
+/* Header controls */
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  transition: all 0.3s ease;
+}
+
+/* Group navigation buttons */
+.nav-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Navigation buttons */
+.nav-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0.5rem;
+  border-radius: var(--border-radius);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.nav-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 0;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.1), transparent);
+  transition: height 0.3s ease;
+  z-index: -1;
+}
+
+.nav-button:hover::before {
+  height: 100%;
+}
+
+.nav-button:hover {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  transform: translateY(-2px);
+}
+
+.nav-button.active {
+  color: var(--text-primary);
+  font-weight: 600;
+  background-color: var(--bg-tertiary);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.nav-icon {
+  font-size: 1.5rem;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.nav-button:hover .nav-icon {
+  transform: scale(1.1);
+}
+
+/* Theme toggle */
+.theme-toggle {
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 1.5rem;
+  padding: 0.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.theme-toggle::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+  transition: width 0.4s ease, height 0.4s ease;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  z-index: -1;
+}
+
+.theme-toggle:hover::after {
+  width: 150%;
+  height: 150%;
+}
+
+.theme-toggle:hover {
+  background-color: var(--bg-tertiary);
+  transform: rotate(15deg);
+}
+
+/* Connection indicator */
+.connection-indicator {
+  display: flex;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.status-circle {
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.status-circle.connected {
+  color: #4caf50; /* Green */
+  animation: pulse 2s infinite;
+}
+
+.status-circle.disconnected {
+  color: #f44336; /* Red */
+}
+
+.connection-error {
+  color: red;
+  text-align: center;
+}
+
+/* User avatar in header */
+.mini-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: white;
+  background: var(--primary-gradient);
+}
+
+.mini-avatar.custom {
+  background-color: transparent;
+  color: transparent;
+  text-indent: -9999px;
+  background-size: cover;
+  background-position: center;
+}
+
+/* Avatar color variations */
+.mini-avatar.avatar-default { background: linear-gradient(to bottom right, #6a11cb, #2575fc); }
+.mini-avatar.avatar-player1 { background: linear-gradient(to bottom right, #f12711, #f5af19); }
+.mini-avatar.avatar-player2 { background: linear-gradient(to bottom right, #11998e, #38ef7d); }
+.mini-avatar.avatar-player3 { background: linear-gradient(to bottom right, #8e2de2, #4a00e0); }
+.mini-avatar.avatar-player4 { background: linear-gradient(to bottom right, #eb3349, #f45c43); }
+
+/* Table header in card */
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.table-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Auth required screen */
+.auth-required {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 70vh;
+  padding: 2rem 1rem;
+}
+
+.auth-required-card {
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+  padding: 2.5rem 2rem;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+  box-shadow: var(--card-shadow);
+  animation: fadeIn 0.4s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.auth-icon {
+  font-size: 5rem;
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+}
+
+.auth-required-card h2 {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  background: var(--primary-gradient);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 1px;
+}
+
+.auth-required-card p {
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+  line-height: 1.5;
+}

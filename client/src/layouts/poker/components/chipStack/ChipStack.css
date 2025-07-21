@@ -1,0 +1,80 @@
+/* For regular chip stacks (player bets) */
+.chip-stack-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 3px; /* Reduced from 5px */
+}
+
+.chip-stack-container.compact {
+  margin-top: 0;
+  transform: scale(0.75); /* Reduced from 0.8 */
+}
+
+.chip-stack {
+  position: relative;
+  width: 35px; /* Reduced from 40px */
+  height: 45px; /* Reduced from 50px */
+}
+
+.chip {
+  position: absolute;
+  width: 35px; /* Reduced from 40px */
+  height: 35px; /* Reduced from 40px */
+  border-radius: 50%;
+  border: 2px dashed; /* Reduced from 3px */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4); /* Reduced shadow */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chip-value {
+  font-size: 12px; /* Reduced from 14px */
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Adjust text color for lighter chips */
+.chip[style*="background-color: #E0E0E0"] .chip-value {
+  color: #333;
+  text-shadow: none;
+}
+
+/* For pot chip display (multiple stacks) */
+.pot-chip-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pot-chips {
+  display: flex;
+  margin-top: 8px; /* Reduced from 10px */
+  margin-bottom: 4px; /* Reduced from 5px */
+  height: 55px; /* Reduced from 60px */
+}
+
+.pot-chip-stack {
+  position: relative;
+  width: 35px; /* Reduced from 40px */
+  height: 55px; /* Reduced from 60px */
+}
+
+.pot-amount {
+  margin-top: 8px; /* Reduced from 10px */
+  font-size: 14px; /* Reduced from 16px */
+  padding: 2px 8px; /* Reduced padding */
+}
+
+/* Animation for chips */
+@keyframes chipSpin {
+  0% { transform: rotateY(0deg); }
+  100% { transform: rotateY(360deg); }
+}
+
+.chip-stack:hover .chip,
+.pot-chip-stack:hover .chip {
+  animation: chipSpin 1.5s linear;
+}

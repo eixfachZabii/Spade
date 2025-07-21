@@ -1,0 +1,78 @@
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# Gradle (falls relevant)
+.gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+gradle-app.setting
+
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+.idea_modules/
+*.log
+
+# Eclipse / STS
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans/
+.sts4-cache/
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Logs
+logs/
+*.log
+!src/main/resources/logback.xml
+!src/main/resources/logback-spring.xml
+
+# Temporary Files
+*.swp
+*.swo
+*.bak
+*.tmp
+
+# Spring Boot
+*.war
+*.jar
+BOOT-INF/
+META-INF/
+org/
+
+# Database Files
+*.db
+*.h2.db
+*.mv.db
+
+# Security Keys
+*.pem
+*.crt
+*.key
+*.pub
+
+# Spring Boot Config (sensible Daten)
+src/main/resources/application.yml
+src/main/resources/application-dev.yml
+src/main/resources/application-prod.yml
+src/main/resources/keystore.p12
+src/main/resources/app.key
+src/main/resources/app.pub
