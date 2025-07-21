@@ -25,13 +25,13 @@ function SpadeLogo({ size }) {
   );
 }
 
-// Setting default values for the props of SimmmpleLogo
+// Setting default values for the props of
 SpadeLogo.defaultProps = {
   color: "dark",
   size: "16px",
 };
 
-// Typechecking props for the SimmmpleLogo
+// Typechecking props for the
 SpadeLogo.propTypes = {
   color: PropTypes.oneOf([
     "primary",

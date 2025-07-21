@@ -2,6 +2,7 @@
 
 import SockJS from 'sockjs-client';
 import { Stomp } from '@stomp/stompjs';
+import EnvironmentConfig from '../config/environment';
 
 class GameWebSocketService {
     constructor() {
@@ -21,9 +22,7 @@ class GameWebSocketService {
             try {
                 // Use SockJS for better compatibility and fallback support
                 const socket = new SockJS(
-                    window.location.hostname === 'localhost'
-                        ? 'http://localhost:8080/ws'
-                        : `${window.location.origin}/ws`,
+                    EnvironmentConfig.getWebSocketUrl(),
                     null,
                     {
                     // Additional SockJS options for CORS
@@ -80,8 +79,7 @@ class GameWebSocketService {
         return new Promise((resolve, reject) => {
             try {
                 // Direct WebSocket connection (fallback)
-                const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-                const wsUrl = `${protocol}://${window.location.host}/ws`;
+                const wsUrl = EnvironmentConfig.getWebSocketUrl().replace('http://', 'ws://').replace('https://', 'wss://');
                 this.stompClient = Stomp.client(wsUrl);
 
                 this.stompClient.debug = (str) => {
