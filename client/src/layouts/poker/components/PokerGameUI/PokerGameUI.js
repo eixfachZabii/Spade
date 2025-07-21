@@ -185,8 +185,13 @@ const PokerGameUI = ({ isFullscreen, isMobile }) => {
         // User is at a table, fetch game data
         await fetchGameData(tableId);
       } else {
-        // User not at table, show demo data or empty state
-        loadDemoData();
+        // User not at table, show empty state instead of demo data
+        setPlayers([]);
+        setCommunityCards([null, null, null, null, null]);
+        setPot(0);
+        setDealerIndex(null);
+        setGameActive(false);
+        setConnectionError(false);
       }
 
       setIsLoading(false);
@@ -246,12 +251,49 @@ const PokerGameUI = ({ isFullscreen, isMobile }) => {
         {isLoading ? (
             <LoadingSpinner />
         ) : !currentTableId && !connectionError ? (
-            <div className="no-table-state">
-              <div className="no-table-message">
-                <h3>🃏 No Active Game</h3>
-                <p>You are not currently seated at any poker table.</p>
-                <p>Join a table to view the game state.</p>
-              </div>
+            // Enhanced waiting state with empty table
+            <div className="waiting-state">
+              <PokerTable
+                  pot="Waiting for players..."
+                  isFullscreen={isFullscreen}
+              >
+                {/* Entertaining waiting message */}
+                <div className="waiting-overlay">
+                  <div className="waiting-content">
+                    <div className="waiting-icon">🂡</div>
+                    <h2 className="waiting-title">Ready to Play?</h2>
+                    <p className="waiting-subtitle">You're not currently seated at any poker table</p>
+                    <div className="waiting-actions">
+                      <div className="waiting-tip">
+                        💡 <span>Join a table to start playing!</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Animated floating cards */}
+                  <div className="floating-cards">
+                    <div className="floating-card card-1">🂡</div>
+                    <div className="floating-card card-2">🂮</div>
+                    <div className="floating-card card-3">🃁</div>
+                    <div className="floating-card card-4">🃞</div>
+                  </div>
+                </div>
+
+                {/* Show empty community cards */}
+                <div className="community-cards">
+                  {[...Array(5)].map((_, index) => (
+                      <div
+                          key={index}
+                          className="community-card-container waiting-card"
+                          style={{
+                            animationDelay: `${index * 0.2}s`
+                          }}
+                      >
+                        <div className="community-card-placeholder waiting-placeholder"></div>
+                      </div>
+                  ))}
+                </div>
+              </PokerTable>
             </div>
         ) : (
             <PokerTable
