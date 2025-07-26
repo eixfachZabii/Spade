@@ -2,13 +2,9 @@ import React, { useState } from "react";
 import { Card, useMediaQuery } from "@mui/material";
 import VuiButton from "../../components/VuiButton";
 import SpotifyComponent from "./components/SpotifyComponent";
-import {BsFullscreen, BsFullscreenExit, BsSkipBackwardFill} from "react-icons/bs";
 import {
-    FullscreenExit,
-    FullscreenExitOutlined, FullscreenExitRounded,
-    FullscreenExitSharp,
-    FullscreenOutlined, FullscreenRounded,
-    FullscreenSharp
+    FullscreenExitRounded,
+    FullscreenRounded
 } from "@mui/icons-material"; // Import Spotify-Komponente
 
 function SpotifyBox() {
