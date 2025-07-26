@@ -259,17 +259,6 @@ const PokerGameUI = ({ isFullscreen, isMobile }) => {
               >
                 {/* Entertaining waiting message */}
                 <div className="waiting-overlay">
-                  <div className="waiting-content">
-                    <div className="waiting-icon">🂡</div>
-                    <h2 className="waiting-title">Ready to Play?</h2>
-                    <p className="waiting-subtitle">You're not currently seated at any poker table</p>
-                    <div className="waiting-actions">
-                      <div className="waiting-tip">
-                        💡 <span>Join a table to start playing!</span>
-                      </div>
-                    </div>
-                  </div>
-                  
                   {/* Animated floating cards */}
                   <div className="floating-cards">
                     <div className="floating-card card-1">🂡</div>
