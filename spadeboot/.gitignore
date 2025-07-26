@@ -78,3 +78,4 @@ src/main/resources/application-docker.yml
 src/main/resources/keystore.p12
 src/main/resources/app.key
 src/main/resources/app.pub
+.env*
