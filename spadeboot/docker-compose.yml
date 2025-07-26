@@ -7,8 +7,11 @@ services:
       dockerfile: Dockerfile
     environment:
       - SPRING_PROFILES_ACTIVE=docker
+      - GRB_LICENSE_FILE=/opt/gurobi/licenses/gurobi.lic
     ports:
       - "8080:8080"
+    volumes:
+      - ${HOME}/gurobi.lic:/opt/gurobi/licenses/gurobi.lic:ro
     restart: always
     depends_on:
       mysql:
