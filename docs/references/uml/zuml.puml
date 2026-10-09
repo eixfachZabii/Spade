@@ -1,0 +1,213 @@
+@startuml
+' User Domain
+abstract class User {
+    +id: Long
+    +username: String
+    +password: String (encrypted)
+    +email: String
+    +balance: Double
+    +avatar: Image
+    +login(credentials: LoginDto): AuthToken
+    +buyChips(amount: Double): Transaction
+}
+
+class Player extends User {
+    +chips: Double
+    +status: PlayerStatus
+    +makeMove(move: Move): void
+    +rebuy(amount: Double): void
+}
+
+class Spectator extends User {
+    +viewWinOdds(): Map<Player, Double>
+    +watchReplay(game: Game): void
+}
+
+enum PlayerStatus {
+    ACTIVE, FOLDED, ALL_IN, SITTING_OUT
+}
+
+' Game Domain
+class Table {
+    +id: Long
+    +name: String
+    +maxPlayers: int
+    +minBuyIn: Double
+    +players: List<Player>
+    +currentGame: Game
+    +startNewGame(): Game
+}
+
+class Game {
+    +id: Long
+    +smallBlind: Double
+    +bigBlind: Double
+    +dealerPosition: int
+    +status: GameStatus
+    +currentRound: GameRound
+    +start(): void
+    +determineWinner(): List<Player>
+}
+
+class GameRound {
+    +roundNumber: int
+    +pot: Double
+    +communityCards: List<Card>
+    +currentBettingRound: BettingRound
+    +dealCommunityCards(count: int): void
+    +advanceToNextBettingRound(): void
+}
+
+class BettingRound {
+    +stage: BettingStage
+    +currentBet: Double
+    +processMove(player: Player, move: Move): void
+    +getNextPlayer(): Player
+}
+
+enum BettingStage {
+    PREFLOP, FLOP, TURN, RIVER
+}
+
+class Move {
+    +type: MoveType
+    +amount: Double
+}
+
+enum MoveType {
+    CHECK, CALL, RAISE, FOLD, ALL_IN
+}
+
+class Card {
+    +suit: Suit
+    +rank: Rank
+    +isShowing: boolean
+}
+
+class Deck {
+    +cards: List<Card>
+    +shuffle(): void
+    +drawCard(): Card
+}
+
+class Hand {
+    +cards: List<Card>
+}
+
+class HandEvaluator {
+    +evaluateHand(hand: List<Card>, communityCards: List<Card>): HandRank
+    +compareHands(hands: Map<Player, List<Card>>): Map<Player, Integer>
+}
+
+' Supporting Systems
+class Statistics {
+    +gamesPlayed: int
+    +gamesWon: int
+    +winRate: Double
+    +totalWinnings: Double
+    +updateStats(gameResult: GameResult): void
+}
+
+class Replay {
+    +gameId: Long
+    +actions: List<GameAction>
+    +recordAction(action: GameAction): void
+}
+
+class LobbySystem {
+    +listAvailableTables(): List<TableInfo>
+    +createTable(settings: TableSettings): Table
+}
+
+' Service Layer
+interface UserService {
+    +register(userDto: RegisterDto): User
+    +authenticate(loginDto: LoginDto): AuthToken
+}
+
+interface GameService {
+    +startGame(tableId: Long): Game
+    +processMove(gameId: Long, playerId: Long, move: Move): GameState
+}
+
+interface HandEvaluationService {
+    +evaluateHand(cards: List<Card>, community: List<Card>): HandRank
+    +determineWinner(gameRound: GameRound): Map<Player, Double>
+}
+
+' Relationships
+User <|-- Player
+User <|-- Spectator
+
+Player "*" -- "1" Table: plays at
+Table "1" -- "1" Game: current game
+Spectator "*" -- "*" Table: watches
+Game "1" -- "*" GameRound: consists of
+GameRound "1" -- "*" BettingRound: has
+GameRound "1" -- "5" Card: community cards
+Player "1" -- "1" Hand: holds
+BettingRound "1" -- "*" Move: processes
+
+Game "1" -- "1" Deck: uses
+Game "1" -- "1" Replay: recorded in
+Player "1" -- "1" Statistics: tracks
+
+HandEvaluator -- GameRound: evaluates
+@enduml
+
+architecture
+
+@startuml
+package "Presentation Layer" {
+    class PokerController
+    class UserController
+    class WebSocketController
+}
+
+package "Application Layer" {
+    class GameService
+    class UserService
+    class HandEvaluationService
+    class ReplayService
+    class LobbyService
+    class StatisticsService
+}
+
+package "Domain Layer" {
+    class User
+    class Player
+    class Game
+    class GameRound
+    class Card
+    class Hand
+    class Deck
+}
+
+package "Infrastructure Layer" {
+    interface UserRepository
+    interface GameRepository
+    interface StatisticsRepository
+    class SecurityConfig
+    class WebSocketConfig
+    class JpaConfig
+}
+
+PokerController --> GameService
+UserController --> UserService
+WebSocketController --> GameService
+
+GameService --> Game
+GameService --> HandEvaluationService
+GameService --> UserRepository
+GameService --> GameRepository
+
+UserService --> User
+UserService --> UserRepository
+
+LobbyService --> GameRepository
+ReplayService --> GameRepository
+StatisticsService --> StatisticsRepository
+
+GameRepository --> Game
+UserRepository --> User
+@enduml
