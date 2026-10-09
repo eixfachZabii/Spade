@@ -5,6 +5,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    env_file:
+      - .env
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - GRB_LICENSE_FILE=/opt/gurobi/licenses/gurobi.lic

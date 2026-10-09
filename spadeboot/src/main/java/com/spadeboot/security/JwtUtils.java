@@ -3,6 +3,7 @@ package com.spadeboot.security;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,19 @@ public class JwtUtils {
 
     @Value("${app.jwt.expirationMs}")
     private int jwtExpirationMs;
+
+    /**
+     * Fails at startup instead of at the first login: HS256 needs a key of at least 32 bytes,
+     * and jjwt only checks that when a token is signed.
+     */
+    @PostConstruct
+    void validateSecret() {
+        if (jwtSecret == null || jwtSecret.getBytes(StandardCharsets.UTF_8).length < 32) {
+            throw new IllegalStateException(
+                    "app.jwt.secret is missing or shorter than 32 bytes. Set SPADE_JWT_SECRET "
+                    + "(see spadeboot/.env.example; generate one with: openssl rand -base64 48)");
+        }
+    }
 
     private SecretKey getSigningKey() {
         byte[] keyBytes = jwtSecret.getBytes(StandardCharsets.UTF_8);

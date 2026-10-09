@@ -1,0 +1,40 @@
+# Secret-free base configuration. Every secret comes from an environment variable;
+# spadeboot/run.sh loads them from the untracked spadeboot/.env (template: .env.example).
+# With no environment at all this boots on in-memory H2 without SSL, except that
+# SPADE_JWT_SECRET is required (JwtUtils.validateSecret fails fast without it).
+
+spring:
+  datasource:
+    url: ${SPADE_DB_URL:jdbc:h2:mem:spade}
+    driver-class-name: ${SPADE_DB_DRIVER:org.h2.Driver}
+    username: ${SPADE_DB_USER:sa}
+    password: ${SPADE_DB_PASSWORD:}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+
+server:
+  address: ${SPADE_BIND_ADDRESS:0.0.0.0}
+  port: ${SPADE_PORT:8080}
+  ssl:
+    enabled: ${SPADE_SSL_ENABLED:false}
+    key-store: ${SPADE_SSL_KEYSTORE:classpath:keystore.p12}
+    key-store-password: ${SPADE_SSL_KEYSTORE_PASSWORD:}
+    key-store-type: PKCS12
+    key-alias: spadeboot
+
+app:
+  jwt:
+    secret: ${SPADE_JWT_SECRET:}
+    expirationMs: 86400000
+
+spade:
+  seed:
+    password: ${SPADE_SEED_PASSWORD:}
+
+spotify:
+  client-id: ${SPOTIFY_CLIENT_ID:}
+  client-secret: ${SPOTIFY_CLIENT_SECRET:}
+  redirect-uri: ${SPOTIFY_REDIRECT_URI:https://spade-dev.local:8080/api/spotify/callback}
+  redirect-view: ${SPOTIFY_REDIRECT_VIEW:http://localhost:3000}

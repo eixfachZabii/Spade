@@ -1,4 +1,3 @@
-// src/main/java/com/pokerapp/config/DataInitializer.java
 package com.spadeboot.config;
 
 import com.spadeboot.domain.user.Friendship;
@@ -7,8 +6,12 @@ import com.spadeboot.domain.user.User;
 import com.spadeboot.repository.FriendshipRepository;
 import com.spadeboot.repository.UserRepository;
 import com.spadeboot.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -16,8 +19,19 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Seeds the poker-night regulars as mutual friends, for local development only.
+ * Runs only in the {@code dev} profile, and only when SPADE_SEED_PASSWORD is set.
+ * Every seed user shares that password, and it is never logged.
+ */
 @Component
+@Profile("dev")
 public class DataInitializer implements CommandLineRunner {
+
+    private static final Logger log = LoggerFactory.getLogger(DataInitializer.class);
+
+    private static final String ADMIN_NAME = "Hoerter";
+    private static final String[] PLAYER_NAMES = {"Sebastian", "Markus", "Matthi", "Luca", "Paul", "Viktor"};
 
     @Autowired
     private UserRepository userRepository;
@@ -31,71 +45,57 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     private UserService userService;
 
+    @Value("${spade.seed.password:}")
+    private String seedPassword;
+
     @Override
     public void run(String... args) {
-        // Create list of users to add
-        List<User> users = new ArrayList<>();
-
-        // Add admin user if it doesn't exist
-        if (userRepository.findByUsername("Hoerter").isEmpty()) {
-            User adminUser = new User();
-            adminUser.setUsername("Hoerter");
-            adminUser.setEmail("Hoerter@spade.com");
-            adminUser.setPassword(passwordEncoder.encode("admin123"));
-            adminUser.setRole("ROLE_ADMIN");
-            adminUser.setBalance(50000); // Give admin a higher starting balance
-
-            users.add(adminUser);
-            System.out.println("Admin user created with username: Hoerter and password: admin123");
+        if (seedPassword == null || seedPassword.isBlank()) {
+            log.warn("SPADE_SEED_PASSWORD is not set; skipping the dev seed users");
+            return;
         }
 
-        // Add regular players
-        String[] playerNames = {"Sebastian", "Markus", "Matthi", "Luca", "Paul", "Viktor"};
-        String defaultPassword = "password123";
-
-        for (String name : playerNames) {
+        List<User> users = new ArrayList<>();
+        if (userRepository.findByUsername(ADMIN_NAME).isEmpty()) {
+            users.add(newUser(ADMIN_NAME, "ROLE_ADMIN", 50000));
+        }
+        for (String name : PLAYER_NAMES) {
             if (userRepository.findByUsername(name).isEmpty()) {
-                User player = new User();
-                player.setUsername(name);
-                player.setEmail(name.toLowerCase() + "@spade.com");
-                player.setPassword(passwordEncoder.encode(defaultPassword));
-                player.setRole("ROLE_USER");
-                player.setBalance(2000); // Starting balance for regular players
-
-                users.add(player);
-                System.out.println("Player created with username: " + name + " and password: " + defaultPassword);
+                users.add(newUser(name, "ROLE_USER", 2000));
             }
         }
 
-        // Save all users
         users = userRepository.saveAll(users);
-
-        // Create Player objects for all users
         for (User user : users) {
             userService.createPlayer(user.getId());
+            log.info("Seed user created: {}", user.getUsername());
         }
 
-        // Create friendships between all players if they don't already exist
         LocalDateTime now = LocalDateTime.now();
-
         for (int i = 0; i < users.size(); i++) {
             for (int j = i + 1; j < users.size(); j++) {
-                User user1 = users.get(i);
-                User user2 = users.get(j);
-
-                // Check if a friendship already exists between these users
-                if (friendshipRepository.findFriendship(user1, user2).isEmpty()) {
+                User a = users.get(i);
+                User b = users.get(j);
+                if (friendshipRepository.findFriendship(a, b).isEmpty()) {
                     Friendship friendship = new Friendship();
-                    friendship.setRequester(user1);
-                    friendship.setAddressee(user2);
-                    friendship.setStatus(FriendshipStatus.ACCEPTED); // All are already friends
+                    friendship.setRequester(a);
+                    friendship.setAddressee(b);
+                    friendship.setStatus(FriendshipStatus.ACCEPTED);
                     friendship.setCreatedAt(now);
                     friendship.setUpdatedAt(now);
-
                     friendshipRepository.save(friendship);
-                    System.out.println("Created friendship between " + user1.getUsername() + " and " + user2.getUsername());
                 }
             }
         }
+    }
+
+    private User newUser(String name, String role, int balance) {
+        User user = new User();
+        user.setUsername(name);
+        user.setEmail(name.toLowerCase() + "@spade.com");
+        user.setPassword(passwordEncoder.encode(seedPassword));
+        user.setRole(role);
+        user.setBalance(balance);
+        return user;
     }
 }
