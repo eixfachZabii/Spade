@@ -10,6 +10,7 @@ public class ChipInventoryDto {
     private int chip1;
     private int chip5;
     private int chip10;
+    private int chip20;
     private int chip25;
     private int chip100;
     private int chip500;
@@ -20,6 +21,7 @@ public class ChipInventoryDto {
         chipValues.put("chip1", 1);
         chipValues.put("chip5", 5);
         chipValues.put("chip10", 10);
+        chipValues.put("chip20", 20);
         chipValues.put("chip25", 25);
         chipValues.put("chip100", 100);
         chipValues.put("chip500", 500);
@@ -31,6 +33,7 @@ public class ChipInventoryDto {
         chipAvailable.put("chip1", chip1);
         chipAvailable.put("chip5", chip5);
         chipAvailable.put("chip10", chip10);
+        chipAvailable.put("chip20", chip20);
         chipAvailable.put("chip25", chip25);
         chipAvailable.put("chip100", chip100);
         chipAvailable.put("chip500", chip500);

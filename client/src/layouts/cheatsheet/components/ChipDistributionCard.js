@@ -25,6 +25,7 @@ const CHIP_COLORS = {
   '1': { bg: '#FFD700', border: '#FFA500', color: '#000000' },       // Creative gold/yellow combo
   '5': { bg: '#1832b6', border: '#0095ff', color: '#FFFFFF' },       // Blue
   '10': { bg: '#F44336', border: '#D32F2F', color: '#FFFFFF' },      // Red
+  '20': { bg: '#FF9800', border: '#F57C00', color: '#FFFFFF' },      // Orange
   '25': { bg: '#FFFFFF', border: '#2b2525', color: '#333333' },      // White
   '100': { bg: '#4CAF50', border: '#2E7D32', color: '#FFFFFF' },     // Green
   '500': { bg: '#6A1B9A', border: '#4A148C', color: '#FFEB3B' }       // Creative purple with yellow text
@@ -36,6 +37,7 @@ function ChipDistributionCard() {
     chip1: 0,
     chip5: 50,
     chip10: 100,
+    chip20: 0,
     chip25: 100,
     chip100: 50,
     chip500: 0,
@@ -260,6 +262,7 @@ function ChipDistributionCard() {
               { key: "chip1", label: "$1 Chips", value: 1 },
               { key: "chip5", label: "$5 Chips", value: 5 },
               { key: "chip10", label: "$10 Chips", value: 10 },
+              { key: "chip20", label: "$20 Chips", value: 20 },
               { key: "chip25", label: "$25 Chips", value: 25 },
               { key: "chip100", label: "$100 Chips", value: 100 },
               { key: "chip500", label: "$500 Chips", value: 500 }

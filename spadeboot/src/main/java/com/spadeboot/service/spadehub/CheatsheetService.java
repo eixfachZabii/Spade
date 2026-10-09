@@ -222,10 +222,10 @@ public class CheatsheetService {
             Map<String, Integer> bestDistribution = new HashMap<>();
 
             for (int n = 1; n <= 50; n++) {
-                GRBEnv env = new GRBEnv(true);
+                // Use local license file instead of cloud license
+                GRBEnv env = new GRBEnv();
                 env.set("logFile", "");
                 env.set(GRB.IntParam.OutputFlag, 0); // suppress output
-                env.start();
 
                 GRBModel model = new GRBModel(env);
 
