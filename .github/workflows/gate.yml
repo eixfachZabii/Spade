@@ -1,0 +1,66 @@
+name: gate
+
+on:
+  push:
+    branches: ['**']
+  workflow_dispatch:
+
+concurrency:
+  group: gate-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+      - name: mvn verify
+        working-directory: spadeboot
+        run: ./mvnw -q -B verify
+
+  cv:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # LFS bandwidth is metered: cache the objects by the list of LFS file ids.
+      - name: list LFS objects
+        run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
+      - uses: actions/cache@v4
+        with:
+          path: .git/lfs
+          key: lfs-${{ hashFiles('.lfs-assets-id') }}
+      - name: fetch LFS objects
+        run: git lfs pull
+      - name: system libs for opencv
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq libgl1 libglib2.0-0
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: cv/uv.lock
+      - name: uv sync
+        working-directory: cv
+        run: uv sync --locked
+      - name: ruff
+        working-directory: cv
+        run: uv run --locked ruff check .
+      - name: pytest
+        working-directory: cv
+        run: uv run --locked pytest -q
+
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: relative links resolve
+        run: python3 scripts/check_doc_links.py
