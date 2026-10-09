@@ -1,0 +1,123 @@
+@startuml
+class User {
+    +id: Long
+    +name: String
+    +password: String
+    +email: String
+    +balance: Double
+    +avatar: Image
+    +profilePicture: Image
+    +login(username: String, password: String)
+    +buyChips(amount: Double)
+    +chooseRole(role: String) // Player or Spectator
+}
+
+class Player {
+    +id: Long
+    +winProb: Double
+    +actionPending: Boolean
+    +buyInAmount: Double
+    +chips: Double
+    +invitePlayer(player: Player)
+    +rebuy()
+    +makeMove(action: String, amount: Double) // call, raise, fold, check, all-in
+}
+
+class Spectator {
+    +id: Long
+    +viewWinOdds()
+    +watchReplay(game: Game)
+}
+
+class Game {
+    +id: Long
+    +smallBlind: Double
+    +bigBlind: Double
+    +buyInAmount: Double
+    +dealer: int
+    +sound: Boolean
+    +startGame()
+    +joinGame(user: User, role: String)
+    +determineWinner()
+}
+
+class GameRound {
+    +id: Long
+    +roundNumber: int
+    +pot: Double
+    +currentBet: Double
+    +pnlMatrix: Matrix
+    +receiveCards()
+    +advanceToNextRound()
+}
+
+class BettingRound {
+    +id: Long
+    +stage: String // Preflop, Flop, Turn, River
+    +processBets()
+}
+
+class Card {
+    +id: Long
+    +suit: String
+    +rank: String
+    +showing: Boolean
+    +type: String  // community/private
+}
+
+class HandRanking {
+    +evaluateHand(playerCards: List, communityCards: List)
+    +compareHands(players: List)
+}
+
+class Database {
+    +saveUserData()
+    +saveGameData()
+    +storeLoginData()
+}
+
+class ReplaySystem {
+    +logGame()
+    +replayGame()
+    +retrieveGameHistory(user: User)
+}
+
+class LobbySystem {
+    +id: Long
+    +listAvailableGames()
+    +createGame(settings: Map)
+    +joinGame(gameId: Long, user: User)
+    +registerGame(game: Game)
+}
+
+class Stats {
+    +id: Long
+    +gamesPlayed: int
+    +gamesWon: int
+    +winRate: Double
+    +totalWinnings: Double
+    +updateStats(user: User, game: Game)
+}
+
+User "1" -- "1" Player : has
+User "1" -- "1" Spectator : has
+Player "2..10" -- "1" Game : participates in
+Game "1" -- "*" GameRound : consists of
+GameRound "1" -- "1..4" BettingRound : includes
+GameRound "1" -- "5" Card : community cards
+GameRound "1" -- "*" Card : player cards
+GameRound -- HandRanking : evaluates
+GameRound -- "1" API : calls receiveCards()
+
+User -- Database : stores data in
+Game -- ReplaySystem : logs for replay
+Spectator -- ReplaySystem : views past games
+Spectator -- Game : observes
+Player -- Player : invites
+User -- LobbySystem : interacts with
+User -- Stats : has
+Game -- Stats : updates
+Game -- HandRanking : determines winner
+BettingRound -- GameRound : progresses
+LobbySystem -- "*" Game : manages
+@enduml
