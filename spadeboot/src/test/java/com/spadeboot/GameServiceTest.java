@@ -4,6 +4,7 @@ package com.spadeboot;
 import com.spadeboot.api.dto.PlayerActionResponse;
 import com.spadeboot.domain.game.PokerTable;
 import com.spadeboot.domain.user.Player;
+import com.spadeboot.domain.user.User;
 import com.spadeboot.exception.InvalidMoveException;
 import com.spadeboot.repository.PlayerRepository;
 import com.spadeboot.repository.TableRepository;
@@ -51,20 +52,23 @@ class GameServiceTest {
     private Player testPlayer1;
     private Player testPlayer2;
 
+    private static Player player(long playerId, long userId) {
+        User user = new User();
+        user.setId(userId);
+        user.setUsername("user" + userId);
+        Player player = new Player();
+        player.setId(playerId);
+        player.setUser(user);
+        player.setChips(1000);
+        return player;
+    }
+
     @BeforeEach
     void setUp() {
         // Setup test data
-        testOwner = new Player();
-        testOwner.setId(1L);
-        testOwner.setChips(1000);
-
-        testPlayer1 = new Player();
-        testPlayer1.setId(2L);
-        testPlayer1.setChips(1000);
-
-        testPlayer2 = new Player();
-        testPlayer2.setId(3L);
-        testPlayer2.setChips(1000);
+        testOwner = player(1L, 1L);
+        testPlayer1 = player(2L, 2L);
+        testPlayer2 = player(3L, 3L);
 
         testTable = new PokerTable();
         testTable.setId(1L);
