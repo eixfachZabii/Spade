@@ -295,3 +295,28 @@ Closing comment: *"Shipped in Version N Phase NN (merge `sha`). <what changed>. 
 - Repairing `GameServiceTest` may show that more of it tests behaviour V1 replaces than expected. The `@Disabled` + issue rule (§6) keeps the gate honest.
 - The H2 test profile logs a DDL error for the `cards` table (`value` is a reserved word). The context still loads, but the plan should confirm it stays non-fatal.
 - `spadeAI` has no licence file. Importing it relies on the owner having co-authored it (`9e4ec5e` is the owner's commit) and on Luca agreeing; a heads-up to Luca is part of Phase 02.
+
+## Amendment: 2026-10-09 (planning)
+
+Writing the plan measured eight things the spec had wrong. The plan's "Corrections to the spec" table (C1–C8, [`V0_2026-10-09_FOUNDATION_TASKS.md`](V0_2026-10-09_FOUNDATION_TASKS.md)) overrides §3, §6, §7, §9 and §10 where they disagree. The two that change scope:
+- **C1:** the orphan `HandEvaluatorTest` has no assertions, so it is not restored. A new table-driven test replaces it.
+- **C2:** D20 is widened to the full-house bug the same test exposes.
+
+## Amendment: 2026-10-09 (owner direction after planning)
+
+> *"I also want to simplify the code. So before trying to fix all this lets take the best parts of it look at wealth watcher for architecture inspiration aswell and just code it fully new where things cant be saved. You have full freedom. I envision to fully redesign the fronted. While keeping the idea of a dashboard and the pages themselves as the concept but code fully from ground up new and better new libaries be creative use design skills […] Same I said for the frontend counts for the webapp. I need to get this webapp on IOS so lets code it up in SWIFT find good libaries for that aswell. But honestly I did kinda like the style and vibe of the webapp that we had we can apply the same style for the frontend."*
+
+| # | Decision | By |
+|---|---|---|
+| D21 | **Rebuild, don't repair.** V1 takes the best parts of every repo (a salvage map, V0 Task 13) and writes everything else new, with a simpler design that uses WealthWatcher's *architecture* as inspiration. No effort goes into patching code V1 replaces | owner |
+| D22 | **The player app is a native iOS app in Swift.** It replaces `webapp/`. Libraries are chosen by research before the V1 grill | owner |
+| D23 | **The hub is a new web dashboard.** The old `client/` pages are the concept; all of the code is new, and new libraries are welcome | owner |
+| D24 | **Visual direction: the legacy webapp's style and vibe**, refined and applied to the hub (and iOS), designed with the design skills. It is a new style: not WealthWatcher's, and not the Vision UI template's | owner |
+| D25 | V0 still fixes the hand evaluator (D20, C2): it is one of the parts worth salvaging, and its 18 test vectors become the rebuild's spec. V0 also repairs `GameServiceTest`, but only so the gate tells the truth. Nothing else in V0 patches code V1 replaces | derived from D21 |
+
+**What this changes in V1's evidence (§11).** The V1 grill starts from five pieces of evidence, not one:
+1. the card-detection spike;
+2. the salvage map;
+3. an audit of WealthWatcher's backend and frontend *architecture* (the kickoff audits covered only its process);
+4. research into an iOS stack (SwiftUI, camera, on-device Core ML for hole cards, a STOMP or WebSocket client);
+5. research into the web-hub stack, plus a design direction drawn from the webapp's style.
