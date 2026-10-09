@@ -2,7 +2,7 @@
 
 Date: 2026-10-09
 Status: Accepted
-Relates to: [V0 spec](../handoffs/V0_2026-10-09_FOUNDATION.md) D5, D18
+Relates to: [V0 spec](../handoffs/done/Version0.0/V0_2026-10-09_FOUNDATION.md) D5, D18
 
 ## Context
 One person builds Spade, with AI agents, sometimes several sessions at once. Pull requests would add ceremony without a second reviewer. Sessions sharing one working tree overwrite each other's files.

@@ -1,6 +1,6 @@
 # Version 0 · Foundation: design
 
-**Status:** 🔲 scoped and approved 2026-10-09 (brainstorming, 6 sections approved one by one; spec approved by owner) · not started
+**Status:** ✅ shipped 2026-10-09 ([closeout](CLOSEOUT.md)) · scoped and approved 2026-10-09 (brainstorming, 6 sections approved one by one; spec approved by owner)
 **Plan:** `V0_2026-10-09_FOUNDATION_TASKS.md` (to be written by `superpowers:writing-plans` after this spec is approved)
 **Evidence:** [`V0_audits/`](V0_audits/): five read-only audits from 2026-10-09
 

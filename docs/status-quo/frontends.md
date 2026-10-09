@@ -3,7 +3,7 @@
 > Dated snapshot, not maintained (V0 spec §5). Both apps are **frozen** and will be replaced in V1 by a new web hub and a native iOS player app ([ADR 0005](../adr/0005-rebuild-dont-repair.md)).
 > **Changed since:** Phase 01: their TLS dev certificates are no longer tracked (generate them with the command in `USAGE.md`).
 >
-> Evidence: [audit](../handoffs/V0_audits/audit-frontends.md). Salvage verdicts: [salvage.md](salvage.md).
+> Evidence: [audit](../handoffs/done/Version0.0/V0_audits/audit-frontends.md). Salvage verdicts: [salvage.md](salvage.md).
 
 ## The two apps
 | | `client/` ("SpadeHub") | `webapp/` ("Spade") |

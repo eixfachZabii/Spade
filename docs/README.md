@@ -8,7 +8,7 @@
 | [../USAGE.md](../USAGE.md) | commands | running anything |
 | [handoffs/INDEX.md](handoffs/INDEX.md) | the roadmap: versions and phases | planning |
 | `handoffs/PHASE_NN_*.md` | one doc per phase: scope, decisions, what shipped | building that phase |
-| `handoffs/done/` | shipped phases, by version | archaeology |
+| [handoffs/done/](handoffs/done/Version0.0/CLOSEOUT.md) | shipped versions and their phase docs; each version ends with a `CLOSEOUT.md` | archaeology |
 | [adr/](adr/) | decisions and why | before contradicting one |
 | [status-quo/](status-quo/README.md) | how Spade looked on 2026-10-09, and the salvage map | touching an old area; planning the rebuild |
 | [references/](references/README.md) | assets from earlier Spade repos | before building something that may already exist |
