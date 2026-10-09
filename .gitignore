@@ -74,10 +74,21 @@ org/
 *.key
 *.pub
 
-# Spring Boot Config (sensible Daten)
-src/main/resources/application.yml
-src/main/resources/application-dev.yml
-src/main/resources/application-prod.yml
-src/main/resources/keystore.p12
-src/main/resources/app.key
-src/main/resources/app.pub
+# Secrets: never tracked (spadeboot/.env.example is the template)
+*.p12
+gurobi.lic*
+
+# Python (cv/, scripts/)
+__pycache__/
+.venv/
+.pytest_cache/
+.ruff_cache/
+
+# Agent tooling: only the committed parts of .claude/ are tracked
+.claude/*
+!.claude/settings.json
+!.claude/hooks/
+!.claude/skills/
+.worktrees/
+.playwright/
+.superpowers/
