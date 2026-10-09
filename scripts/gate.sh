@@ -51,6 +51,7 @@ fi
 if want docs; then
   step "docs & devex"
   run "relative links resolve" python3 scripts/check_doc_links.py
+  run "CLAUDE.md within its byte budget" python3 scripts/doc_budget.py check
   run "no negated close-keyword in unpushed commits" python3 scripts/check_commit_refs.py
 fi
 
