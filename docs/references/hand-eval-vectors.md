@@ -15,4 +15,4 @@
 The winner suite is the more valuable one for V1: split pots and kicker decisions are exactly what the showdown must get right. Port its cases as rows, not its code.
 
 ## Dropped
-The Java `HandEvaluatorTest` on the old `add_first_game_logic` branch (22 methods) had **no assertions** and never called the evaluator, so it was not restored (V0 correction C1). The branch is archived locally in `~/spade-archive/`.
+The Java `HandEvaluatorTest` on the old `add_first_game_logic` branch (22 methods) had **no assertions** and never called the evaluator, so it was not restored (V0 correction C1). The branch, and with it that file, was deleted on 2026-10-09 because it held secrets; no copy is kept.

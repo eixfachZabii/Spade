@@ -1,6 +1,7 @@
 # Lineage: where Spade came from, 2026-10-09
 
 > Dated snapshot, not maintained (V0 spec §5).
+> **Changed since:** 2026-10-09, after V0: the local `~/spade-archive/` bundles were deleted at the owner's request. The `add_first_game_logic` history no longer exists anywhere (it held secrets).
 > Evidence: [audit](../handoffs/done/Version0.0/V0_audits/audit-lineage.md). Salvage verdicts: [salvage.md](salvage.md).
 
 ## Timeline

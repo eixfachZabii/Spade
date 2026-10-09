@@ -4,7 +4,7 @@
 Spade is the dealer's brain for **our own poker nights**: real cards on a real table, while Spade reads them, runs the hand, calls the winner and keeps the books.
 
 ## Who it is for
-One friend group, physically at one table, playing Texas Hold'em together. Success is simple: **we use it every poker night** ([ADR 0002](docs/adr/0002-physical-cards-camera-reads-manual-betting.md)). That is not a product for strangers, and not a demo.
+One friend group, physically at one table, playing Texas Hold'em together. **Everyone in the group has an iPhone** (owner, 2026-10-09), so the player app is iPhone-only and needs no fallback. Success is simple: **we use it every poker night** ([ADR 0002](docs/adr/0002-physical-cards-camera-reads-manual-betting.md)). That is not a product for strangers, and not a demo.
 
 ## How a night works
 1. Everyone joins the table in the Spade iPhone app, with a buy-in from their bankroll.
@@ -33,4 +33,3 @@ These are proposals until the V1 grill confirms them (V0 spec A2).
 - Are physical chips still on the table, or are Spade's stacks the only truth? (A1)
 - Where does Spade run: a laptop at the table, or `hub.poker-spade.de`? (A3)
 - Which extras earn their place: voice dealer, ledger history, Spotify, cheatsheet, win probability?
-- Does everyone at the table have an iPhone? If not, what does a non-iPhone player use?

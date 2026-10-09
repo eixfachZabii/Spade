@@ -54,3 +54,8 @@ The `info` file (it pointed to secrets in a Discord channel); the dev and prod c
 
 ## Next
 Version 1 is queued in [INDEX](../../INDEX.md): five pieces of evidence (the card-detection spike first, which needs the deck, the mat, an overhead camera and poker-night light), then `/grill-with-docs`. Still open from V0: does everyone in the group have an iPhone?
+
+## Amendment: 2026-10-09 (owner cleanup after shipping)
+- **Everyone in the group has an iPhone** (owner): the player app is iPhone-only, no fallback. Recorded in PRODUCT.md and on #7.
+- **The local archives are gone.** `~/spade-archive/` (the `add_first_game_logic` bundle and the pre-rewrite master) and `~/spade-secrets-backup/` were deleted at the owner's request, after the commit IDs for a GitHub Support purge request had been extracted from them. "Bundled in `~/spade-archive/`" above is therefore historical: that history no longer exists.
+- **Issue #8** no longer hints at the dev keystore password.
