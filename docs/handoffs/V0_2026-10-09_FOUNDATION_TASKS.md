@@ -158,6 +158,25 @@ Append to the end of `docs/handoffs/V0_2026-10-09_FOUNDATION.md`:
 Writing the plan measured eight things the spec had wrong. The plan's "Corrections to the spec" table (C1–C8, [`V0_2026-10-09_FOUNDATION_TASKS.md`](V0_2026-10-09_FOUNDATION_TASKS.md)) overrides §3, §6, §7, §9 and §10 where they disagree. The two that change scope:
 - **C1:** the orphan `HandEvaluatorTest` has no assertions, so it is not restored. A new table-driven test replaces it.
 - **C2:** D20 is widened to the full-house bug the same test exposes.
+
+## Amendment: 2026-10-09 (owner direction after planning)
+
+> *"I also want to simplify the code. So before trying to fix all this lets take the best parts of it look at wealth watcher for architecture inspiration aswell and just code it fully new where things cant be saved. You have full freedom. I envision to fully redesign the fronted. While keeping the idea of a dashboard and the pages themselves as the concept but code fully from ground up new and better new libaries be creative use design skills […] Same I said for the frontend counts for the webapp. I need to get this webapp on IOS so lets code it up in SWIFT find good libaries for that aswell. But honestly I did kinda like the style and vibe of the webapp that we had we can apply the same style for the frontend."*
+
+| # | Decision | By |
+|---|---|---|
+| D21 | **Rebuild, don't repair.** V1 takes the best parts of every repo (a salvage map, V0 Task 13) and writes everything else new, with a simpler design that uses WealthWatcher's *architecture* as inspiration. No effort goes into patching code V1 replaces | owner |
+| D22 | **The player app is a native iOS app in Swift.** It replaces `webapp/`. Libraries are chosen by research before the V1 grill | owner |
+| D23 | **The hub is a new web dashboard.** The old `client/` pages are the concept; all of the code is new, and new libraries are welcome | owner |
+| D24 | **Visual direction: the legacy webapp's style and vibe**, refined and applied to the hub (and iOS), designed with the design skills. It is a new style: not WealthWatcher's, and not the Vision UI template's | owner |
+| D25 | V0 still fixes the hand evaluator (D20, C2): it is one of the parts worth salvaging, and its 18 test vectors become the rebuild's spec. V0 also repairs `GameServiceTest`, but only so the gate tells the truth. Nothing else in V0 patches code V1 replaces | derived from D21 |
+
+**What this changes in V1's evidence (§11).** The V1 grill starts from five pieces of evidence, not one:
+1. the card-detection spike;
+2. the salvage map;
+3. an audit of WealthWatcher's backend and frontend *architecture* (the kickoff audits covered only its process);
+4. research into an iOS stack (SwiftUI, camera, on-device Core ML for hole cards, a STOMP or WebSocket client);
+5. research into the web-hub stack, plus a design direction drawn from the webapp's style.
 ```
 
 - [ ] **Step 4: Commit**
@@ -1884,7 +1903,7 @@ git worktree add .worktrees/phase-04-docs -b phase/04-docs && cd .worktrees/phas
 
 ### Task 13: `docs/status-quo/`
 
-**Files:** Create `docs/status-quo/README.md`, `backend.md`, `frontends.md`, `cv.md`, `lineage.md`.
+**Files:** Create `docs/status-quo/README.md`, `backend.md`, `frontends.md`, `cv.md`, `lineage.md`, `salvage.md` (D21).
 
 **Interfaces:**
 - Consumes: `docs/handoffs/V0_audits/*.md` and the code at HEAD.
@@ -1908,7 +1927,8 @@ Sections per file:
 | `frontends.md` | The two apps and their roles · Route tables · End-to-end flow · API contract with backend match (✅ / dead) · Known legacy bugs (Jacks render as Aces, empty Win/Loss chart, socket.io aimed at the wrong port…) · Worth keeping / throw away · Brand assets (paths) | `audit-frontends.md` |
 | `cv.md` | What `cv/` does · socket.io contract (link to `cv/README.md`, don't copy it) · Model (labels, size, LFS) · What was never built (community cards) · How the legacy webapp calls it, and why that fails | `audit-lineage.md` §C + `cv/` |
 | `lineage.md` | Timeline table (repos, dates, authors by handle) · What survived · What was lost · Where it lives now (local paths + GitHub) | `audit-lineage.md` §A, D |
-| `README.md` | One page: a works / partial / dead table across all areas, the top 5 risks, links to the four files | the four files |
+| `salvage.md` | **The salvage map (D21): what V1 takes from the old code.** One table per source (backend, hub `client/`, phone `webapp/`, `cv/`, predecessor repos). Each row is a component with a path, a verdict and a reason. Verdicts: **keep as-is** · **keep, adapt** · **concept only** (the idea or flow survives, the code doesn't) · **rewrite** · **drop**. Rows must cover at least: `HandEvaluation` (+ its 18 vectors), the seat-oval maths `positionUtils.js`, the chip colour scale, the card PNG deck and brand assets, the heatmap data, the chip optimiser, the Spotify flow, the JWT/auth flow, the lobby domain rules (bankroll → buy-in → stack; owner start/end/delete), the webapp's hole-card privacy pattern (hidden until tapped), the webapp's visual style (D24), `cv/` YOLO model + `get_n_cards`, the camera calibration idea, the 436 voice clips, the ledger spreadsheet's formulas | all audits + the code |
+| `README.md` | One page: a works / partial / dead table across all areas, the top 5 risks, links to the five files | the five files |
 
 "Changed since" lines that are true today:
 - backend: "Phase 01: secrets moved to env, seeding dev-only. Phase 03: flush, straight flush and full house fixed; GameServiceTest repaired."
@@ -1924,12 +1944,12 @@ grep -rn -E 'gurobi\.lic|key\.pem|3f25aee|0d50468' docs/status-quo/ ; echo "exit
 - [ ] **Step 3: Commit**
 
 ```bash
-git add docs/status-quo && git commit -m "docs(status-quo): the dated before-picture of backend, frontends, cv and lineage (V0 Phase 04, D9)"
+git add docs/status-quo && git commit -m "docs(status-quo): the dated before-picture of backend, frontends, cv and lineage, and the salvage map V1 builds from (V0 Phase 04, D9, D21)"
 ```
 
 ### Task 14: `docs/references/`
 
-**Files:** Create `docs/references/README.md`, `legacy-api.md`, `user-stories.md`, `uml/spade-uml.puml`, `uml/zuml.puml`, `hand-eval-vectors.md`, `voice-clips.md`. `poker-chip-tracker.xlsx` already exists from Task 6.
+**Files:** Create `docs/references/README.md`, `legacy-api.md`, `user-stories.md`, `uml/spade-uml.puml`, `uml/zuml.puml`, `hand-eval-vectors.md`, `voice-clips.md`, `webapp-style.md` (D24). `poker-chip-tracker.xlsx` already exists from Task 6.
 
 **Interfaces:**
 - Consumes: the predecessor repos (read-only):
@@ -1988,6 +2008,27 @@ Three sections:
 
 End with "Card notation today: `AS`/`10H` (cv), `ACEH`-style `Value.name()+suit initial` (backend), `THREES`-style (legacy client)."
 
+- [ ] **Step 5b: `webapp-style.md`, the style the owner liked (D24)**
+
+Extract the legacy webapp's visual language from its CSS. Copy values exactly; don't redesign anything.
+
+```bash
+ls webapp/src/styles/
+grep -h -o -E -- '--[a-z0-9-]+:\s*[^;]+' webapp/src/styles/*.css | sort -u            # CSS custom properties
+grep -h -o -E '#[0-9a-fA-F]{6}\b|#[0-9a-fA-F]{3}\b|rgba?\([^)]*\)|linear-gradient\([^;]*\)' webapp/src/styles/*.css | sort | uniq -c | sort -rn | head -40
+grep -h -o -E 'font-family:[^;]+|border-radius:[^;]+|box-shadow:[^;]+' webapp/src/styles/*.css | sort | uniq -c | sort -rn | head -30
+```
+
+Write `docs/references/webapp-style.md` with these sections:
+- **Origin:** `webapp/src/styles/*.css` at the V0 HEAD sha.
+- **Colour tokens:** dark and light themes as tables (token, value, where it is used), including the purple→blue gradient (`#6a11cb → #2575fc`) and the gray scale.
+- **Typography.**
+- **Radii and shadows.**
+- **Component patterns**, one line each with its CSS file: table card, action buttons, the tap-to-reveal hole cards, modals, the header with theme toggle.
+- **What to keep vs refine:** the owner's words, quoted. Mark it as input for `/impeccable` in V1, not a design system.
+
+Screenshots of the running legacy app are left to the V1 design phase, because starting it needs certificates and `npm install`.
+
 - [ ] **Step 6: `README.md` (the index)**
 
 ```markdown
@@ -2003,6 +2044,7 @@ Assets carried forward from earlier Spade repos. Each row names its origin so it
 | [uml/](uml/) | `lucabzt/Spade@1510db9:UML`, `zUML.txt` | the 2025 domain model and layering | <plantuml -checkonly result> |
 | [hand-eval-vectors.md](hand-eval-vectors.md) | this repo's tests + `lucabzt/Spade@1510db9` Python suites | engine correctness | |
 | [voice-clips.md](voice-clips.md) | `lucabzt/Spade@1510db9:server/assets/sounds/` | the voice-dealer idea | clips not in repo |
+| [webapp-style.md](webapp-style.md) | `webapp/src/styles/` (legacy phone app) | the starting point for the new visual style (D24) | extracted values, not a design system |
 
 Not here on purpose:
 - the table reference photos in `lucabzt/Spade:server/src/classifier/table/images/` (they include personal photo thumbnails);
@@ -2015,16 +2057,16 @@ Fill `<plantuml -checkonly result>` with what Step 1 printed (for example "both 
 
 ```bash
 python3 scripts/check_doc_links.py      # Expected: ✓
-git add docs/references && git commit -m "docs(references): index of what earlier Spade repos already solved — API contracts, stories, UML, vectors, voice manifest (V0 Phase 04, D9)"
+git add docs/references && git commit -m "docs(references): index of what earlier Spade repos already solved — API contracts, stories, UML, vectors, voice manifest, the webapp's style (V0 Phase 04, D9, D24)"
 ```
 
 ### Task 15: ADRs, `INDEX.md`, `docs/README.md`
 
-**Files:** Create `docs/adr/0001-one-repo-spadeboot-cv-frontend.md`, `docs/adr/0002-physical-cards-camera-reads-manual-betting.md`, `docs/adr/0003-issues-are-the-inbox-index-is-the-roadmap.md`, `docs/adr/0004-solo-worktrees-local-merges.md`, `docs/handoffs/INDEX.md`, `docs/README.md`.
+**Files:** Create `docs/adr/0001-one-repo-spadeboot-cv-frontend.md`, `docs/adr/0002-physical-cards-camera-reads-manual-betting.md`, `docs/adr/0003-issues-are-the-inbox-index-is-the-roadmap.md`, `docs/adr/0004-solo-worktrees-local-merges.md`, `docs/adr/0005-rebuild-dont-repair.md`, `docs/handoffs/INDEX.md`, `docs/README.md`.
 
 **Interfaces:**
-- Consumes: spec D1–D10, D18.
-- Produces: ADR numbers 0001–0004 (the next free one is 0005); INDEX as the only roadmap.
+- Consumes: spec D1–D10, D18, D21–D25.
+- Produces: ADR numbers 0001–0005 (the next free one is 0006); INDEX as the only roadmap.
 
 - [ ] **Step 1: The four ADRs**
 
@@ -2123,6 +2165,33 @@ One person builds Spade, with AI agents, sometimes several sessions at once. Pul
 - If a second contributor joins, this ADR is superseded by one that introduces PRs.
 ```
 
+`docs/adr/0005-rebuild-dont-repair.md`:
+
+```markdown
+# 5. Rebuild, don't repair: a new web hub, a native iOS player app, a simpler backend
+
+Date: 2026-10-09
+Status: Accepted
+Relates to: [V0 spec](../handoffs/V0_2026-10-09_FOUNDATION.md) D21–D25 · [salvage map](../status-quo/salvage.md) · [webapp style](../references/webapp-style.md)
+
+## Context
+The 2025 code works in places and is broken in many others (see status-quo). The hub `client/` is a Vision UI template with no style of its own. The phone app `webapp/` needs to be on iOS. The owner: *"take the best parts of it, look at wealth watcher for architecture inspiration as well and just code it fully new where things can't be saved."*
+
+## Decision
+- **Salvage first.** The [salvage map](../status-quo/salvage.md) names what is kept, adapted, kept only as a concept, rewritten or dropped. Nothing is patched in place for its own sake.
+- **Backend:** rebuilt simpler where it can't be saved, borrowing WealthWatcher's layering (thin routes → services → repositories, a pure domain, explicit API schemas).
+- **Hub:** a new web dashboard. The old pages are the concept; all of the code and libraries are new.
+- **Player app:** native iOS in Swift. It replaces `webapp/`.
+- **Look:** the legacy webapp's style and vibe, refined into a design system with the design skills. A new style; not WealthWatcher's.
+- **Not decided here:** stacks, libraries and project names. They come from V1's research and grill.
+
+## Consequences
+- `client/` and `webapp/` stay frozen until their replacements ship, then they are deleted.
+- iOS needs Xcode and macOS CI runners, which are slower and pricier than Linux. The gate grows an iOS block.
+- On-device hole-card detection (the YOLO model exported to Core ML) becomes possible: hole-card images would never leave the phone.
+- The V1 grill needs five pieces of evidence before it can decide anything (see INDEX).
+```
+
 - [ ] **Step 2: `docs/handoffs/INDEX.md`**
 
 Fill the `✅` dates and merge SHAs from `git log --merges --format='%h %ad %s' --date=short master`.
@@ -2134,7 +2203,15 @@ The only roadmap ([ADR 0003](../adr/0003-issues-are-the-inbox-index-is-the-roadm
 
 ## 🔲 Version 1 — queued · name chosen in its grill
 
-> Starts with the card-detection spike (can the table camera read the board? how reliably do phones read hole cards?), then `/grill-with-docs`. No phase numbers or docs yet; its phases start at 06.
+> **Rebuild, don't repair** ([ADR 0005](../adr/0005-rebuild-dont-repair.md)): a new web hub, a native iOS player app, a simpler backend, all built from the [salvage map](../status-quo/salvage.md).
+> **Evidence before the grill:**
+> 1. the card-detection spike (can the table camera read the board? how reliably do phones read hole cards?)
+> 2. the salvage map ✅ (V0)
+> 3. an audit of WealthWatcher's backend and frontend architecture
+> 4. iOS stack research (SwiftUI, camera, Core ML on-device detection, a realtime client)
+> 5. web-hub stack research, plus a design direction from the [webapp's style](../references/webapp-style.md)
+>
+> Then `/grill-with-docs`. No phase numbers or docs yet; its phases start at 06.
 
 ## 🔲 Version 0 — building · **Foundation**
 
@@ -2174,7 +2251,7 @@ The only roadmap ([ADR 0003](../adr/0003-issues-are-the-inbox-index-is-the-roadm
 ```bash
 python3 scripts/check_doc_links.py      # Expected: ✓
 git add docs/adr docs/handoffs/INDEX.md docs/README.md
-git commit -m "docs(adr): ADRs 0001–0004, INDEX as the only roadmap, and a map of docs/ (V0 Phase 04, D10, D18)"
+git commit -m "docs(adr): ADRs 0001–0005, INDEX as the only roadmap, and a map of docs/ (V0 Phase 04, D10, D18, D21–D24)"
 ```
 
 ### Task 16: `PRODUCT.md` and `CONTEXT.md`
@@ -2197,9 +2274,9 @@ Spade is the dealer's brain for **our own poker nights**: real cards on a real t
 One friend group, physically at one table, playing Texas Hold'em together. Success is simple: **we use it every poker night** ([ADR 0002](docs/adr/0002-physical-cards-camera-reads-manual-betting.md)). That is not a product for strangers, and not a demo.
 
 ## How a night works
-1. Everyone joins the table on their phone with a buy-in from their bankroll.
+1. Everyone joins the table in the Spade iPhone app, with a buy-in from their bankroll.
 2. A person shuffles and deals real cards.
-3. Each player scans their two hole cards with their phone. Only they see them.
+3. Each player scans their two hole cards with the app. Only they see them.
 4. The table camera reads the flop, turn and river.
 5. Players tap fold / check / call / raise; Spade tracks the pot and every stack.
 6. At showdown Spade knows every hand: it decides the winner (side pots included), announces it, pays out and records the result.
@@ -2212,7 +2289,7 @@ These are proposals until the V1 grill confirms them (V0 spec A2).
 - **Hole cards stay private until showdown.** No screen and no API response shows another player's cards earlier.
 - **Reliability beats magic.** A plain feature that always works beats a clever one that works most nights.
 - **Setup in minutes.** From "cards are out" to the first hand in under five minutes, with no laptop fiddling.
-- **The phone is the only device per player.** No app install, no account juggling at the table.
+- **The iPhone app is the only device per player** ([ADR 0005](docs/adr/0005-rebuild-dont-repair.md)). Install it once, then no account juggling at the table.
 
 ## What Spade is not
 - Not online poker: everyone is at the same table.
@@ -2223,6 +2300,7 @@ These are proposals until the V1 grill confirms them (V0 spec A2).
 - Are physical chips still on the table, or are Spade's stacks the only truth? (A1)
 - Where does Spade run: a laptop at the table, or `hub.poker-spade.de`? (A3)
 - Which extras earn their place: voice dealer, ledger history, Spotify, cheatsheet, win probability?
+- Does everyone at the table have an iPhone? If not, what does a non-iPhone player use?
 ```
 
 - [ ] **Step 2: `CONTEXT.md`**
@@ -2248,7 +2326,8 @@ How Spade's words are used in code, docs and issues. Format: **Term**: definitio
 - **Ledger**: the record of buy-ins, cash-outs and results per poker night; it replaces the spreadsheet.
 - **Pot**: the chips bet in the current hand. **Side pot**: a pot only some players can win, created when someone is all-in for less.
 - **Showdown**: the end of a hand where the remaining hole cards are compared and the pot is paid out.
-- **Hub**: the big shared screen showing the table. _Avoid_: TV app, dashboard.
+- **Hub**: the web dashboard on the big shared screen: the table, plus the night's pages (ledger, cheatsheet, music). _Avoid_: TV app, client (the legacy `client/`).
+- **Player app**: the native iPhone app each player uses at the table: join, scan, bet. _Avoid_: webapp (the legacy `webapp/` it replaces), phone app.
 ```
 
 - [ ] **Step 3: Check and commit**
@@ -2293,7 +2372,7 @@ Spade is an AI poker dealer for **our own poker nights**: real cards on the tabl
 |---|---|---|
 | `spadeboot/` | Spring Boot 3 / Java 17: auth, lobby, tables, Hold'em engine, cheatsheet, Spotify | in use; cleanup and engine rebuild in V1 |
 | `cv/` | Python card detection (YOLOv8, socket.io), from `lucabzt/spadeAI` | in use; community cards are a stub |
-| `client/`, `webapp/` | legacy React apps (hub, phone) | **frozen**: never edit; replaced in V1 |
+| `client/`, `webapp/` | legacy React apps (hub, phone) | **frozen**: never edit; replaced in V1 by a new web hub and a native iOS player app ([ADR 0005](docs/adr/0005-rebuild-dont-repair.md)) |
 | `scripts/` | the gate and its checks | |
 | `docs/` | everything else | |
 
@@ -2413,7 +2492,7 @@ python3 scripts/check_board.py [--fix]
 
 Real cards on a real table. Each player's phone reads their own hole cards, a table camera reads the board, bets are tapped in, and Spade runs the hand, calls the winner and keeps the books. How a night works and what Spade is (and isn't): [PRODUCT.md](PRODUCT.md).
 
-**Status (October 2026):** being rebuilt. Version 0 sets up the working process; Version 1 rebuilds the engine and the frontend around card detection. Roadmap: [docs/handoffs/INDEX.md](docs/handoffs/INDEX.md).
+**Status (October 2026):** being rebuilt. Version 0 sets up the working process. Version 1 rebuilds Spade around card detection: a simpler backend, a new web hub and a native iOS player app. Roadmap: [docs/handoffs/INDEX.md](docs/handoffs/INDEX.md).
 
 | Part | What |
 |---|---|
@@ -2990,17 +3069,17 @@ git add .claude/skills && git commit -m "docs(devex): ship-phase, capture-idea a
   - the `capture-idea` skill;
   - `docs/status-quo/*` (the "Found by" links use `https://github.com/eixfachZabii/Spade/blob/master/docs/status-quo/<file>.md` once merged; until then, the relative path in backticks);
   - the audits.
-- Produces: about 20 issues on the board, every one in Inbox.
+- Produces: 16 issues on the board, every one in Inbox.
 
 - [ ] **Step 1: File issue 1 by following `capture-idea` literally, end to end** (the "done when" check for the skill)
 
-Title: **Engine rebuild: a state machine fed by camera-read cards**. Labels: `area:backend,type:idea,version:v1,needs-grill`.
+Title: **Backend rebuild: a simpler spadeboot, with the engine as a state machine fed by camera reads**. Labels: `area:backend,type:idea,version:v1,needs-grill`.
 Body, in the skill's format:
-- **Found by:** `docs/status-quo/backend.md` (Engine defects) and ADR 0002.
-- **What exists:** `spadeboot/src/main/java/com/spadeboot/session/{GameSession,RoundSession,SessionManager}.java`, `domain/game/HandEvaluation.java` (fixed in V0).
-- **The problem:** the engine deals its own virtual deck on raw threads. ADR 0002 needs it to take in card reads.
-- **Constraints:** PRODUCT.md "the night never stops" (correction path) and "hole cards stay private"; ADR 0002.
-- **Open questions:** state machine shape; persistence of results; how a correction re-enters the flow.
+- **Owner, 2026-10-09:** quote D21 from the spec amendment.
+- **What exists:** the salvage map's backend table (`docs/status-quo/salvage.md`); `spadeboot/src/main/java/com/spadeboot/session/{GameSession,RoundSession,SessionManager}.java`; `domain/game/HandEvaluation.java` (fixed and pinned in V0).
+- **The problem:** the engine deals its own virtual deck on raw threads, and the layers leak (entities inside DTOs, in-memory "entities"). ADR 0002 needs an engine that takes in card reads; ADR 0005 asks for a rebuild, not a repair.
+- **Constraints:** PRODUCT.md "the night never stops" (correction path) and "hole cards stay private"; ADR 0002 and 0005; WealthWatcher-style layering.
+- **Open questions:** salvage vs rewrite per package; state machine shape; persisting results; how a correction re-enters the flow; Flyway migrations instead of `ddl-auto: update`.
 - Then a checklist of every known defect the rebuild must not repeat:
   - [ ] no side pots or odd-chip handling
   - [ ] chip results never saved
@@ -3010,34 +3089,32 @@ Body, in the skill's format:
   - [ ] an exception in the round thread kills the hand silently
   - [ ] a table can be deleted mid-game
   - [ ] thread-per-game concurrency
+  - [ ] dead code and unused dependencies (`archiv/`, QueryDSL, Thymeleaf, jsoup, both OAuth2 starters, …)
+  - [ ] no DB migrations (`ddl-auto: update`)
 
 Then `python3 scripts/check_board.py` → Expected: ✓, with the issue in Inbox.
 
 - [ ] **Step 2: File the rest the same way** (search first each time, per the skill)
 
+D21 (rebuild, don't repair) means defects in code V1 replaces are filed as **checklists inside the rebuild issues**, not as separate bugs. That is D14's reasoning applied to everything.
+
 | # | Title | Labels |
 |---|---|---|
-| 2 | Hole cards reach every client before showdown (REST `/status` and the table topic) | area:security, type:bug, version:v1 |
-| 3 | `GET /api/players/me` returns the password hash | area:security, type:bug, version:v1 |
-| 4 | STOMP: CONNECT without a token is accepted and SUBSCRIBE is not authorised | area:security, type:bug, version:v1 |
-| 5 | The chip optimiser endpoint is public and runs up to 50 solver calls per request | area:security, type:bug, version:v1 |
-| 6 | Spotify OAuth: `state` is not validated and tokens travel in the redirect URL | area:security, type:bug, version:later |
-| 7 | `/users/{id}` and `/friends/{id}` expose other users' data | area:security, type:bug, version:v1 |
-| 8 | Spike: can the table camera read the board, and how well do phones read hole cards? | area:cv, type:idea, version:v1, needs-grill |
-| 9 | Phones need HTTPS for the camera; cv speaks plain HTTP | area:cv, type:bug, version:v1 |
-| 10 | One card notation across cv, backend and frontend | area:cv, type:idea, version:v1, needs-grill |
-| 11 | Frontend rebuild: phone view and hub view (carries the legacy keep/drop list and gaps: showdown screen, all-in, blinds, card correction, what the hub may show) | area:frontend, type:idea, version:v1, needs-grill |
-| 12 | Hosting: a laptop at the table, or `hub.poker-spade.de`? | area:devex, type:idea, version:v1, needs-grill |
-| 13 | Database migrations instead of `ddl-auto: update` | area:devex, type:chore, version:v1 |
-| 14 | Remove dead code and unused dependencies from spadeboot | area:backend, type:chore, version:v1 |
-| 15 | Docker: bind/port mismatch, ARM-only Gurobi, MySQL exposed, WLS licence via env | area:devex, type:bug, version:later |
-| 16 | Voice dealer: recorded clips or live TTS? | area:frontend, type:idea, version:later, needs-grill |
-| 17 | Ledger: replace the spreadsheet and import the 20 nights | area:backend, type:idea, version:later, needs-grill |
-| 18 | Win probability on the hub | area:backend, type:idea, version:later, needs-grill |
-| 19 | Spotify and lyrics: keep or drop? | area:frontend, type:idea, version:later, needs-grill |
-| 20 | Cheatsheet and chip optimiser without Gurobi | area:backend, type:idea, version:later, needs-grill |
-| 21 | Friends: build a UI or drop the feature? | area:backend, type:idea, version:later, needs-grill |
-| 22 | Hand history and stats | area:backend, type:idea, version:later, needs-grill |
+| 2 | Security requirements the rebuilt backend must meet. Checklist: hole cards reach every client before showdown (REST `/status` and the table topic) · `GET /api/players/me` returns the password hash · STOMP CONNECT without a token is accepted and SUBSCRIBE is not authorised · the chip-optimiser endpoint is public (up to 50 solver calls per request) · `/users/{id}` and `/friends/{id}` expose other users' data · Spotify OAuth `state` isn't validated and tokens travel in the redirect URL | area:security, type:bug, version:v1 |
+| 3 | Spike: can the table camera read the board, and how well do phones read hole cards? | area:cv, type:idea, version:v1, needs-grill |
+| 4 | On-device hole-card detection on iPhone (export the YOLO model to Core ML) | area:cv, type:idea, version:v1, needs-grill |
+| 5 | One card notation across cv, backend, hub and iOS | area:cv, type:idea, version:v1, needs-grill |
+| 6 | Hub rebuild: a new web dashboard (the old pages as the concept, new code, the webapp's look). Carries the `client/` keep/drop list and gaps: showdown screen, what the hub may show | area:frontend, type:idea, version:v1, needs-grill |
+| 7 | iOS player app in Swift, replacing `webapp/`. Carries the webapp's flows and gaps: all-in, configurable blinds, card correction, tap-to-reveal privacy | area:frontend, type:idea, version:v1, needs-grill |
+| 8 | Hosting and the local network: a laptop at the table or `hub.poker-spade.de`; transport security between the app, hub, backend and cv (iOS App Transport Security) | area:devex, type:idea, version:v1, needs-grill |
+| 9 | Docker: bind/port mismatch, ARM-only Gurobi, MySQL exposed, WLS licence via env | area:devex, type:bug, version:later |
+| 10 | Voice dealer: recorded clips or live TTS? | area:frontend, type:idea, version:later, needs-grill |
+| 11 | Ledger: replace the spreadsheet and import the 20 nights | area:backend, type:idea, version:later, needs-grill |
+| 12 | Win probability on the hub | area:backend, type:idea, version:later, needs-grill |
+| 13 | Spotify and lyrics: keep or drop? | area:frontend, type:idea, version:later, needs-grill |
+| 14 | Cheatsheet and chip optimiser without Gurobi | area:backend, type:idea, version:later, needs-grill |
+| 15 | Friends: build a UI or drop the feature? | area:backend, type:idea, version:later, needs-grill |
+| 16 | Hand history and stats | area:backend, type:idea, version:later, needs-grill |
 
 **Rules for every body:**
 - Each body uses the skill template.
@@ -3050,7 +3127,7 @@ Then `python3 scripts/check_board.py` → Expected: ✓, with the issue in Inbox
 ```bash
 python3 scripts/check_board.py; echo "exit=$?"                  # Expected: ✓, exit=0
 gh project item-list <N> --owner eixfachZabii --format json --limit 100 | jq '[.items[].status] | group_by(.) | map({(.[0]): length}) | add'
-# Expected: {"Inbox": 22}
+# Expected: {"Inbox": 16}
 ```
 
 - [ ] **Step 4: Ship Phase 05 with the skill it created.** Follow `.claude/skills/ship-phase/SKILL.md` steps 1–7. No issue closes in Phase 05; V0's work isn't tracked in issues.
@@ -3093,7 +3170,7 @@ Sections:
   - flushes undetected → detected;
   - 5/10 tests red → all green;
   - no docs → the set;
-  - no backlog → about 20 issues on a board.
+  - no backlog → 16 issues on a board.
 - **What left the codebase:** `info`, the dev/prod profiles, the TLS keys and `.DS_Store` from history, the orphan branch (archived locally).
 - **Deferred, with reasons:** each row links its issue number.
 - **Process notes worth keeping:** for example, "an audit's test count is not a test: check for assertions" (C1); "measure secrets by hash".
