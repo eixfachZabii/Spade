@@ -17,22 +17,22 @@ public class HandEvaluation {
         cards.sort((a, b) -> b.getValue().getValue() - a.getValue().getValue());
 
         // Check for straight flush in each suit
-        List<Card> spadeCards = filterBySuit(cards, "S");
+        List<Card> spadeCards = filterBySuit(cards, Suit.SPADES);
         List<Integer> resultCards = getStraight(spadeCards);
         if (resultCards.size() == 5) {
             return getRankNumber(9, resultCards);
         }
-        List<Card> heartCards = filterBySuit(cards, "H");
+        List<Card> heartCards = filterBySuit(cards, Suit.HEARTS);
         resultCards = getStraight(heartCards);
         if (resultCards.size() == 5) {
             return getRankNumber(9, resultCards);
         }
-        List<Card> clubCards = filterBySuit(cards, "C");
+        List<Card> clubCards = filterBySuit(cards, Suit.CLUBS);
         resultCards = getStraight(clubCards);
         if (resultCards.size() == 5) {
             return getRankNumber(9, resultCards);
         }
-        List<Card> diamondCards = filterBySuit(cards, "D");
+        List<Card> diamondCards = filterBySuit(cards, Suit.DIAMONDS);
         resultCards = getStraight(diamondCards);
         if (resultCards.size() == 5) {
             return getRankNumber(9, resultCards);
@@ -58,9 +58,11 @@ public class HandEvaluation {
         }
 
         // Full house (a triple and a pair)
-        Integer threeCard = getKeyWithCount(cardCounts, 3);
+        // HashMap order is not rank order: take the HIGHEST triple, then the highest
+        // other rank holding at least two cards (a second triple counts as the pair).
+        Integer threeCard = getHighestKeyWithCount(cardCounts, 3, null);
         if (threeCard != null) {
-            Integer twoCard = getKeyWithCountExcluding(cardCounts, 2, threeCard);
+            Integer twoCard = getHighestKeyWithCount(cardCounts, 2, threeCard);
             if (twoCard != null) {
                 return getRankNumber(7, Arrays.asList(threeCard, threeCard, threeCard, twoCard, twoCard));
             }
@@ -133,10 +135,10 @@ public class HandEvaluation {
     /**
      * Returns a list containing only the cards that match the given suit.
      */
-    private static List<Card> filterBySuit(List<Card> cards, String suit) {
+    private static List<Card> filterBySuit(List<Card> cards, Suit suit) {
         List<Card> result = new ArrayList<>();
         for (Card card : cards) {
-            if (card.getSuit().equals(suit)) {
+            if (card.getSuit() == suit) {
                 result.add(card);
             }
         }
@@ -178,15 +180,21 @@ public class HandEvaluation {
     }
 
     /**
-     * Returns a key with the given count while excluding a specified getValue().getValue().
+     * Returns the highest key whose count is at least targetCount, skipping {@code exclude},
+     * or null if there is none.
      */
-    private static Integer getKeyWithCountExcluding(Map<Integer, Integer> counts, int targetCount, int exclude) {
+    private static Integer getHighestKeyWithCount(Map<Integer, Integer> counts, int targetCount, Integer exclude) {
+        Integer best = null;
         for (Map.Entry<Integer, Integer> entry : counts.entrySet()) {
-            if (entry.getKey() != exclude && entry.getValue() >= targetCount) {
-                return entry.getKey();
+            int key = entry.getKey();
+            if (exclude != null && key == exclude) {
+                continue;
+            }
+            if (entry.getValue() >= targetCount && (best == null || key > best)) {
+                best = key;
             }
         }
-        return null;
+        return best;
     }
 
     /**
