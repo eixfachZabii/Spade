@@ -8,6 +8,7 @@
 | [../USAGE.md](../USAGE.md) | commands | running anything |
 | [handoffs/INDEX.md](handoffs/INDEX.md) | the roadmap: versions and phases | planning |
 | `handoffs/PHASE_NN_*.md` | one doc per phase: scope, decisions, what shipped | building that phase |
+| [handoffs/V1_evidence/](handoffs/V1_evidence/README.md) | the research the V1 grill decided from: stacks, WealthWatcher's architecture, the proxy CV spike, three hub design directions | questioning a V1 decision |
 | [handoffs/done/](handoffs/done/Version0.0/CLOSEOUT.md) | shipped versions and their phase docs; each version ends with a `CLOSEOUT.md` | archaeology |
 | [adr/](adr/) | decisions and why | before contradicting one |
 | [status-quo/](status-quo/README.md) | how Spade looked on 2026-10-09, and the salvage map | touching an old area; planning the rebuild |

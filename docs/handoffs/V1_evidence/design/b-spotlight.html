@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spade hub · Direction B · Spotlight</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="hub-kit.css?v=2">
+<style>
+  /* B · Spotlight: whoever must act owns the screen; everything else is context. */
+  body { font-family: "Archivo", "Inter", -apple-system, sans-serif; }
+  .stage { --r: 1.5rem; }
+
+  .spot {
+    position: absolute; left: 2.5rem; top: 2.5rem; width: 71rem; height: 47.5rem; border-radius: var(--r);
+    background: var(--sp-gradient-diag); padding: 3rem 3.5rem; display: flex; flex-direction: column; overflow: hidden;
+    box-shadow: 0 2rem 4rem -1.5rem rgba(37, 117, 252, 0.45);
+  }
+  .spot::before { /* the brand mark, huge and quiet, so the panel reads as Spade's, not a generic gradient */
+    content: ""; position: absolute; right: -6rem; bottom: -9rem; width: 44rem; height: 49rem; opacity: 0.09;
+    background: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 112'%3E%3Cpath d='M50 8C50 8 10 38 10 62c0 14 10 24 23 24 7 0 12-3 15-6l-5 18h14l-5-18c3 3 8 6 15 6 13 0 23-10 23-24C90 38 50 8 50 8Z' fill='white'/%3E%3C/svg%3E");
+  }
+  .seatline { display: flex; align-items: center; gap: 1rem; font-size: var(--t-label); font-weight: 600; color: rgba(255,255,255,.86); font-stretch: 100%; }
+  .seatline .av { width: 3.4rem; height: 3.4rem; border-radius: 50%; background: rgba(255,255,255,.18); display: grid; place-items: center; font-weight: 800; color: #fff; font-size: 1.6rem; }
+  .who { margin-top: 1.5rem; font-size: 10.5rem; line-height: 0.92; font-weight: 850; font-stretch: 118%; letter-spacing: -0.035em; color: #fff; }
+  .ask { margin-top: 1.6rem; display: flex; align-items: baseline; gap: 1.4rem; color: #fff; }
+  .ask .amt { font-size: 6rem; font-weight: 800; font-stretch: 112%; letter-spacing: -0.03em; }
+  .ask .what { font-size: var(--t-title); font-weight: 600; color: rgba(255,255,255,.88); }
+  .why { margin-top: 0.8rem; font-size: var(--t-body); font-weight: 500; color: rgba(255,255,255,.86); }
+  .clock { margin-top: auto; display: flex; align-items: center; gap: 1.4rem; font-size: var(--t-label); color: rgba(255,255,255,.86); font-weight: 600; }
+  .clock .bar { flex: 0 0 30rem; height: 0.6rem; border-radius: 1rem; background: rgba(255,255,255,.22); overflow: hidden; }
+  .clock .bar i { display: block; height: 100%; width: 40%; background: #fff; border-radius: 1rem; }
+  .spot .hole { display: flex; gap: 1.2rem; margin-top: 2.2rem; }
+  .spot .hole .pcard { --w: 9rem; }
+
+  .side { position: absolute; left: 77rem; top: 2.5rem; width: 40.5rem; height: 47.5rem; display: flex; flex-direction: column; }
+  .side .head { display: flex; align-items: center; gap: 1rem; }
+  .side .head .brand { font-size: var(--t-title); font-weight: 800; font-stretch: 112%; letter-spacing: -0.02em; }
+  .side .head .spacer { flex: 1; }
+  .street { margin-top: 3rem; display: flex; align-items: baseline; justify-content: space-between; }
+  .street .name { font-size: var(--t-title); font-weight: 800; font-stretch: 112%; }
+  .street .meta { font-size: var(--t-caption); color: var(--sp-ink-2); font-weight: 500; white-space: nowrap; }
+  .log { margin-top: auto; display: grid; gap: 0.7rem; font-size: var(--t-label); color: var(--sp-ink-2); }
+  .log li { list-style: none; display: flex; justify-content: space-between; }
+  .log b { color: var(--sp-ink); font-weight: 700; }
+  .log .when { font-size: var(--t-caption); color: var(--sp-ink-3); }
+  .board { margin-top: 1.4rem; display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.85rem; }
+  .board .pcard { --w: 7.4rem; }
+  .potbox { margin-top: 2.6rem; padding-top: 2rem; border-top: 0.1rem solid var(--sp-bg-3); }
+  .potbox .row { display: flex; align-items: baseline; justify-content: space-between; }
+  .potbox .k { font-size: var(--t-title); color: var(--sp-ink-2); font-weight: 600; }
+  .potbox .v { font-size: var(--t-figure); font-weight: 850; font-stretch: 112%; letter-spacing: -0.03em; }
+  .potbox .sub { margin-top: 0.4rem; font-size: var(--t-caption); color: var(--sp-ink-2); }
+  .potbox .sub b { color: var(--sp-allin); font-weight: 700; }
+  .others { margin-top: 2.2rem; display: grid; gap: 1.1rem; }
+  .others .o { display: grid; grid-template-columns: 6.2rem 1fr; align-items: center; gap: 1.2rem; }
+  .others .o .cards { display: flex; gap: 0.3rem; }
+  .others .o .pcard { --w: 2.95rem; }
+  .others .o .t { font-size: var(--t-label); font-weight: 700; }
+  .others .o .t small { display: block; font-size: var(--t-caption); color: var(--sp-ink-2); font-weight: 500; }
+
+  .rail { position: absolute; left: 2.5rem; right: 2.5rem; bottom: 2.5rem; height: 12.5rem; display: grid; grid-template-columns: repeat(6, 1fr); gap: 1rem; }
+  .tile { position: relative; border-radius: var(--r); background: var(--sp-bg-2); padding: 1.4rem 1.5rem; display: flex; flex-direction: column; justify-content: space-between; border: 0.15rem solid transparent; }
+  .tile .n { font-size: var(--t-title); font-weight: 800; font-stretch: 108%; letter-spacing: -0.02em; display: flex; align-items: center; gap: 0.7rem; }
+  .tile .n .d { width: 2.2rem; height: 2.2rem; border-radius: 50%; background: var(--sp-face); color: var(--sp-face-black); font-size: 1.1rem; display: grid; place-items: center; font-weight: 900; font-stretch: 100%; }
+  .tile .s { font-size: var(--t-body); font-weight: 700; color: var(--sp-call); }
+  .tile .st { font-size: var(--t-caption); font-weight: 600; color: var(--sp-ink-2); }
+  .tile .backs { position: absolute; right: 1.3rem; top: 1.5rem; display: flex; }
+  .tile .backs .pcard { --w: 2.2rem; }
+  .tile .backs .pcard + .pcard { margin-left: -0.9rem; }
+  .tile.now { border-color: transparent; background: linear-gradient(var(--sp-bg-2), var(--sp-bg-2)) padding-box, var(--sp-gradient) border-box; }
+  .tile.now .st { color: var(--sp-ink); }
+  .tile.out { opacity: 0.42; }
+  .tile.out .s { color: var(--sp-ink-2); }
+  .tile.allin .st { color: var(--sp-allin); }
+  .tile.won { background: linear-gradient(var(--sp-bg-2), var(--sp-bg-2)) padding-box, var(--sp-gradient) border-box; }
+</style>
+</head>
+<body>
+<!--
+THESIS: Whoever must act owns the screen. The question everyone asks at a real table ("who is it on, how much?") is answered in one word and one number readable from the kitchen. Refuses the seats-around-an-oval map where the actor is one tile among six.
+OWN-WORLD: the webapp's world at TV scale: gray-900 room, gray-800 tiles, green stacks, amber all-in; the purple-to-blue gradient is drenched, but on exactly one panel, the actor's (or the winner's); Archivo, widened for names and figures; 24px radii for TV-size panels.
+STORY: glance, see a name and an amount, look back at your cards; the board and pot sit to the right as confirmation; the rail shows who is still in and who is next.
+FIRST VIEWPORT: left 60% the gradient spotlight (name at 168px, amount at 96px, the bet that caused it); right 35% board, pot, side pot; bottom rail of six seats in acting order.
+FORM: roll-assigned structure 4 of 7 (turn spotlight); seed key c64b18ec.
+FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
+Synthetic demo data: names, amounts and cards are invented.
+-->
+<main class="stage" aria-label="Spade table, hand 23">
+  <section class="spot" aria-live="polite">
+    <div class="seatline"><span class="av">E</span><span class="only-turn">Seat 3 · big blind</span><span class="only-showdown">Seat 3 · showdown</span></div>
+    <div class="who">Elif</div>
+    <div class="ask only-turn"><span class="amt num">€1.20</span><span class="what">to call</span></div>
+    <p class="why only-turn">Jonas bet €1.20 into a €11.40 pot</p>
+    <div class="clock only-turn"><span>Thinking 24 s</span><span class="bar"><i></i></span></div>
+    <div class="ask only-showdown"><span class="what">wins</span><span class="amt num">€15.00</span></div>
+    <p class="why only-showdown">Full house, nines full of kings</p>
+    <div class="hole only-showdown"><span class="pcard fresh" data-card="KD"></span><span class="pcard fresh" data-card="9S"></span></div>
+  </section>
+
+  <aside class="side">
+    <div class="head"><svg class="mark" aria-hidden="true"><use href="#mark"/></svg><span class="brand">Spade</span><span class="spacer"></span><span class="live">Live</span></div>
+    <div class="street"><span class="name only-turn">Turn</span><span class="name only-showdown">Showdown</span><span class="meta num">Hand 23 · €0.10 / €0.20</span></div>
+    <div class="board">
+      <span class="pcard" data-card="KS"></span><span class="pcard" data-card="9H"></span><span class="pcard" data-card="9C"></span>
+      <span class="pcard only-turn" data-card="4D"></span><span class="pcard slot only-turn"></span>
+      <span class="pcard dim only-showdown" data-card="4D"></span><span class="pcard dim fresh only-showdown" data-card="2S"></span>
+    </div>
+    <div class="potbox only-turn">
+      <div class="row"><span class="k">Pot</span><span class="v num">€12.60</span></div>
+      <div class="sub num">main €9.60 · side €1.80 · <b>Tobi all-in</b> · next: Ana</div>
+    </div>
+    <ol class="log only-turn" aria-label="This hand so far">
+      <li><span><b>Mara</b> folds</span><span class="when">flop</span></li>
+      <li><span><b>Tobi</b> all-in €2.40</span><span class="when">flop</span></li>
+      <li><span><b>Jonas</b> bets €1.20</span><span class="when">turn · just now</span></li>
+    </ol>
+    <div class="others only-showdown">
+      <div class="o"><span class="cards"><span class="pcard" data-card="AS"></span><span class="pcard" data-card="KC"></span></span><span class="t">Jonas<small>Two pair, kings and nines</small></span></div>
+      <div class="o"><span class="cards"><span class="pcard" data-card="QH"></span><span class="pcard" data-card="QC"></span></span><span class="t">Tobi<small>Two pair, queens and nines</small></span></div>
+    </div>
+  </aside>
+
+  <section class="rail" aria-label="Seats in acting order">
+    <div class="tile"><span class="n">Jonas</span><span class="s num">€9.60</span><span class="st only-turn">Bet €1.20</span><span class="st only-showdown">Lost €3.60</span><span class="backs only-turn"><span class="pcard back"></span><span class="pcard back"></span></span></div>
+    <div class="tile now-t won-sd"><span class="n">Elif</span><span class="s num only-turn">€22.15</span><span class="s num only-showdown">€35.95</span><span class="st only-turn">To act</span><span class="st only-showdown">Won €15.00</span><span class="backs only-turn"><span class="pcard back"></span><span class="pcard back"></span></span></div>
+    <div class="tile allin"><span class="n">Tobi</span><span class="s num">€0.00</span><span class="st only-turn">All-in €2.40</span><span class="st only-showdown">Busted</span><span class="backs only-turn"><span class="pcard back"></span><span class="pcard back"></span></span></div>
+    <div class="tile out"><span class="n">Nils</span><span class="s num">€11.70</span><span class="st">Folded</span></div>
+    <div class="tile ana"><span class="n">Ana</span><span class="s num">€14.90</span><span class="st only-turn">Next</span><span class="st only-showdown">Folded on the river</span><span class="backs only-turn"><span class="pcard back"></span><span class="pcard back"></span></span></div>
+    <div class="tile out"><span class="n"><span class="d" aria-label="Dealer">D</span>Mara</span><span class="s num">€18.40</span><span class="st">Folded</span></div>
+  </section>
+</main>
+<script src="hub-kit.js?v=2"></script>
+<script>
+  const sync = () => {
+    const sd = document.body.dataset.state === "showdown";
+    document.querySelector(".now-t").classList.toggle("now", !sd);
+    document.querySelector(".won-sd").classList.toggle("won", sd);
+    document.querySelector(".ana").classList.toggle("out", sd);
+  };
+  sync();
+  window.addEventListener("hashchange", sync);
+</script>
+</body>
+</html>

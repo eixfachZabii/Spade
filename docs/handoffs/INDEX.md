@@ -5,12 +5,12 @@ The only roadmap ([ADR 0003](../adr/0003-issues-are-the-inbox-index-is-the-roadm
 ## 🔲 Version 1 — queued · name chosen in its grill
 
 > **Rebuild, don't repair** ([ADR 0005](../adr/0005-rebuild-dont-repair.md)): a new web hub, a native iOS player app, a simpler backend, all built from the [salvage map](../status-quo/salvage.md).
-> **Evidence before the grill:**
-> 1. the card-detection spike (can the table camera read the board? how reliably do phones read hole cards?)
+> **Evidence before the grill** (in [V1_evidence/](V1_evidence/README.md), 2026-10-09):
+> 1. the card-detection spike (can the table camera read the board? how reliably do phones read hole cards?) 🔲 **proxy done**: [cv-proxy-spike.md](V1_evidence/cv-proxy-spike.md) on synthetic boards; the real spike ([#3](https://github.com/eixfachZabii/Spade/issues/3)) waits for the deck and the mat
 > 2. the salvage map ✅ (V0)
-> 3. an audit of WealthWatcher's backend and frontend architecture
-> 4. iOS stack research (SwiftUI, camera, Core ML on-device detection, a realtime client)
-> 5. web-hub stack research, plus a design direction from the [webapp's style](../references/webapp-style.md)
+> 3. an audit of WealthWatcher's backend and frontend architecture ✅ [wealthwatcher-architecture.md](V1_evidence/wealthwatcher-architecture.md)
+> 4. iOS stack research (SwiftUI, camera, Core ML on-device detection, a realtime client) ✅ [ios-stack.md](V1_evidence/ios-stack.md), with a measured Core ML export
+> 5. web-hub stack research, plus a design direction from the [webapp's style](../references/webapp-style.md) ✅ [web-hub-stack.md](V1_evidence/web-hub-stack.md), three directions in [design/](V1_evidence/design/DESIGN.md)
 >
 > Then `/grill-with-docs`. No phase numbers or docs yet; its phases start at 06.
 

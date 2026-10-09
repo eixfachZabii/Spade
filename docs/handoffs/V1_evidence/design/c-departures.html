@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spade hub · Direction C · Departures</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="hub-kit.css?v=2">
+<style>
+  /* C · Departures: the table as a split-flap board. Every value sits in fixed flap cells; a change clacks through. */
+  body { font-family: "Barlow Condensed", "Arial Narrow", sans-serif; font-feature-settings: "tnum" 1; }
+  .stage { background: #0d1320; padding: 2.5rem 3rem; display: grid; grid-template-rows: 4.5rem 16.5rem 1fr 3rem; row-gap: 1.3rem; }
+
+  .flaps { display: inline-flex; gap: 0.08em; }
+  .ch {
+    position: relative; display: inline-grid; place-items: center; width: 0.66em; height: 1.18em; border-radius: 0.08em;
+    background: linear-gradient(#273244 0 50%, #1f2937 50% 100%); color: var(--sp-ink); font-weight: 600; line-height: 1;
+    box-shadow: inset 0 -0.04em 0 rgba(0,0,0,.35), 0 0.05em 0.08em rgba(0,0,0,.5);
+  }
+  .ch::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 0.035em; background: #0d1320; }
+  .ch.sp { background: #161e2b; }
+  .ch.flip { animation: clack 70ms steps(2) both; }
+  @keyframes clack { 0% { transform: scaleY(1); } 50% { transform: scaleY(0.2); } 100% { transform: scaleY(1); } }
+
+  .head { display: flex; align-items: center; gap: 1.2rem; font-size: 2.6rem; letter-spacing: 0.02em; }
+  .head .mark { width: 2.6rem; height: 2.9rem; }
+  .head .brand { font-weight: 700; font-size: 3rem; letter-spacing: 0.06em; }
+  .head .night { color: var(--sp-ink-2); font-weight: 500; letter-spacing: 0.08em; }
+  .head .spacer { flex: 1; }
+  .head .kv { display: flex; align-items: center; gap: 0.7rem; color: var(--sp-ink-2); font-weight: 600; letter-spacing: 0.08em; font-size: 2rem; margin-left: 2.2rem; }
+  .head .kv .flaps { font-size: 2.4rem; }
+
+  .top { display: grid; grid-template-columns: auto 1fr; gap: 3.2rem; align-items: stretch; }
+  .board { display: flex; gap: 1rem; align-items: center; }
+  .tile {
+    position: relative; width: 10.5rem; height: 15.5rem; border-radius: 0.7rem; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.4rem;
+    background: linear-gradient(#273244 0 50%, #1f2937 50% 100%); box-shadow: inset 0 -0.3rem 0 rgba(0,0,0,.35), 0 0.6rem 1.2rem -0.4rem rgba(0,0,0,.7);
+  }
+  .tile::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 0.22rem; background: #0d1320; }
+  .tile b { font-size: 8rem; font-weight: 700; line-height: 0.82; letter-spacing: -0.04em; color: var(--sp-ink); }
+  .tile svg { width: 4.4rem; height: 4.4rem; fill: var(--sp-ink); }
+  .tile.r svg, .tile.r b { color: #f87171; fill: #f87171; }
+  .tile.empty { background: #141b28; box-shadow: inset 0 0 0 0.2rem #1f2937; }
+  .tile.empty::after { background: #1f2937; }
+  .tile.dim { opacity: 0.35; }
+  .tile.win { box-shadow: inset 0 -0.3rem 0 rgba(0,0,0,.35), 0 0 0 0.3rem #2575fc, 0 0.8rem 1.6rem -0.4rem rgba(0,0,0,.7); }
+
+  .potcol { display: flex; flex-direction: column; justify-content: center; gap: 1.2rem; border-left: 0.1rem solid #1f2937; padding-left: 3.2rem; }
+  .street { display: flex; gap: 0.8rem; font-size: 2.2rem; font-weight: 600; letter-spacing: 0.1em; }
+  .street span { padding: 0.2rem 1rem; border-radius: 0.4rem; color: var(--sp-ink-3); background: #141b28; }
+  .street span.on { color: #fff; background: var(--sp-gradient); }
+  .potline { display: flex; align-items: center; gap: 1.6rem; }
+  .potline .k { font-size: 2.6rem; font-weight: 600; letter-spacing: 0.1em; color: var(--sp-ink-2); width: 6.5rem; }
+  .potline .flaps { font-size: 6.6rem; }
+  .subpots { display: flex; gap: 2.6rem; font-size: 2.2rem; font-weight: 600; letter-spacing: 0.08em; color: var(--sp-ink-2); }
+  .subpots .flaps { font-size: 2.4rem; margin-left: 0.6rem; }
+  .subpots .amber { color: var(--sp-allin); }
+
+  table { width: 100%; table-layout: fixed; border-collapse: separate; border-spacing: 0 0.45rem; font-size: 2.75rem; }
+  th { text-align: left; font-size: 1.75rem; font-weight: 600; letter-spacing: 0.14em; color: var(--sp-ink-2); padding: 0 1.2rem 0.2rem; }
+  td { padding: 0.4rem 1.2rem; overflow: hidden; background: #121a28; white-space: nowrap; vertical-align: middle; }
+  td:first-child { border-radius: 0.7rem 0 0 0.7rem; }
+  td:last-child { border-radius: 0 0.7rem 0.7rem 0; }
+  td.seat { width: 7rem; color: var(--sp-ink-2); font-weight: 600; }
+  td.seat .d { display: inline-grid; place-items: center; width: 2.4rem; height: 2.4rem; border-radius: 50%; background: var(--sp-face); color: var(--sp-face-black); font-size: 1.5rem; font-weight: 700; margin-left: 0.6rem; vertical-align: middle; }
+  .mini { display: inline-flex; gap: 0.3rem; vertical-align: middle; }
+  .mini i { display: inline-grid; place-items: center; width: 2.6rem; height: 3.5rem; border-radius: 0.3rem; font-style: normal; font-size: 2rem; font-weight: 700; background: linear-gradient(#273244 0 50%, #1f2937 50% 100%); color: var(--sp-ink); }
+  .mini i.r { color: #f87171; }
+  .mini i.back { width: 2.6rem; }
+  .mini i svg { width: 1.3rem; height: 1.3rem; fill: currentColor; margin-left: 0.1rem; }
+  .mini i { grid-auto-flow: column; width: 3.6rem; }
+  .mini i.back { background: var(--sp-gradient-diag); }
+  .status { font-size: 2.4rem; font-weight: 700; letter-spacing: 0.08em; }
+  .lamp { display: inline-block; width: 1.1rem; height: 1.1rem; border-radius: 50%; margin-right: 0.9rem; vertical-align: 0.15em; background: #374151; }
+  tr.act td { background: #1b1838; }
+  tr.act td.st { background: var(--sp-gradient); color: #fff; }
+  tr.act .lamp { background: #fff; box-shadow: 0 0 0.8rem rgba(255,255,255,.8); }
+  tr.allin .status { color: var(--sp-allin); }
+  tr.allin .lamp { background: var(--sp-allin); box-shadow: 0 0 0.8rem rgba(245,158,11,.7); }
+  tr.out td { color: var(--sp-ink-3); }
+  tr.out .ch { color: var(--sp-ink-3); }
+  tr.next .status { color: var(--sp-ink); }
+  tr.next .lamp { background: var(--sp-call); }
+
+  .foot { display: flex; align-items: center; gap: 2.4rem; font-size: 2rem; font-weight: 600; letter-spacing: 0.1em; color: var(--sp-ink-2); }
+  .foot b { color: var(--sp-ink); font-weight: 700; }
+  .foot .cam { margin-left: auto; display: flex; align-items: center; gap: 0.7rem; }
+  .foot .cam svg { width: 2rem; height: 2rem; stroke: var(--sp-call); fill: none; stroke-width: 2; }
+</style>
+</head>
+<body>
+<!--
+THESIS: The table is a departures board: one ruled grid everyone in the room reads at once, where nothing moves except values, and every change clacks through so heads lift. Refuses the oval-and-avatars table picture and the card-widget dashboard.
+OWN-WORLD: flap cells in the webapp's gray-800 split in two, one condensed sans (Barlow Condensed) in caps, red suits in a lighter red for dark flaps; lamps instead of badges (white = to act, amber = all-in, green = next); the purple-to-blue gradient only on the acting row's status cell and the current street.
+STORY: read the board row like a timetable: street, five card tiles, pot; then scan the seat rows for the lit one; the footer says what just happened.
+FIRST VIEWPORT: header strip; the five board tiles left and the pot flaps right; a six-row seat table with columns seat, player, cards, stack, bet, last action, status; one ticker line.
+FORM: challenger fusion, rail concourse split-flap board (signals-instruments-split-flap-concourse), dealt by seed key c64b18ec.
+FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
+Synthetic demo data: names, amounts and cards are invented.
+-->
+<main class="stage" aria-label="Spade table, hand 23">
+  <header class="head">
+    <svg class="mark" aria-hidden="true"><use href="#mark"/></svg>
+    <span class="brand">SPADE</span>
+    <span class="night">FRIDAY POKER NIGHT</span>
+    <span class="spacer"></span>
+    <span class="kv">HAND <span class="flaps" data-flap="23"></span></span>
+    <span class="kv">BLINDS <span class="flaps" data-flap="0.10/0.20"></span></span>
+    <span class="kv">TIME <span class="flaps" data-flap="21:47"></span></span>
+  </header>
+
+  <section class="top" aria-label="Board and pot">
+    <div class="board">
+      <div class="tile sd-win" data-tile="KS"></div>
+      <div class="tile sd-win" data-tile="9H"></div>
+      <div class="tile sd-win" data-tile="9C"></div>
+      <div class="tile sd-dim" data-tile="4D"></div>
+      <div class="tile empty only-turn"></div>
+      <div class="tile sd-dim only-showdown" data-tile="2S"></div>
+    </div>
+    <div class="potcol">
+      <div class="street"><span>PRE-FLOP</span><span>FLOP</span><span class="only-turn on">TURN</span><span class="only-showdown">TURN</span><span class="only-turn">RIVER</span><span class="only-showdown on">SHOWDOWN</span></div>
+      <div class="potline"><span class="k">POT</span><span class="flaps only-turn" data-flap="€12.60"></span><span class="flaps only-showdown" data-flap="€15.00"></span></div>
+      <div class="subpots"><span>MAIN<span class="flaps only-turn" data-flap="€9.60"></span><span class="flaps only-showdown" data-flap="€9.60"></span></span><span class="amber">SIDE<span class="flaps only-turn" data-flap="€1.80"></span><span class="flaps only-showdown" data-flap="€5.40"></span></span></div>
+    </div>
+  </section>
+
+  <table aria-label="Seats">
+    <colgroup><col style="width:7rem"><col style="width:16rem"><col style="width:11rem"><col style="width:15rem"><col style="width:13rem"><col style="width:21rem"><col></colgroup>
+    <thead><tr><th>SEAT</th><th>PLAYER</th><th>CARDS</th><th>STACK</th><th>BET</th><th>LAST ACTION</th><th>STATUS</th></tr></thead>
+    <tbody>
+      <tr class="out"><td class="seat">1<span class="d" aria-label="Dealer">D</span></td><td><span class="flaps" data-flap="MARA"></span></td><td></td><td><span class="flaps" data-flap="€18.40"></span></td><td></td><td><span class="flaps" data-flap="FOLD"></span></td><td class="st"><span class="status"><span class="lamp"></span>FOLDED</span></td></tr>
+      <tr><td class="seat">2</td><td><span class="flaps" data-flap="JONAS"></span></td>
+        <td><span class="mini only-turn"><i class="back"></i><i class="back"></i></span><span class="mini only-showdown"><i data-mini="AS"></i><i data-mini="KC"></i></span></td>
+        <td><span class="flaps" data-flap="€9.60"></span></td><td><span class="flaps only-turn" data-flap="€1.20"></span></td>
+        <td><span class="flaps only-turn" data-flap="BET €1.20"></span><span class="flaps only-showdown" data-flap="SHOWS"></span></td>
+        <td class="st"><span class="status only-turn"><span class="lamp"></span>IN</span><span class="status only-showdown"><span class="lamp"></span>TWO PAIR K-9</span></td></tr>
+      <tr class="act"><td class="seat">3</td><td><span class="flaps" data-flap="ELIF"></span></td>
+        <td><span class="mini only-turn"><i class="back"></i><i class="back"></i></span><span class="mini only-showdown"><i data-mini="KD"></i><i data-mini="9S"></i></span></td>
+        <td><span class="flaps only-turn" data-flap="€22.15"></span><span class="flaps only-showdown" data-flap="€35.95"></span></td><td></td>
+        <td><span class="flaps only-turn" data-flap="CHECK"></span><span class="flaps only-showdown" data-flap="SHOWS"></span></td>
+        <td class="st"><span class="status only-turn"><span class="lamp"></span>TO ACT · CALL €1.20</span><span class="status only-showdown"><span class="lamp"></span>WINS €15.00 · FULL HOUSE</span></td></tr>
+      <tr class="allin"><td class="seat">4</td><td><span class="flaps" data-flap="TOBI"></span></td>
+        <td><span class="mini only-turn"><i class="back"></i><i class="back"></i></span><span class="mini only-showdown"><i data-mini="QH"></i><i data-mini="QC"></i></span></td>
+        <td><span class="flaps" data-flap="€0.00"></span></td><td></td><td><span class="flaps" data-flap="ALL-IN €2.40"></span></td>
+        <td class="st"><span class="status only-turn"><span class="lamp"></span>ALL-IN</span><span class="status only-showdown"><span class="lamp"></span>TWO PAIR Q-9 · OUT</span></td></tr>
+      <tr class="out"><td class="seat">5</td><td><span class="flaps" data-flap="NILS"></span></td><td></td><td><span class="flaps" data-flap="€11.70"></span></td><td></td><td><span class="flaps" data-flap="FOLD"></span></td><td class="st"><span class="status"><span class="lamp"></span>FOLDED</span></td></tr>
+      <tr class="next-t out-sd"><td class="seat">6</td><td><span class="flaps" data-flap="ANA"></span></td>
+        <td><span class="mini only-turn"><i class="back"></i><i class="back"></i></span></td>
+        <td><span class="flaps" data-flap="€14.90"></span></td><td></td>
+        <td><span class="flaps only-turn" data-flap="CALL €0.60"></span><span class="flaps only-showdown" data-flap="FOLD"></span></td>
+        <td class="st"><span class="status only-turn"><span class="lamp"></span>NEXT</span><span class="status only-showdown"><span class="lamp"></span>FOLDED</span></td></tr>
+    </tbody>
+  </table>
+
+  <footer class="foot">
+    <span class="only-turn">LAST <b>JONAS BETS €1.20</b></span><span class="only-turn">NEXT <b>ANA</b></span>
+    <span class="only-showdown"><b>SAVED TO TONIGHT'S LEDGER</b></span>
+    <span class="cam"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>BOARD READ BY TABLE CAMERA · FIX ANY CARD FROM A PHONE</span>
+  </footer>
+</main>
+<script src="hub-kit.js?v=2"></script>
+<script>
+  const SUIT = { S: "spade", H: "heart", D: "diamond", C: "club" };
+  document.querySelectorAll("[data-tile]").forEach((t) => {
+    const c = t.dataset.tile, s = c.slice(-1);
+    t.classList.toggle("r", s === "H" || s === "D");
+    t.innerHTML = `<b>${c.slice(0, -1)}</b><svg aria-hidden="true"><use href="#s-${SUIT[s]}"/></svg>`;
+    t.setAttribute("role", "img");
+    t.setAttribute("aria-label", c);
+  });
+  document.querySelectorAll("[data-mini]").forEach((t) => {
+    const c = t.dataset.mini, s = c.slice(-1);
+    t.classList.toggle("r", s === "H" || s === "D");
+    t.innerHTML = `${c.slice(0, -1)}<svg aria-hidden="true"><use href="#s-${SUIT[s]}"/></svg>`;
+    t.setAttribute("aria-label", c);
+  });
+  const GLYPH = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789€.";
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  document.querySelectorAll("[data-flap]").forEach((el, i) => {
+    el.setAttribute("aria-label", el.dataset.flap);
+    el.innerHTML = [...el.dataset.flap].map((ch) => `<span class="ch${ch === " " ? " sp" : ""}" aria-hidden="true">${ch === " " ? "" : ch}</span>`).join("");
+    if (reduce) return;
+    el.querySelectorAll(".ch:not(.sp)").forEach((cell, j) => {
+      const target = cell.textContent; let n = 4 + ((i * 3 + j) % 7);
+      const tick = () => {
+        cell.classList.remove("flip"); void cell.offsetWidth; cell.classList.add("flip");
+        if (--n <= 0) { cell.textContent = target; return; }
+        cell.textContent = GLYPH[(Math.random() * GLYPH.length) | 0]; setTimeout(tick, 70);
+      };
+      setTimeout(tick, 120 + i * 35 + j * 25);
+    });
+  });
+  const sync = () => {
+    const sd = document.body.dataset.state === "showdown";
+    const ana = document.querySelector(".next-t"); ana.classList.toggle("next", !sd); ana.classList.toggle("out", sd);
+    document.querySelectorAll(".sd-win").forEach((t) => t.classList.toggle("win", sd));
+    document.querySelectorAll(".sd-dim").forEach((t) => t.classList.toggle("dim", sd));
+  };
+  sync();
+  window.addEventListener("hashchange", sync);
+</script>
+</body>
+</html>
