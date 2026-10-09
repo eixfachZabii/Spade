@@ -42,6 +42,7 @@ Green means:
 - cv's ruff and pytest passed;
 - every relative doc link resolves;
 - CLAUDE.md is within its byte budget;
+- the `scripts/` tests passed;
 - no unpushed commit uses a negated close keyword.
 
 **Read the "not proven" block every time.** The legacy apps, card-reading accuracy, real phones and cameras, and Docker are never covered. CI (`.github/workflows/gate.yml`) runs the same blocks on every push. Before claiming anything works: the `verify-change` skill.

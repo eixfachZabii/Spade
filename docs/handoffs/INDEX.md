@@ -22,5 +22,5 @@ The only roadmap ([ADR 0003](../adr/0003-issues-are-the-inbox-index-is-the-roadm
 - **01 — Lockdown** — ✅ 2026-10-09 — secrets rotated and out of the repo, history rewritten, a fresh clone boots
 - **02 — Shape** — ✅ merged 2026-10-09 (`ee01ad0`) — `cv/` imported, model in LFS, the ledger moved to references
 - **03 — Gate** — ✅ merged 2026-10-09 (`7738881`) — `scripts/gate.sh` and CI green; evaluator fixed; guard hook
-- **04 — Docs** — 🔲 building — status quo, salvage map, references, ADRs, PRODUCT, CONTEXT, CLAUDE.md
-- **05 — Tracker** — 🔲 — labels, board, skills, seeded backlog
+- **04 — Docs** — ✅ merged 2026-10-09 (`c8834e7`) — status quo, salvage map, references, ADRs 0001–0005, PRODUCT, CONTEXT, CLAUDE.md
+- **05 — Tracker** — ✅ merged 2026-10-09 — 15 labels, the Spade board (#3) with `check_board.py`, the ship-phase / capture-idea / verify-change skills, a seeded backlog of 16 issues ([#1](https://github.com/eixfachZabii/Spade/issues/1)–[#16](https://github.com/eixfachZabii/Spade/issues/16))

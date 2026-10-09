@@ -64,3 +64,6 @@ jobs:
           python-version: '3.12'
       - name: relative links resolve
         run: python3 scripts/check_doc_links.py
+      - uses: astral-sh/setup-uv@v6
+      - name: scripts pytest
+        run: uvx pytest -q scripts/tests

@@ -53,6 +53,7 @@ if want docs; then
   run "relative links resolve" python3 scripts/check_doc_links.py
   run "CLAUDE.md within its byte budget" python3 scripts/doc_budget.py check
   run "no negated close-keyword in unpushed commits" python3 scripts/check_commit_refs.py
+  run "scripts: pytest" uvx --quiet pytest -q scripts/tests
 fi
 
 step "not proven by this gate"
@@ -67,6 +68,7 @@ printf '  %s· client/ and webapp/ (frozen legacy) are not built or tested%s\n' 
 printf '  %s· cv: only that the model loads and knows 52 labels; card-reading ACCURACY is not measured%s\n' "$D" "$N"
 printf '  %s· no real phone, real camera or real poker night was involved%s\n' "$D" "$N"
 printf '  %s· the Docker image was not built%s\n' "$D" "$N"
+printf '  %s· filed or closed an issue? the board does not know: python3 scripts/check_board.py --fix%s\n' "$D" "$N"
 [[ "$ONLY" != all ]] && printf '  %s!%s partial run (%s): the other blocks did not run\n' "$Y" "$N" "$ONLY"
 
 echo
