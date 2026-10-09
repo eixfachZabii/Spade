@@ -77,6 +77,14 @@ org/
 # Secrets: never tracked (spadeboot/.env.example is the template)
 *.p12
 gurobi.lic*
+.env
+.env.*
+!.env.example
+# the legacy apps' tracked .env files hold only API base URLs
+!client/.env.development
+!client/.env.production
+!webapp/.env.development
+!webapp/.env.production
 
 # Python (cv/, scripts/)
 __pycache__/
