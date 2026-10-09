@@ -10,10 +10,10 @@ description: Use before claiming a Spade change works, is fixed or is complete, 
 ## 1. A passing test may be pinning the bug
 For a fix, prove the test can fail:
 ```bash
-git diff -- <fixed file> > "$(mktemp -d)/fix.patch"   # keep the path it printed
-git checkout -- <fixed file>
+P="$(mktemp -d)/fix.patch"; git diff -- <fixed file> > "$P"; echo "patch saved: $P"
+test -s "$P" && git checkout -- <fixed file>          # only revert once the patch is safely saved
 (cd spadeboot && ./mvnw -q test -Dtest=<TestClass>)   # expect RED
-git apply <that patch>
+git apply "$P"
 (cd spadeboot && ./mvnw -q test -Dtest=<TestClass>)   # expect GREEN
 ```
 A test that passes both ways guards nothing. (Never `git stash` for this; it is shared by every worktree.)
