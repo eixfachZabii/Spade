@@ -23,7 +23,11 @@ case "$path" in
   *) exit 0 ;;
 esac
 
-repo_root="$(cd "$(dirname "$path")" 2>/dev/null && git rev-parse --show-toplevel 2>/dev/null)" || exit 0
+# A new file often lives in a directory that doesn't exist yet (a new package, a spike
+# folder). Walk up to the nearest existing directory, or such edits would slip through.
+dir="$(dirname "$path")"
+while [[ ! -d "$dir" && "$dir" != "/" && "$dir" != "." ]]; do dir="$(dirname "$dir")"; done
+repo_root="$(cd "$dir" 2>/dev/null && git rev-parse --show-toplevel 2>/dev/null)" || exit 0
 [[ -z "$repo_root" ]] && exit 0
 [[ -f "$repo_root/.git" ]] && exit 0          # a linked worktree has .git as a FILE
 
