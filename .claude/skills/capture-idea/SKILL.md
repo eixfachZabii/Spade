@@ -37,7 +37,7 @@ gh issue create --repo eixfachZabii/Spade --title "<outcome-shaped title>" \
   --body-file "<the temp file>"
 python3 scripts/check_board.py --fix
 ```
-The board's item list lags a few seconds behind writes: if a plain `check_board.py` right after `--fix` still flags the new issue, wait ~10 s and re-run.
+The board's item list lags a few seconds behind writes: if a plain `check_board.py` right after `--fix` still flags the new issue, wait up to a minute and re-run.
 
 Add `needs-grill` when the design is open. `type:phase` is set only by promotion (step 4).
 
