@@ -1,6 +1,6 @@
 # Version 0 · Foundation: design
 
-**Status:** 🔲 scoped 2026-10-09 (brainstorming, 6 sections approved one by one) · not started
+**Status:** 🔲 scoped and approved 2026-10-09 (brainstorming, 6 sections approved one by one; spec approved by owner) · not started
 **Plan:** `V0_2026-10-09_FOUNDATION_TASKS.md` (to be written by `superpowers:writing-plans` after this spec is approved)
 **Evidence:** [`V0_audits/`](V0_audits/): five read-only audits from 2026-10-09
 
@@ -244,7 +244,7 @@ Closing comment: *"Shipped in Version N Phase NN (merge `sha`). <what changed>. 
 
 | Secret | Action |
 |---|---|
-| Gurobi WLS licence | **Most urgent.** Regenerate the API key in the Gurobi Web License Manager and replace the local `gurobi.lic` |
+| Gurobi WLS licence | **Most urgent.** Measured 2026-10-09 by hash: the leaked API key is the one in `~/Downloads/gurobi.lic`. `~/Downloads/gurobi.lic-2` is a newer API key on the same licence. Creating a key does not revoke the old one, so **delete the leaked API key** in the Web License Manager, keep `-2`, and delete the old file. Local dev uses the host-locked `~/gurobi.lic`, which never leaked. Docker cannot use that one (it is locked to the Mac's host ID), so the V1 Docker work passes the WLS key in as env vars (`WLSACCESSID`/`WLSSECRET`/`LICENSEID`) from the untracked `.env` |
 | DB password (the one shared with the orphan branch) | Change it in the local `.env` / config |
 | Genius token | Regenerate it (the comparison was inconclusive, and it is cheap) |
 | JWT secret | Generate a new one locally. The leaked one isn't in use, but the new config starts clean |
