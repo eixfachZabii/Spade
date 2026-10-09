@@ -2,7 +2,7 @@
 
 Date: 2026-10-09
 Status: Accepted
-Relates to: [V0 spec](../handoffs/V0_2026-10-09_FOUNDATION.md) D1–D3 · [PRODUCT.md](../../PRODUCT.md)
+Relates to: [V0 spec](../handoffs/done/Version0.0/V0_2026-10-09_FOUNDATION.md) D1–D3 · [PRODUCT.md](../../PRODUCT.md)
 
 ## Context
 Spade exists for our own poker nights (D1). The 2025 code assumed two different products at once: the README promised a camera-driven dealer for a physical table, while the engine shuffled and dealt its own virtual deck. The owner settled it: *"phone camera recognizes your own player cards. table cam reads community cards. chips like raise are entered manually. I want the card detection."*

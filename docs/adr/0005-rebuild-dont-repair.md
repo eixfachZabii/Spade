@@ -2,7 +2,7 @@
 
 Date: 2026-10-09
 Status: Accepted
-Relates to: [V0 spec](../handoffs/V0_2026-10-09_FOUNDATION.md) D21–D25 · [salvage map](../status-quo/salvage.md) · [webapp style](../references/webapp-style.md)
+Relates to: [V0 spec](../handoffs/done/Version0.0/V0_2026-10-09_FOUNDATION.md) D21–D25 · [salvage map](../status-quo/salvage.md) · [webapp style](../references/webapp-style.md)
 
 ## Context
 The 2025 code works in places and is broken in many others (see [status-quo](../status-quo/README.md)). The hub `client/` is a Vision UI template with no style of its own. The phone app `webapp/` needs to be on iOS. The owner: *"take the best parts of it, look at wealth watcher for architecture inspiration as well and just code it fully new where things can't be saved."*

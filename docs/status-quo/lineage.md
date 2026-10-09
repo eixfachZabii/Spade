@@ -1,7 +1,7 @@
 # Lineage: where Spade came from, 2026-10-09
 
 > Dated snapshot, not maintained (V0 spec §5).
-> Evidence: [audit](../handoffs/V0_audits/audit-lineage.md). Salvage verdicts: [salvage.md](salvage.md).
+> Evidence: [audit](../handoffs/done/Version0.0/V0_audits/audit-lineage.md). Salvage verdicts: [salvage.md](salvage.md).
 
 ## Timeline
 | When | Repo (local path) | What |

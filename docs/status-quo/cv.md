@@ -3,7 +3,7 @@
 > Dated snapshot, not maintained (V0 spec §5).
 > **Changed since:** Phase 02: imported into this repo as `cv/` (snapshot of `lucabzt/spadeAI@9e4ec5e`), uv project, model in Git LFS, smoke tests.
 >
-> Evidence: [audit](../handoffs/V0_audits/audit-lineage.md) §C. Salvage verdicts: [salvage.md](salvage.md).
+> Evidence: [audit](../handoffs/done/Version0.0/V0_audits/audit-lineage.md) §C. Salvage verdicts: [salvage.md](salvage.md).
 
 ## What it does
 A Flask-SocketIO service (`cv/app.py`, port 5001, plain HTTP) with two jobs:

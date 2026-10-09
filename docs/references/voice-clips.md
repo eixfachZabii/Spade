@@ -14,4 +14,4 @@
 | (loose files) | 8 | placeholders: `CALL TODO.mp3`, `CHECK TODO.mp3`, `FLOP TODO.mp3`, `FOLD TODO.mp3`, `RAISE TODO.mp3`, `RIVER TODO.mp3`, `TURN TODO.mp3`, `WINS TODO.mp3` |
 | **Total** | **436** | |
 
-Two-pair announcements were never recorded ([lineage audit](../handoffs/V0_audits/audit-lineage.md) §D). The Python player that sequenced them lives at `lucabzt/Spade@1510db9:server/src/mediaplayer/sound_manager.py`.
+Two-pair announcements were never recorded ([lineage audit](../handoffs/done/Version0.0/V0_audits/audit-lineage.md) §D). The Python player that sequenced them lives at `lucabzt/Spade@1510db9:server/src/mediaplayer/sound_manager.py`.

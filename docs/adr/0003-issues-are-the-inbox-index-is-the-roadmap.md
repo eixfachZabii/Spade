@@ -2,7 +2,7 @@
 
 Date: 2026-10-09
 Status: Accepted
-Relates to: [V0 spec](../handoffs/V0_2026-10-09_FOUNDATION.md) D10, D13 · adopted from WealthWatcher ADR 0032
+Relates to: [V0 spec](../handoffs/done/Version0.0/V0_2026-10-09_FOUNDATION.md) D10, D13 · adopted from WealthWatcher ADR 0032
 
 ## Context
 WealthWatcher kept ROADMAP files next to its phase docs. When it measured them, 84% of their content duplicated phase docs, and two of their open checkboxes had already shipped. A list with no state goes stale.
