@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spade hub · Direction A · The Oval</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="hub-kit.css?v=2">
+<style>
+  /* A · The Oval: the legacy hub's concept (seats around a table), rebuilt in the webapp's world. */
+  .top { position: absolute; inset: 0 0 auto 0; height: 5.5rem; padding: 0 3rem; display: flex; align-items: center; gap: 1.25rem; }
+  .top .brand { font-size: var(--t-title); font-weight: 800; letter-spacing: -0.03em; }
+  .top .night { font-size: var(--t-label); color: var(--sp-ink-2); font-weight: 500; }
+  .top .spacer { flex: 1; }
+  .top .blinds { font-size: var(--t-label); color: var(--sp-ink-2); margin-right: 2rem; }
+  .top .blinds b { color: var(--sp-ink); font-weight: 600; }
+
+  .felt {
+    position: absolute; left: 17rem; top: 12rem; width: 86rem; height: 42rem; border-radius: 50%;
+    background: radial-gradient(ellipse at 50% 42%, #22304a 0%, var(--sp-panel) 48%, #172235 100%);
+    box-shadow: inset 0 0 0 0.35rem #2c3a52, inset 0 0 0 0.5rem #121a2a, 0 2.5rem 5rem -1.5rem rgba(0, 0, 0, 0.7);
+  }
+  .felt::after { content: ""; position: absolute; inset: 3.2rem 5.5rem; border-radius: 50%; border: 0.12rem solid rgba(156, 163, 175, 0.12); }
+
+  .center { position: absolute; left: 60rem; top: 33rem; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 1.6rem; width: 60rem; }
+  .pot { display: flex; align-items: baseline; gap: 1rem; }
+  .pot .label { font-size: var(--t-title); color: var(--sp-ink-2); font-weight: 600; }
+  .pot .amount { font-size: var(--t-figure); font-weight: 800; letter-spacing: -0.035em; }
+  .pots { font-size: var(--t-caption); color: var(--sp-ink-2); margin-top: -1.1rem; }
+  .pots b { color: var(--sp-allin); font-weight: 600; }
+  .board { display: flex; gap: 1.1rem; padding-top: 0.6rem; }
+  .board .pcard { --w: 8.4rem; }
+  .action-line { font-size: var(--t-body); color: var(--sp-ink-2); font-weight: 500; }
+  .action-line b { color: var(--sp-ink); font-weight: 700; }
+
+  .seat {
+    position: absolute; left: calc(var(--x) * 1rem); top: calc(var(--y) * 1rem); transform: translate(-50%, -50%);
+    width: 23rem; padding: 1.1rem 1.4rem 1.1rem 1.1rem; border-radius: var(--sp-radius);
+    background: var(--sp-bg-2); border: 0.15rem solid var(--sp-bg-3);
+    box-shadow: 0 1rem 2rem -0.8rem rgba(0, 0, 0, 0.6);
+    display: grid; grid-template-columns: 4.6rem 1fr; column-gap: 1.1rem; align-items: center;
+    transition: opacity var(--sp-dur) var(--sp-ease-out);
+  }
+  .av { width: 4.6rem; height: 4.6rem; border-radius: 50%; display: grid; place-items: center; background: var(--c); color: #fff; font-weight: 800; font-size: 2.2rem; grid-row: span 2; }
+  .seat .name { font-size: var(--t-title); font-weight: 700; letter-spacing: -0.02em; line-height: 1.05; }
+  .seat .stack { font-size: var(--t-body); font-weight: 700; color: var(--sp-call); line-height: 1.2; }
+  .seat .state { position: absolute; right: 1.4rem; bottom: 1.35rem; font-size: var(--t-caption); font-weight: 600; color: var(--sp-ink-2); }
+  .seat.folded { opacity: 0.45; }
+  .seat.folded .stack { color: var(--sp-ink-2); }
+  .seat.allin .state { color: var(--sp-allin); }
+
+  .seat.turn {
+    border: 0.25rem solid transparent;
+    background: linear-gradient(var(--sp-bg-2), var(--sp-bg-2)) padding-box, var(--sp-gradient) border-box;
+    animation: turnPulse 2.4s ease-in-out infinite;
+  }
+  @keyframes turnPulse {
+    0%, 100% { box-shadow: 0 1rem 2rem -0.8rem rgba(0,0,0,.6), 0 0.6rem 2.2rem rgba(106, 17, 203, 0.35); }
+    50% { box-shadow: 0 1rem 2rem -0.8rem rgba(0,0,0,.6), 0 0.6rem 3.4rem rgba(37, 117, 252, 0.55); }
+  }
+  .seat.turn .state { color: #fff; background: var(--sp-gradient); padding: 0.25rem 0.8rem; border-radius: 999px; top: -1.3rem; bottom: auto; right: 1rem; font-size: var(--t-caption); box-shadow: 0 0.4rem 1rem -0.3rem rgba(37,117,252,.6); }
+
+  .hole { position: absolute; display: flex; }
+  .hole .pcard { --w: 2.9rem; }
+  .hole .pcard + .pcard { margin-left: -1.2rem; transform: rotate(8deg) translateY(0.2rem); }
+  .hole .pcard:first-child { transform: rotate(-6deg); }
+  .hole.up .pcard { --w: 4.6rem; }
+  .hole.up .pcard + .pcard { margin-left: -0.6rem; }
+
+  .bet { position: absolute; transform: translate(-50%, -50%); display: flex; align-items: center; gap: 0.6rem; font-size: var(--t-label); font-weight: 700; }
+  .chip { width: 2.4rem; height: 2.4rem; border-radius: 50%; background: #e5e7eb; box-shadow: inset 0 0 0 0.35rem #9ca3af, inset 0 0 0 0.5rem #e5e7eb, 0 0.25rem 0.5rem rgba(0,0,0,.5); }
+  .dealer { position: absolute; transform: translate(-50%, -50%); width: 3rem; height: 3rem; border-radius: 50%; background: var(--sp-face); color: var(--sp-face-black); display: grid; place-items: center; font-weight: 800; font-size: 1.6rem; box-shadow: 0 0.3rem 0.7rem rgba(0,0,0,.55); }
+
+  .foot { position: absolute; inset: auto 0 0 0; height: 4.5rem; padding: 0 3rem; display: flex; align-items: center; justify-content: space-between; font-size: var(--t-caption); color: var(--sp-ink-2); border-top: 0.1rem solid #1c2536; }
+  .foot .src { display: flex; align-items: center; gap: 0.75rem; }
+  .foot .src svg { width: 1.6rem; height: 1.6rem; stroke: var(--sp-call); fill: none; stroke-width: 2; }
+
+  .winner { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+  .winner .banner { background: var(--sp-gradient); padding: 0.7rem 2.4rem; border-radius: var(--sp-radius); font-size: var(--t-figure); font-weight: 800; letter-spacing: -0.035em; box-shadow: 0 1.2rem 2.8rem -1rem rgba(37, 117, 252, 0.65); }
+  .winner .hand { font-size: var(--t-body); font-weight: 600; }
+  .winner .split { font-size: var(--t-caption); color: var(--sp-ink-2); }
+  .seat .shown { position: absolute; right: 1.4rem; bottom: 1.35rem; font-size: var(--t-caption); font-weight: 700; color: var(--sp-ink); }
+  .seat.won .shown { color: #fff; background: var(--sp-gradient); padding: 0.25rem 0.8rem; border-radius: 999px; top: -1.3rem; bottom: auto; right: 1rem; }
+</style>
+</head>
+<body>
+<!--
+THESIS: The table on the screen is the table in the room: six seats around one oval, so anyone finds themselves by where they sit. Refuses the dashboard-of-widgets arrangement the legacy hub shipped.
+OWN-WORLD: the webapp's world, copied: gray-900 room, slate oval, gray-800 seat panels, 12px radii, green stacks, red/amber/green action colours, Inter; the purple-to-blue gradient appears only on whose turn it is and on the winner.
+STORY: from across the room a player sees whose turn it is, how much is in the pot, and that Spade read the board right; at showdown, who won what.
+FIRST VIEWPORT: the oval fills the stage; seats sit on its rim at their real positions; pot, board and the last action stack in the centre; one thin footer says where the board came from.
+FORM: canon (the category standard and the owner's own 2025 concept), not from the roll; seed key c64b18ec.
+FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
+Synthetic demo data: names, amounts and cards are invented.
+-->
+<main class="stage" aria-label="Spade table, hand 23">
+  <header class="top">
+    <svg class="mark" aria-hidden="true"><use href="#mark"/></svg>
+    <span class="brand">Spade</span>
+    <span class="night">Friday poker night</span>
+    <span class="spacer"></span>
+    <span class="blinds">Hand <b class="num">23</b> · Blinds <b class="num">€0.10 / €0.20</b></span>
+    <span class="live">Live</span>
+  </header>
+
+  <div class="felt" aria-hidden="true"></div>
+
+  <section class="center">
+    <div class="only-turn" style="display:contents">
+      <div class="pot"><span class="label">Pot</span><span class="amount num">€12.60</span></div>
+      <div class="pots num">main €9.60 · side €1.80 · <b>Tobi all-in</b></div>
+    </div>
+    <div class="board">
+      <span class="pcard lift-sd" data-card="KS"></span>
+      <span class="pcard lift-sd" data-card="9H"></span>
+      <span class="pcard lift-sd" data-card="9C"></span>
+      <span class="pcard dim-sd" data-card="4D"></span>
+      <span class="pcard slot only-turn"></span>
+      <span class="pcard dim-sd fresh only-showdown" data-card="2S"></span>
+    </div>
+    <p class="action-line only-turn"><b>Jonas</b> bets <b class="num">€1.20</b> · <b>Elif</b> to act</p>
+    <div class="winner only-showdown">
+      <span class="banner num">Elif wins €15.00</span>
+      <span class="hand">Full house, nines full of kings</span>
+      <span class="split num">main pot €9.60 · side pot €5.40</span>
+    </div>
+  </section>
+
+  <!-- seats, clockwise from the dealer -->
+  <div class="seat folded" style="--x:37;--y:56"><span class="av" style="--c:#0e7490">M</span><span class="name">Mara</span><span class="stack num">€18.40</span><span class="state">Folded</span></div>
+  <div class="dealer" style="left:46rem;top:48.5rem" aria-label="Dealer button">D</div>
+
+  <div class="seat" style="--x:15;--y:33"><span class="av" style="--c:#b45309">J</span><span class="name">Jonas</span><span class="stack num">€9.60</span>
+    <span class="state only-turn">Bet €1.20</span><span class="shown only-showdown">Two pair</span>
+    <div class="hole only-turn" style="right:-1.4rem;top:-2.8rem"><span class="pcard back"></span><span class="pcard back"></span></div>
+    <div class="hole up only-showdown" style="right:-11rem;top:0.4rem"><span class="pcard" data-card="AS"></span><span class="pcard" data-card="KC"></span></div>
+  </div>
+  <div class="bet only-turn" style="left:32rem;top:39rem"><span class="chip"></span><span class="num">€1.20</span></div>
+
+  <div class="seat turn-t won-sd" style="--x:37;--y:10.5"><span class="av" style="--c:#7c3aed">E</span><span class="name">Elif</span>
+    <span class="stack num only-turn">€22.15</span><span class="stack num only-showdown">€35.95</span>
+    <span class="state only-turn">To act · call €1.20</span><span class="shown only-showdown">Wins €15.00</span>
+    <div class="hole only-turn" style="right:-2.2rem;bottom:-2.6rem"><span class="pcard back"></span><span class="pcard back"></span></div>
+    <div class="hole up only-showdown" style="right:-3.2rem;bottom:-4.6rem"><span class="pcard" data-card="KD"></span><span class="pcard" data-card="9S"></span></div>
+  </div>
+
+  <div class="seat allin" style="--x:83;--y:10.5"><span class="av" style="--c:#be185d">T</span><span class="name">Tobi</span><span class="stack num">€0.00</span>
+    <span class="state only-turn">All-in €2.40</span><span class="shown only-showdown">Two pair</span>
+    <div class="hole only-turn" style="left:-2.2rem;bottom:-2.6rem"><span class="pcard back"></span><span class="pcard back"></span></div>
+    <div class="hole up only-showdown" style="left:-3.2rem;bottom:-4.6rem"><span class="pcard" data-card="QH"></span><span class="pcard" data-card="QC"></span></div>
+  </div>
+
+  <div class="seat folded" style="--x:105;--y:33"><span class="av" style="--c:#4d7c0f">N</span><span class="name">Nils</span><span class="stack num">€11.70</span><span class="state">Folded</span></div>
+
+  <div class="seat ana" style="--x:83;--y:56"><span class="av" style="--c:#1d4ed8">A</span><span class="name">Ana</span><span class="stack num">€14.90</span>
+    <span class="state only-turn">Next</span><span class="state only-showdown">Folded</span>
+    <div class="hole only-turn" style="left:-2.2rem;top:-1.6rem"><span class="pcard back"></span><span class="pcard back"></span></div>
+  </div>
+
+  <footer class="foot">
+    <span class="src"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Board read by the table camera · a wrong card is fixed from any phone</span>
+    <span class="num only-turn">Started 19:42 · 2 h 05 min</span>
+    <span class="only-showdown">Saved to tonight's ledger</span>
+  </footer>
+</main>
+<script src="hub-kit.js?v=2"></script>
+<script>
+  // state-dependent classes on shared nodes (the oval keeps one DOM for both states)
+  const sync = () => {
+    const sd = document.body.dataset.state === "showdown";
+    document.querySelector(".turn-t").classList.toggle("turn", !sd);
+    document.querySelector(".won-sd").classList.toggle("won", sd);
+    document.querySelectorAll(".lift-sd").forEach((c) => c.classList.toggle("lift", sd));
+    document.querySelectorAll(".dim-sd").forEach((c) => c.classList.toggle("dim", sd));
+    document.querySelector(".ana").classList.toggle("folded", sd);
+  };
+  sync();
+  window.addEventListener("hashchange", sync);
+</script>
+</body>
+</html>
