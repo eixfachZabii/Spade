@@ -9,6 +9,11 @@ spadeboot/run.sh                              # dev profile: in-memory H2, seed 
 (cd spadeboot && ./mvnw -q verify)            # tests
 (cd spadeboot && docker compose up --build)   # Docker: known broken, see the Docker issue
 ```
+HTTPS for the backend (needed by the legacy apps): create the untracked keystore once, then set `SPADE_SSL_ENABLED=true` and the same password in `spadeboot/.env`:
+```bash
+keytool -genkeypair -alias spadeboot -keyalg RSA -keysize 2048 -storetype PKCS12 -validity 365 \
+  -dname "CN=localhost" -keystore spadeboot/src/main/resources/keystore.p12 -storepass "<a password>"
+```
 
 ## Card detection (`cv/`)
 ```bash
