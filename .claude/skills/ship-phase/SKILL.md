@@ -55,7 +55,7 @@ git push origin master                      # tell the owner you are pushing
 - Close every issue the phase completed, now that the merge sha is real:
   `gh issue close N --repo eixfachZabii/Spade --reason completed --comment "Shipped in Version N Phase NN (merge <sha>). <what changed>. Guarded by: <tests>."`
 - File what you found and are not fixing, with `capture-idea`.
-- `python3 scripts/check_board.py --fix`, then `python3 scripts/check_board.py` prints ✓.
+- `python3 scripts/check_board.py --fix`, then (after ~10 s: the board's item list lags behind writes) `python3 scripts/check_board.py` prints ✓.
 
 ## 7. Leave nothing behind
 ```bash

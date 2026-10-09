@@ -14,6 +14,10 @@ Rules:
 
     python3 scripts/check_board.py          # report; exit 1 if anything is off
     python3 scripts/check_board.py --fix    # repair it
+
+GitHub's project item list is eventually consistent: right after --fix, a plain
+check can still report the items it just fixed (measured 2026-10-09: >5 s lag).
+Wait about 10 s and re-run before suspecting the script.
 """
 from __future__ import annotations
 
