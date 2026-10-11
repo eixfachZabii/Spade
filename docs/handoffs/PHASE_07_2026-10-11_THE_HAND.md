@@ -55,6 +55,7 @@ A whole hand runs on the server from events: blinds, four streets, all-ins and s
   - void the hand.
 - **Table views and the stream** (ADR 0009):
   - `PublicTableView` has no hole-card field; it carries the revealed hands at showdown.
+    - The private hole-card type is named `HoleCards`. The ArchUnit rule `publicViewsNeverNameHoleCards` (Phase 06) forbids it in any `Public*View` / `*PublicView`, nested types included; this phase re-plants the rule against its real types.
   - `PlayerTableView` = the public view + your own seat (cards, to-call, legal actions).
   - `GET /api/v1/tables/{id}/view` and `GET /api/v1/tables/{id}/stream` (SSE):
     - a full snapshot on connect and after every commit;

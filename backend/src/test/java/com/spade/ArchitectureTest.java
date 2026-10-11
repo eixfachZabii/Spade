@@ -4,6 +4,8 @@ import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
 import static com.tngtech.archunit.library.Architectures.layeredArchitecture;
 
+import com.tngtech.archunit.base.DescribedPredicate;
+import com.tngtech.archunit.core.domain.JavaAnnotation;
 import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.junit.AnalyzeClasses;
 import com.tngtech.archunit.junit.ArchTest;
@@ -52,9 +54,15 @@ class ArchitectureTest {
             .should().beRecords()
             .allowEmptyShould(true);
 
-    /** PRODUCT.md: hole cards stay private until showdown. A public view can't even name them (phase 07). */
+    /**
+     * PRODUCT.md: hole cards stay private until showdown. A public view can't even name them (phase 07).
+     * "Public view" covers both naming styles, {@code Public*View} (Phase 07's {@code PublicTableView}) and
+     * {@code *PublicView}, and every type nested inside one ({@code PublicTableView$Seat}).
+     * The private type is any class with the simple name {@code HoleCards}.
+     */
     @ArchTest
-    static final ArchRule publicViewsNeverNameHoleCards = noClasses().that().haveSimpleNameEndingWith("PublicView")
+    static final ArchRule publicViewsNeverNameHoleCards = noClasses()
+            .that().haveNameMatching(".*\\.(Public\\w*View|\\w*PublicView)(\\$.*)?")
             .should().dependOnClassesThat().haveSimpleName("HoleCards")
             .allowEmptyShould(true);
 
@@ -66,8 +74,13 @@ class ArchitectureTest {
     static final ArchRule noStandardStreams = GeneralCodingRules.NO_CLASSES_SHOULD_ACCESS_STANDARD_STREAMS
             .allowEmptyShould(true);
 
+    /** The testworld has an unauthenticated wipe endpoint: it must exist only under exactly {@code @Profile("testworld")}. */
     @ArchTest
     static final ArchRule testworldOnlyUnderItsProfile = classes().that().resideInAPackage("com.spade.testworld..")
-            .should().beAnnotatedWith(Profile.class)
+            .should().beAnnotatedWith(DescribedPredicate.describe(
+                    "@Profile with exactly the value \"testworld\" (not negated, not combined with other profiles)",
+                    (JavaAnnotation<?> a) -> a.getRawType().isEquivalentTo(Profile.class)
+                            && a.get("value").map(v -> v instanceof Object[] values
+                                    && values.length == 1 && "testworld".equals(values[0])).orElse(false)))
             .allowEmptyShould(true);
 }
