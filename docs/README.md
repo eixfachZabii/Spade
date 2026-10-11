@@ -4,9 +4,11 @@
 |---|---|---|
 | [../PRODUCT.md](../PRODUCT.md) | who Spade is for, how a night works, principles | deciding what to build |
 | [../CONTEXT.md](../CONTEXT.md) | the glossary | naming anything |
+| [../DESIGN.md](../DESIGN.md) | the look: tokens, type, the hub's table view (direction A) | building any screen |
 | [../CLAUDE.md](../CLAUDE.md) | rules for agents | every session (loaded automatically) |
 | [../USAGE.md](../USAGE.md) | commands | running anything |
 | [handoffs/INDEX.md](handoffs/INDEX.md) | the roadmap: versions and phases | planning |
+| `handoffs/VN_*.md` | a version's spec: the grill's decisions, salvage changes, phases | questioning why a phase is scoped as it is |
 | `handoffs/PHASE_NN_*.md` | one doc per phase: scope, decisions, what shipped | building that phase |
 | [handoffs/V1_evidence/](handoffs/V1_evidence/README.md) | the research the V1 grill decided from: stacks, WealthWatcher's architecture, the proxy CV spike, three hub design directions | questioning a V1 decision |
 | [handoffs/done/](handoffs/done/Version0.0/CLOSEOUT.md) | shipped versions and their phase docs; each version ends with a `CLOSEOUT.md` | archaeology |
