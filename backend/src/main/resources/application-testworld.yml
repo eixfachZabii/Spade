@@ -1,0 +1,3 @@
+# The testworld: seeded players and table, a fixed clock (phase 06). Never use it with real data.
+spade:
+  invite-code-sha256: 78a44d39f13f23c81a94245583bf9ba68ac2776c06231b7fd787e28d0e77537c   # SHA-256 of "testworld"

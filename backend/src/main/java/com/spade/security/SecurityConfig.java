@@ -29,6 +29,8 @@ class SecurityConfig {
                 .authorizeHttpRequests(a -> a
                         .requestMatchers(HttpMethod.POST, "/api/v1/players", "/api/v1/sessions").permitAll()
                         .requestMatchers("/v3/api-docs", "/v3/api-docs/**", "/actuator/health", "/error").permitAll()
+                        // only the testworld profile answers here; elsewhere this is a plain 404
+                        .requestMatchers("/api/v1/testworld/**").permitAll()
                         .anyRequest().authenticated());
         return http.build();
     }
