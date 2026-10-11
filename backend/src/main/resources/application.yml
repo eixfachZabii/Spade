@@ -23,3 +23,9 @@ management:
     web:
       exposure:
         include: health
+
+spade:
+  invite-code-sha256: ${SPADE_INVITE_CODE_SHA256:}
+  login:
+    max-failures: 5
+    lockout: PT5M
