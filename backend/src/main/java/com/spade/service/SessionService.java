@@ -21,24 +21,31 @@ public class SessionService {
     private final DeviceSessionRepository sessions;
     private final PasswordEncoder passwords;
     private final Clock clock;
+    private final LoginThrottle throttle;
     private final String decoyHash;
 
-    public SessionService(PlayerRepository players, DeviceSessionRepository sessions, PasswordEncoder passwords, Clock clock) {
+    public SessionService(PlayerRepository players, DeviceSessionRepository sessions, PasswordEncoder passwords,
+            Clock clock, LoginThrottle throttle) {
         this.players = players;
         this.sessions = sessions;
         this.passwords = passwords;
         this.clock = clock;
+        this.throttle = throttle;
         this.decoyHash = passwords.encode("decoy-for-unknown-usernames");
     }
 
     @Transactional
-    public LoginResult login(String username, String password, String deviceName) {
-        Optional<PlayerEntity> player = players.findByUsername(AccountService.normalize(username));
+    public LoginResult login(String username, String password, String deviceName, String address) {
+        String name = AccountService.normalize(username);
+        throttle.check(name, address);
+        Optional<PlayerEntity> player = players.findByUsername(name);
         // Check a decoy hash for unknown names too, so timing doesn't reveal who has an account.
         boolean passwordMatches = passwords.matches(password, player.map(PlayerEntity::getPasswordHash).orElse(decoyHash));
         if (player.isEmpty() || !passwordMatches) {
+            throttle.failure(name, address);
             throw new DomainException(DomainException.Kind.UNAUTHORIZED, "Wrong username or password.");
         }
+        throttle.success(name, address);
         String token = SessionTokens.newToken();
         DeviceSessionEntity session = sessions.save(new DeviceSessionEntity(
                 player.get().getId(), Hashing.sha256Hex(token), deviceName.strip(), clock.instant()));

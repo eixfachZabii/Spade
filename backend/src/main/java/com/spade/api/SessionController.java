@@ -4,6 +4,7 @@ import com.spade.api.dto.LoginRequest;
 import com.spade.api.dto.SessionResponse;
 import com.spade.service.SessionService;
 import com.spade.service.SpadePrincipal;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -26,8 +27,9 @@ public class SessionController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public SessionResponse login(@Valid @RequestBody LoginRequest request) {
-        return SessionResponse.from(sessions.login(request.username(), request.password(), request.deviceName()));
+    public SessionResponse login(@Valid @RequestBody LoginRequest request, HttpServletRequest httpRequest) {
+        return SessionResponse.from(sessions.login(request.username(), request.password(), request.deviceName(),
+                ClientAddress.of(httpRequest)));
     }
 
     @DeleteMapping("/current")
