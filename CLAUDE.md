@@ -1,6 +1,6 @@
 # Spade: rules for agents
 
-Spade is an AI poker dealer for **our own poker nights**: real cards on the table, each phone reads its owner's hole cards, a table camera reads the board, bets are tapped in, and Spade runs the hand, decides the showdown and keeps the ledger. Goals and principles: [PRODUCT.md](PRODUCT.md). Words: [CONTEXT.md](CONTEXT.md). Every doc: [docs/README.md](docs/README.md). Commands: [USAGE.md](USAGE.md).
+Spade is an AI poker dealer for **our own poker nights**: real cards on the table, each phone reads its owner's hole cards, a table camera reads the board, bets are tapped in, and Spade runs the hand, decides the showdown and keeps the ledger. Goals and principles: [PRODUCT.md](PRODUCT.md). Words: [CONTEXT.md](CONTEXT.md). Look: [DESIGN.md](DESIGN.md). Every doc: [docs/README.md](docs/README.md). Commands: [USAGE.md](USAGE.md).
 
 ## Before you write code: does it already exist?
 1. **Issues and the roadmap.** `gh issue list --repo eixfachZabii/Spade --state all --search "<words>"` and [docs/handoffs/INDEX.md](docs/handoffs/INDEX.md).
@@ -19,7 +19,7 @@ Spade is an AI poker dealer for **our own poker nights**: real cards on the tabl
 ## The repo
 | Path | What | State |
 |---|---|---|
-| `spadeboot/` | Spring Boot 3 / Java 17: auth, lobby, tables, Hold'em engine, cheatsheet, Spotify | in use; rebuilt simpler in V1 |
+| `spadeboot/` | Spring Boot 3 / Java 17: auth, lobby, tables, Hold'em engine, cheatsheet, Spotify | in use; replaced by `backend/` in V1 (ADR 0012) |
 | `cv/` | Python card detection (YOLOv8, socket.io), from `lucabzt/spadeAI` | in use; community cards are a stub |
 | `client/`, `webapp/` | legacy React apps (hub, phone) | **frozen**: never edit; replaced in V1 by a new web hub and a native iOS player app ([ADR 0005](docs/adr/0005-rebuild-dont-repair.md)) |
 | `scripts/` | the gate and its checks | |
@@ -56,7 +56,7 @@ They live only in the untracked `spadeboot/.env` (template `spadeboot/.env.examp
   - Scopes: backend · cv · docs · devex · legacy · security.
 - **Branches:** `phase/NN-slug`, `fix/<issue>-slug`.
 - **Decisions:** a phase doc numbers them D1…; commits cite them; lasting ones become ADRs.
-- **Card notation:** three formats exist (cv `AS`/`10H`, backend `ACEH`-style, legacy client `THREES`-style). Don't add a fourth; see the `area:cv` notation issue.
+- **Card notation:** the model's labels (`AS`, `10H`) everywhere (ADR 0010). Never add another.
 - **Phase docs:** status line, "What shipped against what was scoped", "Not proven by this phase", "What shipping it actually found".
 
 ## Do not

@@ -13,7 +13,7 @@ The 2025 code works in places and is broken in many others (see [status-quo](../
 - **Hub:** a new web dashboard. The old pages are the concept; all of the code and libraries are new.
 - **Player app:** native iOS in Swift. It replaces `webapp/`.
 - **Look:** the legacy webapp's style and vibe, refined into a design system with the design skills. A new style; not WealthWatcher's.
-- **Not decided here:** stacks, libraries and project names. They come from V1's research and grill.
+- **Not decided here:** stacks, libraries and project names. They come from V1's research and grill. (Decided 2026-10-10: [ADR 0012](0012-v1-stacks-spring-boot-4-react-hub-swiftui-app.md).)
 
 ## Consequences
 - `client/` and `webapp/` stay frozen until their replacements ship, then they are deleted.

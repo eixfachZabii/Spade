@@ -1,7 +1,7 @@
 # 2. Real cards are dealt by a person; cameras read them; bets are typed on the phone
 
 Date: 2026-10-09
-Status: Accepted
+Status: Accepted · amended 2026-10-10 by [ADR 0006](0006-physical-chips-are-the-truth-spade-mirrors-them.md) (the chips are the truth, reversing A1 below) and [ADR 0008](0008-a-hand-is-a-fold-over-events-and-card-reads-never-block-it.md) (the dealer's phone types or scans the board until the table camera passes #3)
 Relates to: [V0 spec](../handoffs/done/Version0.0/V0_2026-10-09_FOUNDATION.md) D1–D3 · [PRODUCT.md](../../PRODUCT.md)
 
 ## Context
