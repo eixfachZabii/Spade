@@ -49,6 +49,10 @@ class TableApiTest {
     }
 
     private ResultActions join(long table, String token, long buyIn) throws Exception {
+        return join(table, token, (Object) buyIn);
+    }
+
+    private ResultActions join(long table, String token, Object buyIn) throws Exception {
         return postJson("/api/v1/tables/" + table + "/seats", token, "{\"buyIn\":" + buyIn + "}");
     }
 
@@ -77,9 +81,12 @@ class TableApiTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.detail").value(containsString("steps of 5")));
         long table = openTable(host, 6);
-        join(table, host, 0).andExpect(status().isBadRequest());
-        join(table, host, -100).andExpect(status().isBadRequest());
-        join(table, host, 1003).andExpect(status().isBadRequest());
+        for (long refused : new long[] {0, -100, 1003}) {
+            join(table, host, refused)
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.detail").value(containsString("5 points")))
+                    .andExpect(jsonPath("$.detail").value(containsString("smallest chip")));
+        }
         join(table, host, 2_000_000)
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.detail").value(containsString("typo")));
@@ -131,6 +138,27 @@ class TableApiTest {
 
         String dev = players.newPlayerToken("dev");
         join(table, dev, 1000).andExpect(jsonPath("$.seats[0].seatNumber").value(1));   // seat 1 is free again
+    }
+
+    @Test
+    void aFractionalAmountIsRefusedNotTruncated() throws Exception {
+        String host = players.newPlayerToken("frac");
+        long table = openTable(host, 6);
+        join(table, host, 999.5).andExpect(status().isBadRequest());
+        join(table, host, 1000).andExpect(status().isCreated());
+        postJson("/api/v1/tables/" + table + "/seats/me/buy-ins", host, "{\"points\":500.9}")
+                .andExpect(status().isBadRequest());
+        postJson("/api/v1/tables/" + table + "/seats/me/cash-out", host, "{\"points\":1000.9}")
+                .andExpect(status().isBadRequest());
+
+        Long cashOuts = jdbc.queryForObject("""
+                select count(*) from cash_out c join seat s on s.id = c.seat_id where s.table_id = ?""", Long.class, table);
+        Long bought = jdbc.queryForObject("""
+                select sum(b.points) from buy_in b join seat s on s.id = b.seat_id where s.table_id = ?""", Long.class, table);
+        assertThat(cashOuts).isZero();
+        assertThat(bought).isEqualTo(1000L);
+        mvc.perform(get("/api/v1/tables/" + table).header("Authorization", bearer(host)))
+                .andExpect(jsonPath("$.seats[0].stack").value(1000));
     }
 
     @Test

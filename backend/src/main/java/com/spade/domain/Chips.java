@@ -12,7 +12,7 @@ public final class Chips {
     /** A buy-in, a top-up or a blind: more than nothing. */
     public static long requireStake(long points, String what) {
         if (points <= 0) {
-            throw invalid(what + " must be more than 0 points.");
+            throw invalid(what + " must be at least " + SMALLEST + " points (the smallest chip), got " + points + ".");
         }
         return requireCountable(points, what);
     }
@@ -20,7 +20,7 @@ public final class Chips {
     /** A counted cash-out: may be nothing. */
     public static long requireCount(long points, String what) {
         if (points < 0) {
-            throw invalid(what + " can't be negative.");
+            throw invalid(what + " can't be negative. Count your chips: " + SMALLEST + " points is the smallest chip, and 0 is allowed.");
         }
         return requireCountable(points, what);
     }
@@ -30,7 +30,8 @@ public final class Chips {
             throw invalid(what + " must be in steps of " + SMALLEST + " points (the smallest chip), got " + points + ".");
         }
         if (points > MAX) {
-            throw invalid(what + " of " + points + " points is more than " + MAX + " (€10,000). A typo?");
+            throw invalid(what + " of " + points + " points is more than " + String.format(java.util.Locale.ROOT, "%,d", MAX)
+                    + " points (€10,000). A typo? Amounts are in steps of " + SMALLEST + " points (the smallest chip).");
         }
         return points;
     }

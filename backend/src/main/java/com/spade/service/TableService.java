@@ -69,7 +69,7 @@ public class TableService {
 
     @Transactional
     public TableView join(SpadePrincipal me, long tableId, long buyIn) {
-        TableEntity table = openTable(tableId);
+        TableEntity table = lockedOpenTable(tableId);
         Chips.requireStake(buyIn, "A buy-in");
         seats.findByPlayerIdAndLeftAtIsNull(me.playerId()).ifPresent(seat -> {
             throw conflict(seat.getTableId() == tableId
@@ -88,7 +88,7 @@ public class TableService {
 
     @Transactional
     public TableView topUp(SpadePrincipal me, long tableId, long points) {
-        TableEntity table = openTable(tableId);
+        TableEntity table = lockedOpenTable(tableId);
         Chips.requireStake(points, "A top-up");
         SeatEntity seat = mySeat(me, tableId);
         seat.addToStack(points);
@@ -98,7 +98,7 @@ public class TableService {
 
     @Transactional
     public TableView cashOut(SpadePrincipal me, long tableId, long countedPoints) {
-        TableEntity table = openTable(tableId);
+        TableEntity table = lockedOpenTable(tableId);
         Chips.requireCount(countedPoints, "A cash-out");
         SeatEntity seat = mySeat(me, tableId);
         Instant now = clock.instant();
@@ -109,7 +109,7 @@ public class TableService {
 
     @Transactional
     public TableView close(SpadePrincipal me, long tableId) {
-        TableEntity table = openTable(tableId);
+        TableEntity table = lockedOpenTable(tableId);
         if (table.getHostId() != me.playerId()) {
             throw new DomainException(DomainException.Kind.FORBIDDEN, "Only the host can close this table.");
         }
@@ -122,16 +122,24 @@ public class TableService {
     }
 
     private TableEntity table(long tableId) {
-        return tables.findById(tableId)
-                .orElseThrow(() -> new DomainException(DomainException.Kind.NOT_FOUND, "No such table."));
+        return tables.findById(tableId).orElseThrow(TableService::noSuchTable);
     }
 
-    private TableEntity openTable(long tableId) {
-        TableEntity table = table(tableId);
+    /**
+     * The table, locked for this transaction, and checked to be open once the lock is ours. Everything that
+     * seats, tops up, cashes out or closes starts here, so those writes can't interleave on one table
+     * (a top-up must not undo a cash-out, a join must not land after a close).
+     */
+    private TableEntity lockedOpenTable(long tableId) {
+        TableEntity table = tables.findForUpdateById(tableId).orElseThrow(TableService::noSuchTable);
         if (!table.isOpen()) {
             throw conflict("This table is closed.");
         }
         return table;
+    }
+
+    private static DomainException noSuchTable() {
+        return new DomainException(DomainException.Kind.NOT_FOUND, "No such table.");
     }
 
     private SeatEntity mySeat(SpadePrincipal me, long tableId) {

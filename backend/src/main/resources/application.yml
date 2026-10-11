@@ -5,6 +5,10 @@ spring:
     url: ${SPADE_DB_URL:jdbc:postgresql://localhost:5432/spade}
     username: ${SPADE_DB_USER:spade}
     password: ${SPADE_DB_PASSWORD:}
+  jackson:
+    deserialization:
+      # 1000.9 points is a mistake, not 1000: refuse a fraction where a whole number is expected (Jackson 3 default: truncate)
+      accept-float-as-int: false
   jpa:
     open-in-view: false
     hibernate:
