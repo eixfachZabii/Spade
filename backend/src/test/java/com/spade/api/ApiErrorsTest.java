@@ -1,5 +1,6 @@
 package com.spade.api;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -10,8 +11,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.spade.SpadeIntegrationTest;
+import jakarta.servlet.RequestDispatcher;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.webmvc.autoconfigure.error.BasicErrorController;
+import org.springframework.boot.webmvc.error.ErrorController;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -26,6 +33,9 @@ class ApiErrorsTest {
 
     @Autowired
     MockMvc mvc;
+
+    @Autowired
+    ApplicationContext context;
 
     @Test
     void anUnexpectedErrorIsA500ProblemWithoutItsMessage() throws Exception {
@@ -63,6 +73,51 @@ class ApiErrorsTest {
     void anUnknownPathIsA404Problem() throws Exception {
         mvc.perform(get("/api/v1/nowhere"))
                 .andExpect(status().isNotFound())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
+    }
+
+    /**
+     * Errors that never reach a controller (a security filter's sendError, the firewall's 400, the container's
+     * 413, an exception thrown in a filter) are forwarded to /error. MockMvc does not take that path by itself,
+     * so the forward is simulated with the attributes the container sets.
+     */
+    @ParameterizedTest
+    @ValueSource(ints = {400, 403, 413, 500})
+    void anErrorForwardedToTheErrorPathIsAProblemWithoutInternals(int code) throws Exception {
+        mvc.perform(get("/error")
+                        .requestAttr(RequestDispatcher.ERROR_STATUS_CODE, code)
+                        .requestAttr(RequestDispatcher.ERROR_MESSAGE, "secret-y")
+                        .requestAttr(RequestDispatcher.ERROR_REQUEST_URI, "/secret-path")
+                        .requestAttr(RequestDispatcher.ERROR_EXCEPTION, new IllegalStateException("secret-x")))
+                .andExpect(status().is(code))
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.status").value(code))
+                .andExpect(jsonPath("$.detail").isNotEmpty())
+                .andExpect(content().string(not(containsString("secret-x"))))
+                .andExpect(content().string(not(containsString("secret-y"))))
+                .andExpect(content().string(not(containsString("secret-path"))));
+    }
+
+    @Test
+    void ourErrorControllerReplacesBootsFallback() {
+        assertThat(context.getBeansOfType(BasicErrorController.class)).isEmpty();
+        assertThat(context.getBeansOfType(ErrorController.class).values())
+                .hasSize(1).first().isInstanceOf(ProblemErrorController.class);
+    }
+
+    @Test
+    void theErrorPathWithoutAStatusIsA500Problem() throws Exception {
+        mvc.perform(get("/error"))
+                .andExpect(status().isInternalServerError())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.detail").value("Something went wrong on our side."));
+    }
+
+    @Test
+    void aBrowserAskingForHtmlStillGetsAProblem() throws Exception {
+        mvc.perform(get("/error").accept(MediaType.TEXT_HTML)
+                        .requestAttr(RequestDispatcher.ERROR_STATUS_CODE, 403))
+                .andExpect(status().isForbidden())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
     }
 }

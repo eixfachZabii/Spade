@@ -34,6 +34,17 @@ class SpadePropertiesTest {
     }
 
     @Test
+    void aWronglyFormattedHashIsNeverEchoedInTheFailure() {
+        runner.withPropertyValues("spade.invite-code-sha256=letmein")
+                .run(context -> {
+                    assertThat(context).hasFailed();
+                    for (Throwable t = context.getStartupFailure(); t != null; t = t.getCause()) {
+                        assertThat(String.valueOf(t.getMessage())).doesNotContain("letmein");
+                    }
+                });
+    }
+
+    @Test
     void bindsAValidConfiguration() {
         runner.withPropertyValues("spade.invite-code-sha256=1c8bfe8f801d79745c4631d09fff36c82aa37fc4cce4fc946683d7b336b63032")
                 .run(context -> {
