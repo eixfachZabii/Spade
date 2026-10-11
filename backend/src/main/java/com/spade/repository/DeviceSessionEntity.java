@@ -7,9 +7,15 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.Instant;
+import org.hibernate.annotations.DynamicUpdate;
 
-/** One logged-in device. Only the token's SHA-256 is kept (ADR 0011). */
+/**
+ * One logged-in device. Only the token's SHA-256 is kept (ADR 0011).
+ * {@code @DynamicUpdate}: each UPDATE writes only the columns that changed, so a request's touch
+ * (last_used_at) can never write back a stale revoked_at and undo a concurrent revoke.
+ */
 @Entity
+@DynamicUpdate
 @Table(name = "device_session")
 public class DeviceSessionEntity {
 
