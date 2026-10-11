@@ -1,5 +1,6 @@
 package com.spade.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -47,5 +48,62 @@ class LoginThrottleTest {
         throttle.success("ben", "2.2.2.2");
         fail(4, "ben", "2.2.2.2");
         assertThatCode(() -> throttle.check("ben", "2.2.2.2")).doesNotThrowAnyException();
+    }
+
+    private void wrongInvites(int times, String address) {
+        for (int i = 0; i < times; i++) {
+            throttle.inviteFailure(address);
+        }
+    }
+
+    @Test
+    void locksAnAddressAfterFiveWrongInviteCodesAndLetsItBackInAfterTheLockout() {
+        wrongInvites(4, "5.5.5.5");
+        assertThatCode(() -> throttle.checkInvite("5.5.5.5")).doesNotThrowAnyException();
+        wrongInvites(1, "5.5.5.5");
+        assertThatThrownBy(() -> throttle.checkInvite("5.5.5.5"))
+                .isInstanceOf(DomainException.class)
+                .hasMessageContaining("invite codes").hasMessageContaining("5 min")
+                .satisfies(e -> assertThat(((DomainException) e).kind())
+                        .isEqualTo(DomainException.Kind.TOO_MANY_REQUESTS));
+        assertThatCode(() -> throttle.checkInvite("8.8.8.8")).doesNotThrowAnyException();
+        clock.advance(Duration.ofMinutes(5));
+        assertThatCode(() -> throttle.checkInvite("5.5.5.5")).doesNotThrowAnyException();
+    }
+
+    @Test
+    void aRightInviteCodeClearsThatAddressesInviteStrikes() {
+        wrongInvites(4, "5.5.5.5");
+        throttle.inviteSuccess("5.5.5.5");
+        wrongInvites(4, "5.5.5.5");
+        assertThatCode(() -> throttle.checkInvite("5.5.5.5")).doesNotThrowAnyException();
+    }
+
+    @Test
+    void wrongInviteCodesNeverLockLoginsFromThatAddress() {
+        wrongInvites(5, "5.5.5.5");
+        assertThatCode(() -> throttle.check("ana", "5.5.5.5")).doesNotThrowAnyException();
+    }
+
+    @Test
+    void wrongPasswordsNeverLockRegistrationFromThatAddress() {
+        fail(5, "ana", "5.5.5.5");
+        assertThatCode(() -> throttle.checkInvite("5.5.5.5")).doesNotThrowAnyException();
+    }
+
+    @Test
+    void aSuccessfulLoginDoesNotClearInviteStrikes() {
+        wrongInvites(5, "5.5.5.5");
+        throttle.success("ana", "5.5.5.5");
+        assertThatThrownBy(() -> throttle.checkInvite("5.5.5.5")).isInstanceOf(DomainException.class);
+    }
+
+    @Test
+    void forgetAllClearsLoginAndInviteStrikes() {
+        fail(5, "ana", "5.5.5.5");
+        wrongInvites(5, "5.5.5.5");
+        throttle.forgetAll();
+        assertThatCode(() -> throttle.check("ana", "5.5.5.5")).doesNotThrowAnyException();
+        assertThatCode(() -> throttle.checkInvite("5.5.5.5")).doesNotThrowAnyException();
     }
 }

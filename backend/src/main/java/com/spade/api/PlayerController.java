@@ -6,6 +6,7 @@ import com.spade.api.dto.RegisterPlayerRequest;
 import com.spade.service.AccountService;
 import com.spade.service.SessionService;
 import com.spade.service.SpadePrincipal;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.HttpStatus;
@@ -33,9 +34,10 @@ public class PlayerController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public PlayerResponse register(@Valid @RequestBody RegisterPlayerRequest request) {
+    public PlayerResponse register(@Valid @RequestBody RegisterPlayerRequest request, HttpServletRequest httpRequest) {
         return PlayerResponse.from(accounts.register(
-                request.username(), request.displayName(), request.password(), request.inviteCode()));
+                request.username(), request.displayName(), request.password(), request.inviteCode(),
+                ClientAddress.of(httpRequest)));
     }
 
     @GetMapping("/me")

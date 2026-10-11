@@ -20,20 +20,27 @@ public class AccountService {
     private final PasswordEncoder passwords;
     private final SpadeProperties settings;
     private final Clock clock;
+    private final LoginThrottle throttle;
 
-    public AccountService(PlayerRepository players, PasswordEncoder passwords, SpadeProperties settings, Clock clock) {
+    public AccountService(PlayerRepository players, PasswordEncoder passwords, SpadeProperties settings, Clock clock,
+            LoginThrottle throttle) {
         this.players = players;
         this.passwords = passwords;
         this.settings = settings;
         this.clock = clock;
+        this.throttle = throttle;
     }
 
     @Transactional
-    public PlayerView register(String username, String displayName, String password, String inviteCode) {
+    public PlayerView register(String username, String displayName, String password, String inviteCode,
+            String address) {
+        throttle.checkInvite(address);
         if (!Hashing.matchesSha256(inviteCode, settings.inviteCodeSha256())) {
+            throttle.inviteFailure(address);
             throw new DomainException(DomainException.Kind.FORBIDDEN,
                     "That invite code isn't ours. Ask the host for the group's code.");
         }
+        throttle.inviteSuccess(address);
         if (password.getBytes(StandardCharsets.UTF_8).length > BCRYPT_MAX_BYTES) {
             throw new DomainException(DomainException.Kind.INVALID,
                     "Passwords can be at most 72 bytes long. Choose a shorter one.");

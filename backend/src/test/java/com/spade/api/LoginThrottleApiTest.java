@@ -38,4 +38,22 @@ class LoginThrottleApiTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
         login(friend, TestPlayers.PASSWORD, "198.51.100.23").andExpect(status().isCreated());
     }
+
+    private ResultActions register(String username, String inviteCode, String ip) throws Exception {
+        return mvc.perform(post("/api/v1/players").header("CF-Connecting-IP", ip)
+                .contentType(MediaType.APPLICATION_JSON).content("""
+                        {"username":"%s","displayName":"x","password":"correct-horse","inviteCode":"%s"}"""
+                        .formatted(username, inviteCode)));
+    }
+
+    @Test
+    void theInviteCodeCannotBeGuessedThroughTheTunnel() throws Exception {
+        for (int i = 0; i < 5; i++) {
+            register(TestPlayers.unique("guess"), "wrong-" + i, "203.0.113.9").andExpect(status().isForbidden());
+        }
+        register(TestPlayers.unique("guess"), "letmein", "203.0.113.9")
+                .andExpect(status().isTooManyRequests())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
+        register(TestPlayers.unique("other"), "letmein", "198.51.100.77").andExpect(status().isCreated());
+    }
 }
