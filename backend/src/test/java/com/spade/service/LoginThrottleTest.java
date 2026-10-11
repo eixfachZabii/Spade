@@ -10,11 +10,12 @@ import java.time.Duration;
 import java.time.Instant;
 import org.junit.jupiter.api.Test;
 
+/** Limits under test: 5 failures per username, 8 per address (the shipped address limit is 20), lockout 5 min. */
 class LoginThrottleTest {
 
     private final MutableClock clock = new MutableClock(Instant.parse("2026-10-09T19:00:00Z"));
     private final LoginThrottle throttle = new LoginThrottle(
-            new SpadeProperties("0".repeat(64), new SpadeProperties.Login(5, Duration.ofMinutes(5))), clock);
+            new SpadeProperties("0".repeat(64), new SpadeProperties.Login(5, 8, Duration.ofMinutes(5))), clock);
 
     private void fail(int times, String user, String address) {
         for (int i = 0; i < times; i++) {
@@ -33,13 +34,57 @@ class LoginThrottleTest {
 
     @Test
     void locksAnAddressThatGuessesManyUsernames() {
-        fail(1, "a", "6.6.6.6");
-        fail(1, "b", "6.6.6.6");
-        fail(1, "c", "6.6.6.6");
-        fail(1, "d", "6.6.6.6");
-        fail(1, "e", "6.6.6.6");
+        for (int i = 0; i < 7; i++) {
+            fail(1, "guess" + i, "6.6.6.6");
+        }
+        assertThatCode(() -> throttle.check("f", "6.6.6.6")).doesNotThrowAnyException();
+        fail(1, "guess7", "6.6.6.6");
         assertThatThrownBy(() -> throttle.check("f", "6.6.6.6")).isInstanceOf(DomainException.class);
         assertThatCode(() -> throttle.check("f", "7.7.7.7")).doesNotThrowAnyException();
+    }
+
+    @Test
+    void anAddressStaysOpenWhileEachUsernameHasFewerThanFiveStrikes() {
+        fail(4, "ana", "6.6.6.6");
+        assertThatCode(() -> throttle.check("ben", "6.6.6.6")).doesNotThrowAnyException();
+        fail(1, "ana", "6.6.6.6");
+        assertThatThrownBy(() -> throttle.check("ana", "6.6.6.6")).isInstanceOf(DomainException.class);
+        assertThatCode(() -> throttle.check("ben", "6.6.6.6")).doesNotThrowAnyException();
+    }
+
+    @Test
+    void aLateLoginFailureWhileLockedKeepsTheUsernameLock() {
+        fail(5, "ana", "1.1.1.1");
+        fail(1, "ana", "1.1.1.1");
+        assertThatThrownBy(() -> throttle.check("ana", "9.9.9.9")).isInstanceOf(DomainException.class);
+        clock.advance(Duration.ofMinutes(4));
+        fail(1, "ana", "1.1.1.1");
+        assertThatThrownBy(() -> throttle.check("ana", "9.9.9.9")).isInstanceOf(DomainException.class);
+        clock.advance(Duration.ofMinutes(1));
+        assertThatCode(() -> throttle.check("ana", "9.9.9.9")).doesNotThrowAnyException();
+    }
+
+    @Test
+    void aLateLoginFailureWhileLockedKeepsTheAddressLock() {
+        for (int i = 0; i < 8; i++) {
+            fail(1, "guess" + i, "3.3.3.3");
+        }
+        fail(1, "late", "3.3.3.3");
+        assertThatThrownBy(() -> throttle.check("fresh", "3.3.3.3")).isInstanceOf(DomainException.class);
+        clock.advance(Duration.ofMinutes(5));
+        assertThatCode(() -> throttle.check("fresh", "3.3.3.3")).doesNotThrowAnyException();
+    }
+
+    @Test
+    void aLateInviteFailureWhileLockedKeepsTheLock() {
+        wrongInvites(8, "4.4.4.4");
+        wrongInvites(1, "4.4.4.4");
+        assertThatThrownBy(() -> throttle.checkInvite("4.4.4.4")).isInstanceOf(DomainException.class);
+        clock.advance(Duration.ofMinutes(4));
+        wrongInvites(1, "4.4.4.4");
+        assertThatThrownBy(() -> throttle.checkInvite("4.4.4.4")).isInstanceOf(DomainException.class);
+        clock.advance(Duration.ofMinutes(1));
+        assertThatCode(() -> throttle.checkInvite("4.4.4.4")).doesNotThrowAnyException();
     }
 
     @Test
@@ -57,8 +102,8 @@ class LoginThrottleTest {
     }
 
     @Test
-    void locksAnAddressAfterFiveWrongInviteCodesAndLetsItBackInAfterTheLockout() {
-        wrongInvites(4, "5.5.5.5");
+    void locksAnAddressAfterEightWrongInviteCodesAndLetsItBackInAfterTheLockout() {
+        wrongInvites(7, "5.5.5.5");
         assertThatCode(() -> throttle.checkInvite("5.5.5.5")).doesNotThrowAnyException();
         wrongInvites(1, "5.5.5.5");
         assertThatThrownBy(() -> throttle.checkInvite("5.5.5.5"))
@@ -73,27 +118,29 @@ class LoginThrottleTest {
 
     @Test
     void aRightInviteCodeClearsThatAddressesInviteStrikes() {
-        wrongInvites(4, "5.5.5.5");
+        wrongInvites(7, "5.5.5.5");
         throttle.inviteSuccess("5.5.5.5");
-        wrongInvites(4, "5.5.5.5");
+        wrongInvites(7, "5.5.5.5");
         assertThatCode(() -> throttle.checkInvite("5.5.5.5")).doesNotThrowAnyException();
     }
 
     @Test
     void wrongInviteCodesNeverLockLoginsFromThatAddress() {
-        wrongInvites(5, "5.5.5.5");
+        wrongInvites(8, "5.5.5.5");
         assertThatCode(() -> throttle.check("ana", "5.5.5.5")).doesNotThrowAnyException();
     }
 
     @Test
     void wrongPasswordsNeverLockRegistrationFromThatAddress() {
-        fail(5, "ana", "5.5.5.5");
+        for (int i = 0; i < 8; i++) {
+            fail(1, "guess" + i, "5.5.5.5");
+        }
         assertThatCode(() -> throttle.checkInvite("5.5.5.5")).doesNotThrowAnyException();
     }
 
     @Test
     void aSuccessfulLoginDoesNotClearInviteStrikes() {
-        wrongInvites(5, "5.5.5.5");
+        wrongInvites(8, "5.5.5.5");
         throttle.success("ana", "5.5.5.5");
         assertThatThrownBy(() -> throttle.checkInvite("5.5.5.5")).isInstanceOf(DomainException.class);
     }
@@ -101,7 +148,7 @@ class LoginThrottleTest {
     @Test
     void forgetAllClearsLoginAndInviteStrikes() {
         fail(5, "ana", "5.5.5.5");
-        wrongInvites(5, "5.5.5.5");
+        wrongInvites(8, "5.5.5.5");
         throttle.forgetAll();
         assertThatCode(() -> throttle.check("ana", "5.5.5.5")).doesNotThrowAnyException();
         assertThatCode(() -> throttle.checkInvite("5.5.5.5")).doesNotThrowAnyException();

@@ -18,7 +18,8 @@ class SpadePropertiesTest {
 
     private final ApplicationContextRunner runner = new ApplicationContextRunner()
             .withUserConfiguration(Props.class)
-            .withPropertyValues("spade.login.max-failures=5", "spade.login.lockout=PT5M");
+            .withPropertyValues("spade.login.max-failures=5", "spade.login.max-failures-per-address=20",
+                    "spade.login.lockout=PT5M");
 
     @Test
     void refusesToStartWithoutTheInviteCodeHash() {
@@ -50,6 +51,7 @@ class SpadePropertiesTest {
                 .run(context -> {
                     SpadeProperties props = context.getBean(SpadeProperties.class);
                     assertThat(props.login().maxFailures()).isEqualTo(5);
+                    assertThat(props.login().maxFailuresPerAddress()).isEqualTo(20);
                     assertThat(props.login().lockout()).isEqualTo(Duration.ofMinutes(5));
                 });
     }

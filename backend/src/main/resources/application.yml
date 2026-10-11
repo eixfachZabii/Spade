@@ -28,4 +28,5 @@ spade:
   invite-code-sha256: ${SPADE_INVITE_CODE_SHA256:}
   login:
     max-failures: 5
+    max-failures-per-address: 20
     lockout: PT5M

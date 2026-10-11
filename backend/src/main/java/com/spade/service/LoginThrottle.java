@@ -10,9 +10,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.stereotype.Component;
 
 /**
- * Slows down password guessing: after {@code maxFailures} wrong logins, a username and the address they came
- * from are locked for {@code lockout}. Wrong invite codes at registration strike the caller's address the same
- * way, under their own keys, so the group's code can't be guessed through the tunnel. In memory; a restart forgets (fine for one PC, ADR 0007).
+ * Slows down password guessing: after {@code maxFailures} wrong logins a username is locked for {@code lockout}, and
+ * after {@code maxFailuresPerAddress} the address they came from is too. The address limit is higher because at the
+ * table every phone arrives from the home's one public address. Wrong invite codes at registration strike the
+ * caller's address the same way, under their own keys, so the group's code can't be guessed through the tunnel.
+ * In memory; a restart forgets (fine for one PC, ADR 0007).
  */
 @Component
 public class LoginThrottle {
@@ -34,7 +36,8 @@ public class LoginThrottle {
     }
 
     public void failure(String username, String address) {
-        keys(username, address).forEach(this::strike);
+        strike(userKey(username), settings.login().maxFailures());
+        strike(addressKey(address), settings.login().maxFailuresPerAddress());
     }
 
     public void success(String username, String address) {
@@ -47,7 +50,7 @@ public class LoginThrottle {
     }
 
     public void inviteFailure(String address) {
-        strike(inviteKey(address));
+        strike(inviteKey(address), settings.login().maxFailuresPerAddress());
     }
 
     public void inviteSuccess(String address) {
@@ -66,12 +69,16 @@ public class LoginThrottle {
         }
     }
 
-    private void strike(String key) {
+    /** A failure that lands while the key is already locked (a request that passed check() earlier) changes nothing. */
+    private void strike(String key, int limit) {
         Instant now = clock.instant();
         strikes.compute(key, (k, s) -> {
-            boolean fresh = s == null || (s.lockedUntil() != null && !now.isBefore(s.lockedUntil()));
+            if (s != null && s.lockedUntil() != null && now.isBefore(s.lockedUntil())) {
+                return s;
+            }
+            boolean fresh = s == null || s.lockedUntil() != null;
             int failures = fresh ? 1 : s.failures() + 1;
-            return failures >= settings.login().maxFailures()
+            return failures >= limit
                     ? new Strikes(0, now.plus(settings.login().lockout()))
                     : new Strikes(failures, null);
         });
@@ -83,7 +90,15 @@ public class LoginThrottle {
     }
 
     private static List<String> keys(String username, String address) {
-        return List.of("user:" + username, "addr:" + address);
+        return List.of(userKey(username), addressKey(address));
+    }
+
+    private static String userKey(String username) {
+        return "user:" + username;
+    }
+
+    private static String addressKey(String address) {
+        return "addr:" + address;
     }
 
     private static String inviteKey(String address) {

@@ -36,6 +36,11 @@ public record SpadeProperties(
         }
     }
 
-    public record Login(@Min(1) int maxFailures, @NotNull Duration lockout) {
+    /**
+     * {@code maxFailures} locks one username; {@code maxFailuresPerAddress} locks one caller address (and one
+     * address's wrong invite codes). The address limit is higher: at a poker night every phone reaches the server
+     * from the home's one public IP, so one typist must not lock out the table.
+     */
+    public record Login(@Min(1) int maxFailures, @Min(1) int maxFailuresPerAddress, @NotNull Duration lockout) {
     }
 }
