@@ -58,13 +58,21 @@ class PlayerApiTest {
 
     @Test
     void refusesUsernamesWithSpacesOrSymbols() throws Exception {
-        register("ana smith", "correct-horse", "letmein").andExpect(status().isBadRequest());
+        register("ana smith", "correct-horse", "letmein")
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.detail").value(containsString("username")))
+                .andExpect(jsonPath("$.detail").value(containsString("use 3 to 32 letters, digits, '.', '_' or '-'")));
         register("an", "correct-horse", "letmein").andExpect(status().isBadRequest());
     }
 
     @Test
     void refusesPasswordsOutsideEightTo72Bytes() throws Exception {
-        register(TestPlayers.unique("short"), "seven77", "letmein").andExpect(status().isBadRequest());
+        register(TestPlayers.unique("short"), "seven77", "letmein")
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail").value(containsString("password")))
+                .andExpect(jsonPath("$.detail").value(containsString("8 to 72")))
+                .andExpect(content().string(not(containsString("seven77"))));
         register(TestPlayers.unique("long"), "ü".repeat(40), "letmein")   // 40 characters, 80 bytes
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.detail").value(containsString("72 bytes")));

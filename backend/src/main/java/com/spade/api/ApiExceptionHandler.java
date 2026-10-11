@@ -3,11 +3,20 @@ package com.spade.api;
 import com.spade.domain.DomainException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.util.Comparator;
+import java.util.stream.Collectors;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 /**
@@ -18,6 +27,25 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(ApiExceptionHandler.class);
+
+    /**
+     * A rejected request body says which field failed and how to fix it. Never the rejected value:
+     * one of the fields can be a password.
+     */
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException e,
+            HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        ProblemDetail body = e.updateAndGetBody(getMessageSource(), LocaleContextHolder.getLocale());
+        String detail = e.getBindingResult().getFieldErrors().stream()
+                .sorted(Comparator.comparing(FieldError::getField).thenComparing(
+                        error -> String.valueOf(error.getDefaultMessage())))
+                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                .collect(Collectors.joining("; "));
+        if (!detail.isEmpty()) {
+            body.setDetail(detail);
+        }
+        return handleExceptionInternal(e, body, headers, status, request);
+    }
 
     @ExceptionHandler(DomainException.class)
     public ProblemDetail domainRule(DomainException e) {

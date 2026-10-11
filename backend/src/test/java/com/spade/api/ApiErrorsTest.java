@@ -66,7 +66,8 @@ class ApiErrorsTest {
     void invalidInputIsA400Problem() throws Exception {
         mvc.perform(post("/probe/named").with(csrf()).contentType(MediaType.APPLICATION_JSON).content("{}"))   // csrf(): Boot's default chain is still active in this task
                 .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.detail").value(containsString("name")));
     }
 
     @Test
