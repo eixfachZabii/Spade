@@ -18,7 +18,7 @@
   - Testcontainers 2's class is `org.testcontainers.postgresql.PostgreSQLContainer`;
   - the generated-user auto-configuration is `org.springframework.boot.security.autoconfigure.UserDetailsServiceAutoConfiguration`.
 
-**Spec:** [PHASE_06_2026-10-11_BACKEND_FOUNDATION.md](PHASE_06_2026-10-11_BACKEND_FOUNDATION.md) · [V1 spec](V1_2026-10-11_DEALER.md) · ADRs [0006](../adr/0006-physical-chips-are-the-truth-spade-mirrors-them.md), [0010](../adr/0010-one-card-notation-the-models-labels.md), [0011](../adr/0011-device-sessions-not-jwts-the-hub-pairs.md), [0012](../adr/0012-v1-stacks-spring-boot-4-react-hub-swiftui-app.md)
+**Spec:** [PHASE_06_2026-10-11_BACKEND_FOUNDATION.md](PHASE_06_2026-10-11_BACKEND_FOUNDATION.md) · [V1 spec](../../V1_2026-10-11_DEALER.md) · ADRs [0006](../../../adr/0006-physical-chips-are-the-truth-spade-mirrors-them.md), [0010](../../../adr/0010-one-card-notation-the-models-labels.md), [0011](../../../adr/0011-device-sessions-not-jwts-the-hub-pairs.md), [0012](../../../adr/0012-v1-stacks-spring-boot-4-react-hub-swiftui-app.md)
 
 **Before Task 1:** start Docker Desktop on the Mac (`docker info` must succeed). Every backend test starts a `postgres:18-alpine` container. Work only in `.worktrees/phase-06-backend-foundation` (branch `phase/06-backend-foundation`). All `./mvnw` commands run in `backend/`.
 

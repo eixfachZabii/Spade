@@ -111,7 +111,8 @@ A whole hand runs on the server from events: blinds, four streets, all-ins and s
 ## Carried from Phase 06
 Found by Phase 06's final review; nobody reads that doc again once it is archived.
 - A `Card` crosses the API as its label string (`"AS"`, ADR 0010). Map it in the `api` DTOs; `domain` stays Jackson-free.
-- The catch-all `@ExceptionHandler(Exception.class)` matches before causes. A `DomainException` wrapped (for example inside a Jackson creator) or a `ConstraintViolationException` becomes a 500. Handle both when cards and validated beans arrive.
+- A `DomainException` thrown inside a Jackson creator (a card parsed while reading a request body) arrives as `HttpMessageNotReadableException` and answers the generic 400 "The request body isn't valid JSON.": the domain message is lost. Unwrap a `DomainException` cause in `ApiExceptionHandler.handleHttpMessageNotReadable`. A `ConstraintViolationException` (from `@Validated` beans) still reaches the catch-all and becomes a 500: handle it when validated beans arrive.
+- `ProblemAuthenticationEntryPoint` sets no character encoding, so its 401 is served `charset=ISO-8859-1`. The text is ASCII today; set UTF-8 before it gets an em dash or a curly quote.
 - `Showdown.winners` callers pass a seat-ordered map and only the hands eligible for that pot. Its hand-size message prints the map key: rephrase it without the key when seat keys arrive.
 - `SeatEntity.leave` zeroes the stack, so the mirror at cash-out is lost. ADR 0006 ("the mirror only flags a difference") needs it kept, for example on `cash_out`.
 - The "Not a card" message echoes the raw input, uncapped. Cap it once cards come from clients.

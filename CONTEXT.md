@@ -26,6 +26,8 @@ How Spade's words are used in code, docs and issues. Format: **Term**: definitio
 - **Pot**: the chips bet in the current hand. **Side pot**: a pot only some players can win, created when someone is all-in for less.
 - **Showdown**: the end of a hand where the remaining hole cards are compared and Spade says who wins each pot. The chips are pushed by hand.
 - **Table view**: what one viewer may see of a table right now. The hub sees the public view; a player sees it plus their own seat. Nobody's view holds another seat's hole cards before showdown.
+- **Invite code**: the group's shared code a person enters once to create an account. The host passes it on; without it nobody can join. _Avoid_: password, key.
+- **Device**: a phone or hub screen that is logged in to an account. Each has its own session, a player sees theirs listed, and revoking one ends it at once. _Avoid_: login, token (in UI copy).
 - **Pairing**: how a hub screen logs in: it shows a code, the host approves it on their phone, and the hub gets the public view only.
 - **Win probability**: each remaining player's chance to win the pot, shown once all their hole cards are known and no more betting can happen (an all-in, or the river). _Avoid_: odds, equity in UI copy (fine in code).
 - **Hub**: the web dashboard on the big shared screen: the table, plus the night's pages (ledger, cheatsheet, music). _Avoid_: TV app, client (the legacy `client/`).

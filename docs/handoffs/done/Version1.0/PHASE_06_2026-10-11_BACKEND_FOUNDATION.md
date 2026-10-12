@@ -1,8 +1,8 @@
 # Phase 06 · Backend foundation
 
-> **Status:** 🔲 ready, scoped 2026-10-11 · Version 1 · Dealer ([spec](V1_2026-10-11_DEALER.md))
+> **Status:** ✅ shipped 2026-10-12 (scoped 2026-10-11) · Version 1 · Dealer ([spec](../../V1_2026-10-11_DEALER.md))
 > **Issues:** [#5](https://github.com/eixfachZabii/Spade/issues/5) (closes), [#1](https://github.com/eixfachZabii/Spade/issues/1) and [#2](https://github.com/eixfachZabii/Spade/issues/2) (in part; they close in phase 07)
-> **Rests on:** V1 D3, D4, D10–D12, D14 · ADRs [0006](../adr/0006-physical-chips-are-the-truth-spade-mirrors-them.md), [0010](../adr/0010-one-card-notation-the-models-labels.md), [0011](../adr/0011-device-sessions-not-jwts-the-hub-pairs.md), [0012](../adr/0012-v1-stacks-spring-boot-4-react-hub-swiftui-app.md)
+> **Rests on:** V1 D3, D4, D10–D12, D14 · ADRs [0006](../../../adr/0006-physical-chips-are-the-truth-spade-mirrors-them.md), [0010](../../../adr/0010-one-card-notation-the-models-labels.md), [0011](../../../adr/0011-device-sessions-not-jwts-the-hub-pairs.md), [0012](../../../adr/0012-v1-stacks-spring-boot-4-react-hub-swiftui-app.md)
 > **Plan:** [PHASE_06_2026-10-11_BACKEND_FOUNDATION_TASKS.md](PHASE_06_2026-10-11_BACKEND_FOUNDATION_TASKS.md) (13 tasks, `superpowers:writing-plans`).
 
 ## Outcome
@@ -27,7 +27,7 @@
 - **Config.**
   - `@ConfigurationProperties` records, validated at startup;
   - a `Clock` bean;
-  - fail-fast on a missing invite-code hash (the DB password has none of its own: see the deviations).
+  - fail-fast on missing secrets (DB password, invite-code hash). *(Shipped for the invite-code hash only: see the first deviation.)*
   - Secrets live in `backend/.env` (untracked; template `backend/.env.example`).
 - **Persistence.**
   - PostgreSQL;
@@ -38,7 +38,7 @@
 - **Domain: cards.** `Rank`, `Suit`, `Card` as records/enums, parsed from and written as the model's labels (`AS`, `10H`; ADR 0010). Every layer rejects an unknown string.
 - **Domain: evaluator.**
   - `HandEvaluator` ported from `spadeboot/…/HandEvaluation.java` as a pure function (no in-place sort of the caller's list).
-  - It must pass **the 18 V0 vectors** (rewritten in model notation) **and the predecessor's two suites as rows**: `test_poker_hand_analyzer.py` and `test_poker_winner_analyzer.py`, from `lucabzt/Spade@1510db9`, listed in [hand-eval-vectors.md](../references/hand-eval-vectors.md).
+  - It must pass **the 18 V0 vectors** (rewritten in model notation) **and the predecessor's two suites as rows**: `test_poker_hand_analyzer.py` and `test_poker_winner_analyzer.py`, from `lucabzt/Spade@1510db9`, listed in [hand-eval-vectors.md](../../../references/hand-eval-vectors.md).
   - The winner suite becomes a `Showdown.winners(...)` function: split pots and kickers.
 - **Accounts** (ADR 0011):
   - `POST /api/v1/players` registers (username, display name, password, **invite code**);
@@ -129,7 +129,7 @@ Everything in "Scope / In" shipped as scoped, with one exception (the DB passwor
 | `POST /players`, invite code `testworld` | 201, no password in body | 201, body is `id`, `username`, `displayName` only |
 | `POST /sessions`, username `ZOE` (case differs) | 201 with a token | 201, token of 43 characters |
 | `GET /players/me` with the token | 200 | 200, zoe |
-| `GET /players/me` with `Bearer nope`, and with no header | 401 problem | 401 `Sign in first: this needs a valid session.` both |
+| `GET /players/me` with `Bearer nope`, and with no header | 401 problem | 401 problem both. The sentence `Sign in first: this needs a valid session.` was seen on the re-run without a header; a bad token reaches the same entry point (`BearerSessionFilter` leaves it anonymous), and `ApiErrorsTest` pins the sentence |
 | `POST /tables/1/seats` buy-in 1003 | 400, steps of 5 | 400 "A buy-in must be in steps of 5 points (the smallest chip), got 1003." |
 | `POST /tables/1/seats` buy-in 1000 | 201, seat 1 | 201, seat 1, stack 1000 |
 | `POST /tables/1/seats/me/buy-ins` 500 | 200, stack 1500 | 200, stack 1500 |
