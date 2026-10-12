@@ -4,6 +4,7 @@ import com.spade.api.dto.LoginRequest;
 import com.spade.api.dto.SessionResponse;
 import com.spade.service.SessionService;
 import com.spade.service.SpadePrincipal;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,7 @@ public class SessionController {
     }
 
     @PostMapping
+    @SecurityRequirements // public: no session needed (keep in step with SecurityConfig)
     @ResponseStatus(HttpStatus.CREATED)
     public SessionResponse login(@Valid @RequestBody LoginRequest request, HttpServletRequest httpRequest) {
         return SessionResponse.from(sessions.login(request.username(), request.password(), request.deviceName(),

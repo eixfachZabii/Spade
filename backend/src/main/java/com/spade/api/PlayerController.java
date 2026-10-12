@@ -6,6 +6,7 @@ import com.spade.api.dto.RegisterPlayerRequest;
 import com.spade.service.AccountService;
 import com.spade.service.SessionService;
 import com.spade.service.SpadePrincipal;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -33,6 +34,7 @@ public class PlayerController {
     }
 
     @PostMapping
+    @SecurityRequirements // public: no session needed (keep in step with SecurityConfig)
     @ResponseStatus(HttpStatus.CREATED)
     public PlayerResponse register(@Valid @RequestBody RegisterPlayerRequest request, HttpServletRequest httpRequest) {
         return PlayerResponse.from(accounts.register(
