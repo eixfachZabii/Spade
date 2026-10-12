@@ -34,3 +34,7 @@ spade:
     max-failures: 5
     max-failures-per-address: 20
     lockout: PT5M
+
+springdoc:
+  writer-with-order-by-keys: true
+  writer-with-default-pretty-printer: true

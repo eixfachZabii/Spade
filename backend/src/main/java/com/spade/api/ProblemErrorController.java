@@ -1,5 +1,6 @@
 package com.spade.api;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.boot.webmvc.error.ErrorController;
@@ -18,7 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * <p>Only the status is used. The error message, the exception and the request path are deliberately never
  * read, so nothing a request or a failure carried can reach the client.
+ *
+ * <p>{@code @Hidden}: this is a container hook, not an endpoint; it stays out of {@code api/openapi.json}.
  */
+@Hidden
 @RestController
 public class ProblemErrorController implements ErrorController {
 

@@ -1,0 +1,20 @@
+{
+  "id" : 1,
+  "name" : "Testworld table",
+  "hostId" : 1,
+  "smallBlind" : 5,
+  "bigBlind" : 10,
+  "maxSeats" : 6,
+  "open" : true,
+  "seats" : [ {
+    "seatNumber" : 1,
+    "playerId" : 1,
+    "displayName" : "Ana",
+    "stack" : 1000
+  }, {
+    "seatNumber" : 2,
+    "playerId" : 2,
+    "displayName" : "Ben",
+    "stack" : 1000
+  } ]
+}

@@ -1,0 +1,548 @@
+{
+  "openapi" : "3.1.0",
+  "info" : {
+    "title" : "OpenAPI definition",
+    "version" : "v0"
+  },
+  "servers" : [ {
+    "url" : "http://localhost",
+    "description" : "Generated server url"
+  } ],
+  "paths" : {
+    "/api/v1/players" : {
+      "post" : {
+        "operationId" : "register",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/RegisterPlayerRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PlayerResponse"
+                }
+              }
+            },
+            "description" : "Created"
+          }
+        },
+        "tags" : [ "player-controller" ]
+      }
+    },
+    "/api/v1/players/me" : {
+      "get" : {
+        "operationId" : "me",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PlayerResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "player-controller" ]
+      }
+    },
+    "/api/v1/players/me/devices" : {
+      "get" : {
+        "operationId" : "devices",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/DeviceResponse"
+                  }
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "player-controller" ]
+      }
+    },
+    "/api/v1/players/me/devices/{sessionId}" : {
+      "delete" : {
+        "operationId" : "revoke",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "sessionId",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "No Content"
+          }
+        },
+        "tags" : [ "player-controller" ]
+      }
+    },
+    "/api/v1/sessions" : {
+      "post" : {
+        "operationId" : "login",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SessionResponse"
+                }
+              }
+            },
+            "description" : "Created"
+          }
+        },
+        "tags" : [ "session-controller" ]
+      }
+    },
+    "/api/v1/sessions/current" : {
+      "delete" : {
+        "operationId" : "logout",
+        "responses" : {
+          "204" : {
+            "description" : "No Content"
+          }
+        },
+        "tags" : [ "session-controller" ]
+      }
+    },
+    "/api/v1/tables" : {
+      "get" : {
+        "operationId" : "openTables",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/TableResponse"
+                  }
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "table-controller" ]
+      },
+      "post" : {
+        "operationId" : "open",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OpenTableRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TableResponse"
+                }
+              }
+            },
+            "description" : "Created"
+          }
+        },
+        "tags" : [ "table-controller" ]
+      }
+    },
+    "/api/v1/tables/{tableId}" : {
+      "get" : {
+        "operationId" : "get",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "tableId",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TableResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "table-controller" ]
+      }
+    },
+    "/api/v1/tables/{tableId}/close" : {
+      "post" : {
+        "operationId" : "close",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "tableId",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TableResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "table-controller" ]
+      }
+    },
+    "/api/v1/tables/{tableId}/seats" : {
+      "post" : {
+        "operationId" : "join",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "tableId",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/JoinTableRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TableResponse"
+                }
+              }
+            },
+            "description" : "Created"
+          }
+        },
+        "tags" : [ "table-controller" ]
+      }
+    },
+    "/api/v1/tables/{tableId}/seats/me/buy-ins" : {
+      "post" : {
+        "operationId" : "topUp",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "tableId",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PointsRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TableResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "table-controller" ]
+      }
+    },
+    "/api/v1/tables/{tableId}/seats/me/cash-out" : {
+      "post" : {
+        "operationId" : "cashOut",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "tableId",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PointsRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TableResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "table-controller" ]
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "DeviceResponse" : {
+        "type" : "object",
+        "properties" : {
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "current" : {
+            "type" : "boolean"
+          },
+          "deviceName" : {
+            "type" : "string"
+          },
+          "id" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "lastUsedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "JoinTableRequest" : {
+        "type" : "object",
+        "properties" : {
+          "buyIn" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "LoginRequest" : {
+        "type" : "object",
+        "properties" : {
+          "deviceName" : {
+            "type" : "string",
+            "maxLength" : 60,
+            "minLength" : 0
+          },
+          "password" : {
+            "type" : "string",
+            "minLength" : 1
+          },
+          "username" : {
+            "type" : "string",
+            "minLength" : 1
+          }
+        },
+        "required" : [ "deviceName", "password", "username" ]
+      },
+      "OpenTableRequest" : {
+        "type" : "object",
+        "properties" : {
+          "bigBlind" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "maxSeats" : {
+            "type" : "integer",
+            "format" : "int32",
+            "maximum" : 10,
+            "minimum" : 2
+          },
+          "name" : {
+            "type" : "string",
+            "maxLength" : 40,
+            "minLength" : 0
+          },
+          "smallBlind" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        },
+        "required" : [ "name" ]
+      },
+      "PlayerResponse" : {
+        "type" : "object",
+        "properties" : {
+          "displayName" : {
+            "type" : "string"
+          },
+          "id" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "username" : {
+            "type" : "string"
+          }
+        }
+      },
+      "PointsRequest" : {
+        "type" : "object",
+        "properties" : {
+          "points" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "RegisterPlayerRequest" : {
+        "type" : "object",
+        "properties" : {
+          "displayName" : {
+            "type" : "string",
+            "maxLength" : 40,
+            "minLength" : 0
+          },
+          "inviteCode" : {
+            "type" : "string",
+            "minLength" : 1
+          },
+          "password" : {
+            "type" : "string",
+            "maxLength" : 72,
+            "minLength" : 8
+          },
+          "username" : {
+            "type" : "string",
+            "minLength" : 1,
+            "pattern" : "[A-Za-z0-9_.-]{3,32}"
+          }
+        },
+        "required" : [ "displayName", "inviteCode", "password", "username" ]
+      },
+      "SeatResponse" : {
+        "type" : "object",
+        "properties" : {
+          "displayName" : {
+            "type" : "string"
+          },
+          "playerId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "seatNumber" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "stack" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "SessionResponse" : {
+        "type" : "object",
+        "properties" : {
+          "device" : {
+            "$ref" : "#/components/schemas/DeviceResponse"
+          },
+          "token" : {
+            "type" : "string"
+          }
+        }
+      },
+      "TableResponse" : {
+        "type" : "object",
+        "properties" : {
+          "bigBlind" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "hostId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "id" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "maxSeats" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "open" : {
+            "type" : "boolean"
+          },
+          "seats" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SeatResponse"
+            }
+          },
+          "smallBlind" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      }
+    }
+  }
+}
