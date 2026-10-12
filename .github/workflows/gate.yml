@@ -20,10 +20,10 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: '21'
           cache: maven
-      - name: mvn verify
-        working-directory: spadeboot
+      - name: mvn verify (Testcontainers PostgreSQL; Docker is on the runner)
+        working-directory: backend
         run: ./mvnw -q -B verify
 
   cv:

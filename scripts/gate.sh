@@ -3,7 +3,7 @@
 # The gate. One command: backend, cv, docs, and then what it did NOT prove.
 #
 #   scripts/gate.sh             everything (first cv run downloads torch)
-#   scripts/gate.sh --backend   spadeboot only
+#   scripts/gate.sh --backend   backend/ only (needs Docker)
 #   scripts/gate.sh --cv        cv only
 #   scripts/gate.sh --docs      docs and devex checks only
 #
@@ -38,7 +38,11 @@ printf '\n%sSpade gate%s  %s%s%s\n\n' "$Y" "$N" "$D" "$(git rev-parse --abbrev-r
 
 if want backend; then
   step "backend"
-  run "spadeboot: mvn verify" sh -c 'cd spadeboot && ./mvnw -q -B verify'
+  if docker info >/dev/null 2>&1; then
+    run "backend: mvn verify (on a throwaway PostgreSQL)" sh -c 'cd backend && ./mvnw -q -B verify'
+  else
+    bad "backend: Docker is not running; its tests need a throwaway PostgreSQL. Start Docker Desktop and re-run"
+  fi
 fi
 
 if want cv; then
@@ -65,6 +69,7 @@ else
   ok "working tree clean"
 fi
 printf '  %s· client/ and webapp/ (frozen legacy) are not built or tested%s\n' "$D" "$N"
+printf '  %s· spadeboot/ (frozen since Phase 06, deleted when V1 ships) is not built or tested%s\n' "$D" "$N"
 printf '  %s· cv: only that the model loads and knows 52 labels; card-reading ACCURACY is not measured%s\n' "$D" "$N"
 printf '  %s· no real phone, real camera or real poker night was involved%s\n' "$D" "$N"
 printf '  %s· the Docker image was not built%s\n' "$D" "$N"

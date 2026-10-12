@@ -19,7 +19,8 @@ Spade is an AI poker dealer for **our own poker nights**: real cards on the tabl
 ## The repo
 | Path | What | State |
 |---|---|---|
-| `spadeboot/` | Spring Boot 3 / Java 17: auth, lobby, tables, Hold'em engine, cheatsheet, Spotify | in use; replaced by `backend/` in V1 (ADR 0012) |
+| `backend/` | Spring Boot 4.1 / Java 21: accounts, device sessions, tables; the hand engine from phase 07 | in use (ADR 0012) |
+| `spadeboot/` | Spring Boot 3 / Java 17: auth, lobby, tables, Hold'em engine, cheatsheet, Spotify | **frozen** since Phase 06; deleted when V1 ships |
 | `cv/` | Python card detection (YOLOv8, socket.io), from `lucabzt/spadeAI` | in use; community cards are a stub |
 | `client/`, `webapp/` | legacy React apps (hub, phone) | **frozen**: never edit; replaced in V1 by a new web hub and a native iOS player app ([ADR 0005](docs/adr/0005-rebuild-dont-repair.md)) |
 | `scripts/` | the gate and its checks | |
@@ -38,7 +39,7 @@ scripts/gate.sh            # backend + cv + docs, then what it did NOT prove
 scripts/gate.sh --backend  # or --cv, --docs
 ```
 Green means:
-- `./mvnw verify` passed;
+- `backend`'s `./mvnw verify` passed (needs Docker);
 - cv's ruff and pytest passed;
 - every relative doc link resolves;
 - CLAUDE.md is within its byte budget;
@@ -48,7 +49,7 @@ Green means:
 **Read the "not proven" block every time.** The legacy apps, card-reading accuracy, real phones and cameras, and Docker are never covered. CI (`.github/workflows/gate.yml`) runs the same blocks on every push. Before claiming anything works: the `verify-change` skill.
 
 ## Secrets
-They live only in the untracked `spadeboot/.env` (template `spadeboot/.env.example`), which `spadeboot/run.sh` loads. A missing `SPADE_JWT_SECRET` stops the backend at startup, on purpose.
+They live only in the untracked `backend/.env` (template `backend/.env.example`), which `backend/run.sh` loads: `SPADE_DB_PASSWORD`, `SPADE_INVITE_CODE_SHA256`. A missing hash stops the backend at startup, on purpose.
 
 ## Conventions
 - **Commits:** `type(scope): outcome (Phase NN, D#, #issue)`.

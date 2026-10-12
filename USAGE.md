@@ -2,18 +2,15 @@
 
 Commands only. Rules and reasons: [CLAUDE.md](CLAUDE.md).
 
-## Backend (`spadeboot/`)
+## Backend (`backend/`)
 ```bash
-cp spadeboot/.env.example spadeboot/.env      # once; fill it in (openssl rand -base64 48 for SPADE_JWT_SECRET)
-spadeboot/run.sh                              # dev profile: in-memory H2, seed users if SPADE_SEED_PASSWORD is set
-(cd spadeboot && ./mvnw -q verify)            # tests
-(cd spadeboot && docker compose up --build)   # Docker: known broken, see the Docker issue
+(cd backend && ./mvnw spring-boot:test-run -Dspring-boot.run.profiles=testworld)   # throwaway DB (Docker); players ana…fay, password testworld
+cp backend/.env.example backend/.env && backend/run.sh                             # against a real PostgreSQL
+(cd backend && ./mvnw -q verify)                                                    # tests (Docker must run)
+(cd backend && SPADE_CONTRACT_UPDATE=1 ./mvnw -q test -Dtest=ContractTest)         # after a deliberate API change; commit api/
 ```
-HTTPS for the backend (needed by the legacy apps): create the untracked keystore once, then set `SPADE_SSL_ENABLED=true` and the same password in `spadeboot/.env`:
-```bash
-keytool -genkeypair -alias spadeboot -keyalg RSA -keysize 2048 -storetype PKCS12 -validity 365 \
-  -dname "CN=localhost" -keystore spadeboot/src/main/resources/keystore.p12 -storepass "<a password>"
-```
+The testworld's clock is frozen, so a login lockout never expires until `POST /api/v1/testworld/reset`. Its invite code is `testworld`.
+The legacy `spadeboot/` is frozen; its commands are in git history.
 
 ## Card detection (`cv/`)
 ```bash
