@@ -4,8 +4,10 @@ import static com.spade.api.TestPlayers.bearer;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -166,7 +168,68 @@ class TableApiTest {
         String host = players.newPlayerToken("zero");
         long table = openTable(host, 6);
         join(table, host, 1000);
-        postJson("/api/v1/tables/" + table + "/seats/me/cash-out", host, "{\"points\":0}").andExpect(status().isOk());
+        postJson("/api/v1/tables/" + table + "/seats/me/cash-out", host, "{\"points\":0}")
+                .andExpect(status().isOk()).andExpect(jsonPath("$.seats.length()").value(0));
+
+        Long rows = jdbc.queryForObject("""
+                select count(*) from cash_out c join seat s on s.id = c.seat_id where s.table_id = ?""", Long.class, table);
+        Long counted = jdbc.queryForObject("""
+                select c.points from cash_out c join seat s on s.id = c.seat_id where s.table_id = ?""", Long.class, table);
+        Long leftAt = jdbc.queryForObject("select count(*) from seat where table_id = ? and left_at is not null", Long.class, table);
+        assertThat(rows).isEqualTo(1L);
+        assertThat(counted).isZero();
+        assertThat(leftAt).isEqualTo(1L);
+        join(table, host, 500).andExpect(status().isCreated());   // the seat is free: the same player can sit again
+    }
+
+    @Test
+    void aCashOutWithoutAPointsFieldIsRefusedNotTakenAsZero() throws Exception {
+        String host = players.newPlayerToken("nopts");
+        long table = openTable(host, 6);
+        join(table, host, 1000);
+        postJson("/api/v1/tables/" + table + "/seats/me/cash-out", host, "{}")
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.detail").value(containsString("points")));
+
+        Long cashOuts = jdbc.queryForObject("""
+                select count(*) from cash_out c join seat s on s.id = c.seat_id where s.table_id = ?""", Long.class, table);
+        assertThat(cashOuts).isZero();
+        mvc.perform(get("/api/v1/tables/" + table).header("Authorization", bearer(host)))
+                .andExpect(jsonPath("$.seats.length()").value(1));   // still seated
+    }
+
+    @Test
+    void anUnreadableBodyNamesTheFieldAndTheFixButNeverTheValue() throws Exception {
+        String host = players.newPlayerToken("body");
+        long table = openTable(host, 6);
+        join(table, host, 1000);
+        String cashOut = "/api/v1/tables/" + table + "/seats/me/cash-out";
+
+        postJson(cashOut, host, "{\"points\":1234.56}")
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.detail").value("points: use a whole number of points, in steps of 5"));
+        postJson(cashOut, host, "{\"points\":true}")
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail").value("points: use a whole number of points, in steps of 5"));
+        postJson(cashOut, host, "{\"points\":\"secret-value\"}")
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail").value(not(containsString("secret-value"))))
+                .andExpect(jsonPath("$.detail").value(containsString("points")));
+        postJson("/api/v1/tables", host, "{\"name\":\"Friday\",\"smallBlind\":5,\"bigBlind\":10}")   // no maxSeats
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail").value(containsString("maxSeats")));
+        postJson("/api/v1/tables", host, "{\"name\":\"Friday\",\"smallBlind\":5,\"bigBlind\":10,\"maxSeats\":\"six\"}")
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail").value(containsString("maxSeats")))
+                .andExpect(jsonPath("$.detail").value(not(containsString("six"))));
+        postJson(cashOut, host, "{\"points\":")
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail").value("The request body isn't valid JSON."));
+        postJson(cashOut, host, "[1,2]")
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail").value("The request body isn't valid JSON."));
     }
 
     @Test

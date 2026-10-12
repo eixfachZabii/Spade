@@ -9,6 +9,7 @@ import com.jayway.jsonpath.JsonPath;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +62,7 @@ class SessionRevokeRaceTest {
                 assertThat(sessions.authenticate(token)).isPresent();
                 // ... when request B revokes the same session and commits.
                 try {
-                    other.submit(() -> sessions.revoke(playerId, sessionId)).get();
+                    other.submit(() -> sessions.revoke(playerId, sessionId)).get(10, TimeUnit.SECONDS);
                 } catch (Exception e) {
                     throw new IllegalStateException(e);
                 }

@@ -36,6 +36,8 @@ spade:
     lockout: PT5M
 
 springdoc:
+  api-docs:
+    enabled: true   # explicit: the spec at /v3/api-docs is public on purpose, it is the contract (api/openapi.json)
   default-produces-media-type: application/json
   writer-with-order-by-keys: true
   writer-with-default-pretty-printer: true

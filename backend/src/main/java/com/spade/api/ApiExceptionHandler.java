@@ -3,7 +3,10 @@ package com.spade.api;
 import com.spade.domain.DomainException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.exc.MismatchedInputException;
 import java.util.Comparator;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -12,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -45,6 +49,40 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
             body.setDetail(detail);
         }
         return handleExceptionInternal(e, body, headers, status, request);
+    }
+
+    private static final Set<Class<?>> WHOLE_NUMBERS = Set.of(long.class, Long.class, int.class, Integer.class);
+
+    /**
+     * A body Jackson could not read. When it can say which field was wrong, the detail names the field and how
+     * to fix it; never the value (it can be a password, and Jackson's own message quotes it). Anything else
+     * (broken JSON, an array where an object belongs) gets one generic sentence.
+     */
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException e,
+            HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        String detail = "The request body isn't valid JSON.";
+        if (e.getCause() instanceof MismatchedInputException mismatch) {
+            String field = fieldOf(mismatch);
+            if (field != null) {
+                detail = field + ": " + (WHOLE_NUMBERS.contains(mismatch.getTargetType())
+                        ? hintForNumber(field)
+                        : "missing or not the right type");
+            }
+        }
+        return handleExceptionInternal(e, ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, detail),
+                headers, status, request);
+    }
+
+    private static String fieldOf(JacksonException e) {
+        return e.getPath().stream().map(JacksonException.Reference::getPropertyName)
+                .filter(name -> name != null && !name.isBlank()).reduce((first, second) -> second).orElse(null);
+    }
+
+    private static String hintForNumber(String field) {
+        return field.equals("maxSeats")
+                ? "use a whole number of seats, from 2 to 10"
+                : "use a whole number of points, in steps of 5";
     }
 
     @ExceptionHandler(DomainException.class)

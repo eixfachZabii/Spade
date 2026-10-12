@@ -59,7 +59,7 @@ public class TableService {
 
     @Transactional(readOnly = true)
     public List<TableView> openTables() {
-        return tables.findByClosedAtIsNullOrderByOpenedAtAsc().stream().map(this::view).toList();
+        return tables.findByClosedAtIsNullOrderByOpenedAtAscIdAsc().stream().map(this::view).toList();
     }
 
     @Transactional(readOnly = true)

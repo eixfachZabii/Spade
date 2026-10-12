@@ -49,11 +49,11 @@ public class ProblemErrorController implements ErrorController {
     static String detail(HttpStatus status) {
         return switch (status) {
             case BAD_REQUEST -> "That request was not valid. Check it and try again.";
-            case UNAUTHORIZED -> "Sign in and try again.";
+            case UNAUTHORIZED -> "Sign in first: this needs a valid session.";
             case FORBIDDEN -> "You are not allowed to do that.";
             case NOT_FOUND -> "There is nothing at that address.";
             case METHOD_NOT_ALLOWED -> "That address does not accept this kind of request.";
-            case PAYLOAD_TOO_LARGE -> "That request was too large.";
+            case CONTENT_TOO_LARGE -> "That request was too large.";
             case TOO_MANY_REQUESTS -> "Too many requests. Wait a moment and try again.";
             default -> status.is4xxClientError()
                     ? "That request could not be processed."

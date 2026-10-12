@@ -3,7 +3,6 @@ package com.spade.api;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -21,6 +20,7 @@ import org.springframework.boot.webmvc.error.ErrorController;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import probe.ErrorProbeController;
@@ -64,7 +64,7 @@ class ApiErrorsTest {
 
     @Test
     void invalidInputIsA400Problem() throws Exception {
-        mvc.perform(post("/probe/named").with(csrf()).contentType(MediaType.APPLICATION_JSON).content("{}"))   // csrf(): Boot's default chain is still active in this task
+        mvc.perform(post("/probe/named").contentType(MediaType.APPLICATION_JSON).content("{}"))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
                 .andExpect(jsonPath("$.detail").value(containsString("name")));
@@ -82,6 +82,26 @@ class ApiErrorsTest {
      * 413, an exception thrown in a filter) are forwarded to /error. MockMvc does not take that path by itself,
      * so the forward is simulated with the attributes the container sets.
      */
+    @Test
+    @WithAnonymousUser
+    void bothWaysToAnswer401SayTheSameThing() throws Exception {
+        mvc.perform(get("/api/v1/players/me"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.detail").value("Sign in first: this needs a valid session."));
+        mvc.perform(get("/error").requestAttr(RequestDispatcher.ERROR_STATUS_CODE, 401))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.detail").value("Sign in first: this needs a valid session."));
+    }
+
+    @Test
+    void aForwarded413SaysTheRequestWasTooLarge() throws Exception {
+        mvc.perform(get("/error").requestAttr(RequestDispatcher.ERROR_STATUS_CODE, 413))
+                .andExpect(status().isContentTooLarge())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.detail").value("That request was too large."));
+    }
+
     @ParameterizedTest
     @ValueSource(ints = {400, 403, 413, 500})
     void anErrorForwardedToTheErrorPathIsAProblemWithoutInternals(int code) throws Exception {

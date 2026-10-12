@@ -128,7 +128,7 @@ Everything in "Scope / In" shipped. The pieces the scope doesn't spell out, or t
 | `POST /players`, invite code `testworld` | 201, no password in body | 201, body is `id`, `username`, `displayName` only |
 | `POST /sessions`, username `ZOE` (case differs) | 201 with a token | 201, token of 43 characters |
 | `GET /players/me` with the token | 200 | 200, zoe |
-| `GET /players/me` with `Bearer nope`, and with no header | 401 problem | 401 `Log in first: this needs a valid session.` both |
+| `GET /players/me` with `Bearer nope`, and with no header | 401 problem | 401 `Sign in first: this needs a valid session.` both |
 | `POST /tables/1/seats` buy-in 1003 | 400, steps of 5 | 400 "A buy-in must be in steps of 5 points (the smallest chip), got 1003." |
 | `POST /tables/1/seats` buy-in 1000 | 201, seat 1 | 201, seat 1, stack 1000 |
 | `POST /tables/1/seats/me/buy-ins` 500 | 200, stack 1500 | 200, stack 1500 |

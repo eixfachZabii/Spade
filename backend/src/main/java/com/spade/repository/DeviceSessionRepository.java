@@ -8,7 +8,7 @@ public interface DeviceSessionRepository extends JpaRepository<DeviceSessionEnti
 
     Optional<DeviceSessionEntity> findByTokenSha256AndRevokedAtIsNull(String tokenSha256);
 
-    List<DeviceSessionEntity> findByPlayerIdAndRevokedAtIsNullOrderByCreatedAtAsc(long playerId);
+    List<DeviceSessionEntity> findByPlayerIdAndRevokedAtIsNullOrderByCreatedAtAscIdAsc(long playerId);
 
     Optional<DeviceSessionEntity> findByIdAndPlayerIdAndRevokedAtIsNull(long id, long playerId);
 }

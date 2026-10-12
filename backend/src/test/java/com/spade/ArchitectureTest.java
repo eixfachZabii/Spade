@@ -16,7 +16,8 @@ import org.springframework.context.annotation.Profile;
 
 /**
  * The layers and rules of ADR 0012, from the first commit (WealthWatcher retrofitted its layers and spent
- * phases on the exemptions). Every rule was shown to fail once on a planted violation: see Task 2, Step 3.
+ * phases on the exemptions). Every rule was shown to fail once on a planted violation: see "What shipping it actually found" in
+ * docs/handoffs/PHASE_06_2026-10-11_BACKEND_FOUNDATION.md.
  */
 @AnalyzeClasses(packages = "com.spade", importOptions = ImportOption.DoNotIncludeTests.class)
 class ArchitectureTest {
@@ -41,18 +42,15 @@ class ArchitectureTest {
                     "org.springframework..", "jakarta..", "org.hibernate..",
                     "com.fasterxml.jackson..", "tools.jackson..",
                     "com.spade.api..", "com.spade.service..", "com.spade.repository..",
-                    "com.spade.config..", "com.spade.security..")
-            .allowEmptyShould(true);
+                    "com.spade.config..", "com.spade.security..");
 
     @ArchTest
     static final ArchRule apiNeverSeesEntities = noClasses().that().resideInAPackage("com.spade.api..")
-            .should().dependOnClassesThat().areAnnotatedWith(Entity.class)
-            .allowEmptyShould(true);
+            .should().dependOnClassesThat().areAnnotatedWith(Entity.class);
 
     @ArchTest
     static final ArchRule dtosAreRecords = classes().that().resideInAPackage("com.spade.api.dto..")
-            .should().beRecords()
-            .allowEmptyShould(true);
+            .should().beRecords();
 
     /**
      * PRODUCT.md: hole cards stay private until showdown. A public view can't even name them (phase 07).
@@ -67,12 +65,10 @@ class ArchitectureTest {
             .allowEmptyShould(true);
 
     @ArchTest
-    static final ArchRule noFieldInjection = GeneralCodingRules.NO_CLASSES_SHOULD_USE_FIELD_INJECTION
-            .allowEmptyShould(true);
+    static final ArchRule noFieldInjection = GeneralCodingRules.NO_CLASSES_SHOULD_USE_FIELD_INJECTION;
 
     @ArchTest
-    static final ArchRule noStandardStreams = GeneralCodingRules.NO_CLASSES_SHOULD_ACCESS_STANDARD_STREAMS
-            .allowEmptyShould(true);
+    static final ArchRule noStandardStreams = GeneralCodingRules.NO_CLASSES_SHOULD_ACCESS_STANDARD_STREAMS;
 
     /** The testworld has an unauthenticated wipe endpoint: it must exist only under exactly {@code @Profile("testworld")}. */
     @ArchTest
@@ -81,6 +77,5 @@ class ArchitectureTest {
                     "@Profile with exactly the value \"testworld\" (not negated, not combined with other profiles)",
                     (JavaAnnotation<?> a) -> a.getRawType().isEquivalentTo(Profile.class)
                             && a.get("value").map(v -> v instanceof Object[] values
-                                    && values.length == 1 && "testworld".equals(values[0])).orElse(false)))
-            .allowEmptyShould(true);
+                                    && values.length == 1 && "testworld".equals(values[0])).orElse(false)));
 }

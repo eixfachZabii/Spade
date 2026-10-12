@@ -67,7 +67,7 @@ public class SessionService {
 
     @Transactional(readOnly = true)
     public List<SessionView> devices(long playerId) {
-        return sessions.findByPlayerIdAndRevokedAtIsNullOrderByCreatedAtAsc(playerId).stream().map(SessionView::of).toList();
+        return sessions.findByPlayerIdAndRevokedAtIsNullOrderByCreatedAtAscIdAsc(playerId).stream().map(SessionView::of).toList();
     }
 
     @Transactional

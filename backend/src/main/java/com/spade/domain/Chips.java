@@ -31,7 +31,7 @@ public final class Chips {
         }
         if (points > MAX) {
             throw invalid(what + " of " + points + " points is more than " + String.format(java.util.Locale.ROOT, "%,d", MAX)
-                    + " points (€10,000). A typo? Amounts are in steps of " + SMALLEST + " points (the smallest chip).");
+                    + " points. A typo? Amounts are in steps of " + SMALLEST + " points (the smallest chip).");
         }
         return points;
     }

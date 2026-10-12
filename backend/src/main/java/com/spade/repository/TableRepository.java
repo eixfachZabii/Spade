@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface TableRepository extends JpaRepository<TableEntity, Long> {
 
-    List<TableEntity> findByClosedAtIsNullOrderByOpenedAtAsc();
+    List<TableEntity> findByClosedAtIsNullOrderByOpenedAtAscIdAsc();
 
     boolean existsByHostIdAndClosedAtIsNull(long hostId);
 

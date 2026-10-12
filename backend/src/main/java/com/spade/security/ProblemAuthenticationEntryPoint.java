@@ -19,6 +19,6 @@ class ProblemAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.setContentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE);
         response.getWriter().write("""
                 {"type":"about:blank","title":"Unauthorized","status":401,\
-                "detail":"Log in first: this needs a valid session."}""");
+                "detail":"Sign in first: this needs a valid session."}""");
     }
 }
