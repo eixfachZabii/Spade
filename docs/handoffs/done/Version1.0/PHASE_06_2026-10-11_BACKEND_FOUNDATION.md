@@ -100,7 +100,7 @@
   - the contract drift check.
 - `verify-change` against the running app (testworld profile, `curl`): register (wrong invite code refused), log in, `/me` (no password hash in the body), list and revoke a device (the revoked token is refused at once), open a table, join with a buy-in, top up, leave with a cash-out, close.
 - The same requests without a token get a `401 ProblemDetail`; a server error returns no stack trace or exception text.
-- CI is green on the branch (checked at ship time, after the push; not claimed here).
+- CI is green: checked at ship time, after the merge was pushed — run 38286697773 on master, backend, cv and docs jobs all green.
 
 ## Risks
 - **Spring Boot 4.1 is young:** springdoc 3.x and Testcontainers support must be checked at the start.
