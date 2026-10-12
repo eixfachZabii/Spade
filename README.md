@@ -8,7 +8,8 @@ Real cards on a real table. Each player's phone reads their own hole cards, a ta
 
 | Part | What |
 |---|---|
-| [`spadeboot/`](spadeboot/) | Spring Boot backend |
+| [`backend/`](backend/) | the Spring Boot 4.1 / Java 21 backend (in use) |
+| [`spadeboot/`](spadeboot/) | the 2025 Spring Boot backend (frozen, replaced by `backend/`) |
 | [`cv/`](cv/README.md) | card detection (Python, YOLOv8) |
 | `client/`, `webapp/` | the 2025 React apps (frozen, being replaced) |
 

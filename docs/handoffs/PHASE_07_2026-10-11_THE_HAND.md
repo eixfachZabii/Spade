@@ -108,6 +108,15 @@ A whole hand runs on the server from events: blinds, four streets, all-ins and s
 - no human has played through a client (08, 09);
 - the stream through Cloudflare (10).
 
+## Carried from Phase 06
+Found by Phase 06's final review; nobody reads that doc again once it is archived.
+- A `Card` crosses the API as its label string (`"AS"`, ADR 0010). Map it in the `api` DTOs; `domain` stays Jackson-free.
+- The catch-all `@ExceptionHandler(Exception.class)` matches before causes. A `DomainException` wrapped (for example inside a Jackson creator) or a `ConstraintViolationException` becomes a 500. Handle both when cards and validated beans arrive.
+- `Showdown.winners` callers pass a seat-ordered map and only the hands eligible for that pot. Its hand-size message prints the map key: rephrase it without the key when seat keys arrive.
+- `SeatEntity.leave` zeroes the stack, so the mirror at cash-out is lost. ADR 0006 ("the mirror only flags a difference") needs it kept, for example on `cash_out`.
+- The "Not a card" message echoes the raw input, uncapped. Cap it once cards come from clients.
+- The same catch-all would turn an `AccessDeniedException` into a 500 once HOST and HUB roles exist (also phase 09).
+
 ## What shipped, against what was scoped
 *(filled in at ship)*
 

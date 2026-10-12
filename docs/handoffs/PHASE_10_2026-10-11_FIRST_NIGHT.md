@@ -57,6 +57,12 @@ Spade runs on the owner's Linux PC behind a Cloudflare Tunnel on our own domain,
 - more than one night;
 - other venues (the PC must be where the night is, or reachable).
 
+## Carried from Phase 06
+Found by Phase 06's final review; nobody reads that doc again once it is archived.
+- The backend must be reachable only through cloudflared: bind it so. `CF-Connecting-IP` is trusted from any caller, so a direct caller picks its own address and dodges the per-address throttles.
+- The testworld rehearsal needs its own database. `TestworldGuard` refuses a database with real players, but an **empty** real database passes it, and would then hold ana…fay with the public password `testworld` and frozen-clock rows. While the testworld runs through the tunnel, its reset endpoint is unauthenticated on the internet.
+- A compose healthcheck may need `/actuator/health/**` (the liveness and readiness groups) permitted: only `/actuator/health` is today.
+
 ## What shipped, against what was scoped
 *(filled in at ship)*
 
