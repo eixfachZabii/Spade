@@ -16,8 +16,10 @@ import io.swagger.v3.oas.models.responses.ApiResponses;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeSet;
 import org.springdoc.core.customizers.GlobalOpenApiCustomizer;
 import org.springframework.context.annotation.Bean;
@@ -56,7 +58,7 @@ class OpenApiConfig {
             "500", "Something went wrong on the server.");
 
     /** Beyond 400/401/500: the status codes an operation can answer, keyed by {@code METHOD path}. */
-    private static final Map<String, String[]> EXTRA_ERRORS = Map.of(
+    static final Map<String, String[]> EXTRA_ERRORS = Map.of(
             "POST /api/v1/players", new String[] {"403", "409", "429"},
             "POST /api/v1/sessions", new String[] {"429"},
             "DELETE /api/v1/players/me/devices/{sessionId}", new String[] {"404"},
@@ -84,12 +86,41 @@ class OpenApiConfig {
         return openApi -> {
             // springdoc rebuilds the components from the controllers' types, so this one is added here, not on the bean
             openApi.getComponents().addSchemas(PROBLEM_SCHEMA, problemDetail());
+            requireAllPropertiesOfResponses(openApi);
             if (openApi.getPaths() == null) {
                 return;
             }
+            requireEveryExtraErrorToMatch(openApi, EXTRA_ERRORS);
             openApi.getPaths().forEach((path, item) -> item.readOperationsMap().forEach(
                     (method, operation) -> addErrors(method, path, operation)));
         };
+    }
+
+    /**
+     * A key of {@link #EXTRA_ERRORS} that names no operation means a path or method was renamed and its error
+     * codes would silently vanish from the contract. Fail instead; ContractTest builds the real spec, so it fails there.
+     */
+    static void requireEveryExtraErrorToMatch(OpenAPI openApi, Map<String, String[]> extraErrors) {
+        Set<String> operations = new TreeSet<>();
+        if (openApi.getPaths() != null) {
+            openApi.getPaths().forEach((path, item) ->
+                    item.readOperationsMap().keySet().forEach(method -> operations.add(method + " " + path)));
+        }
+        TreeSet<String> unmatched = new TreeSet<>(extraErrors.keySet());
+        unmatched.removeAll(operations);
+        if (!unmatched.isEmpty()) {
+            throw new IllegalStateException("OpenApiConfig.EXTRA_ERRORS names operations that don't exist: " + unmatched
+                    + ". Update the keys to the renamed path or method.");
+        }
+    }
+
+    /** The server always sends every property of a response, so a generated client can treat none as optional. */
+    private static void requireAllPropertiesOfResponses(OpenAPI openApi) {
+        openApi.getComponents().getSchemas().forEach((name, schema) -> {
+            if (name.endsWith("Response") && schema.getProperties() != null) {
+                schema.setRequired(new ArrayList<>(new TreeSet<>(schema.getProperties().keySet())));
+            }
+        });
     }
 
     private static void addErrors(PathItem.HttpMethod method, String path, Operation operation) {

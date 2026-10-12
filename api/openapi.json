@@ -13,7 +13,7 @@
   "paths" : {
     "/api/v1/players" : {
       "post" : {
-        "operationId" : "register",
+        "operationId" : "registerPlayer",
         "requestBody" : {
           "content" : {
             "application/json" : {
@@ -87,12 +87,12 @@
           }
         },
         "security" : [ ],
-        "tags" : [ "player-controller" ]
+        "tags" : [ "players" ]
       }
     },
     "/api/v1/players/me" : {
       "get" : {
-        "operationId" : "me",
+        "operationId" : "getMe",
         "responses" : {
           "200" : {
             "content" : {
@@ -125,12 +125,12 @@
             "description" : "Something went wrong on the server."
           }
         },
-        "tags" : [ "player-controller" ]
+        "tags" : [ "players" ]
       }
     },
     "/api/v1/players/me/devices" : {
       "get" : {
-        "operationId" : "devices",
+        "operationId" : "listDevices",
         "responses" : {
           "200" : {
             "content" : {
@@ -166,12 +166,12 @@
             "description" : "Something went wrong on the server."
           }
         },
-        "tags" : [ "player-controller" ]
+        "tags" : [ "players" ]
       }
     },
     "/api/v1/players/me/devices/{sessionId}" : {
       "delete" : {
-        "operationId" : "revoke",
+        "operationId" : "revokeDevice",
         "parameters" : [ {
           "in" : "path",
           "name" : "sessionId",
@@ -226,7 +226,7 @@
             "description" : "Something went wrong on the server."
           }
         },
-        "tags" : [ "player-controller" ]
+        "tags" : [ "players" ]
       }
     },
     "/api/v1/sessions" : {
@@ -295,7 +295,7 @@
           }
         },
         "security" : [ ],
-        "tags" : [ "session-controller" ]
+        "tags" : [ "sessions" ]
       }
     },
     "/api/v1/sessions/current" : {
@@ -326,12 +326,12 @@
             "description" : "Something went wrong on the server."
           }
         },
-        "tags" : [ "session-controller" ]
+        "tags" : [ "sessions" ]
       }
     },
     "/api/v1/tables" : {
       "get" : {
-        "operationId" : "openTables",
+        "operationId" : "listTables",
         "responses" : {
           "200" : {
             "content" : {
@@ -367,10 +367,10 @@
             "description" : "Something went wrong on the server."
           }
         },
-        "tags" : [ "table-controller" ]
+        "tags" : [ "tables" ]
       },
       "post" : {
-        "operationId" : "open",
+        "operationId" : "openTable",
         "requestBody" : {
           "content" : {
             "application/json" : {
@@ -433,12 +433,12 @@
             "description" : "Something went wrong on the server."
           }
         },
-        "tags" : [ "table-controller" ]
+        "tags" : [ "tables" ]
       }
     },
     "/api/v1/tables/{tableId}" : {
       "get" : {
-        "operationId" : "get",
+        "operationId" : "getTable",
         "parameters" : [ {
           "in" : "path",
           "name" : "tableId",
@@ -500,12 +500,12 @@
             "description" : "Something went wrong on the server."
           }
         },
-        "tags" : [ "table-controller" ]
+        "tags" : [ "tables" ]
       }
     },
     "/api/v1/tables/{tableId}/close" : {
       "post" : {
-        "operationId" : "close",
+        "operationId" : "closeTable",
         "parameters" : [ {
           "in" : "path",
           "name" : "tableId",
@@ -587,12 +587,12 @@
             "description" : "Something went wrong on the server."
           }
         },
-        "tags" : [ "table-controller" ]
+        "tags" : [ "tables" ]
       }
     },
     "/api/v1/tables/{tableId}/seats" : {
       "post" : {
-        "operationId" : "join",
+        "operationId" : "joinTable",
         "parameters" : [ {
           "in" : "path",
           "name" : "tableId",
@@ -674,7 +674,7 @@
             "description" : "Something went wrong on the server."
           }
         },
-        "tags" : [ "table-controller" ]
+        "tags" : [ "tables" ]
       }
     },
     "/api/v1/tables/{tableId}/seats/me/buy-ins" : {
@@ -693,7 +693,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/PointsRequest"
+                "$ref" : "#/components/schemas/TopUpRequest"
               }
             }
           },
@@ -761,7 +761,7 @@
             "description" : "Something went wrong on the server."
           }
         },
-        "tags" : [ "table-controller" ]
+        "tags" : [ "tables" ]
       }
     },
     "/api/v1/tables/{tableId}/seats/me/cash-out" : {
@@ -780,7 +780,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/PointsRequest"
+                "$ref" : "#/components/schemas/CashOutRequest"
               }
             }
           },
@@ -848,12 +848,26 @@
             "description" : "Something went wrong on the server."
           }
         },
-        "tags" : [ "table-controller" ]
+        "tags" : [ "tables" ]
       }
     }
   },
   "components" : {
     "schemas" : {
+      "CashOutRequest" : {
+        "type" : "object",
+        "properties" : {
+          "points" : {
+            "type" : "integer",
+            "format" : "int64",
+            "description" : "The chips counted at the seat: a multiple of 5, or 0.",
+            "maximum" : 1000000,
+            "minimum" : 0,
+            "multipleOf" : 5.0
+          }
+        },
+        "required" : [ "points" ]
+      },
       "DeviceResponse" : {
         "type" : "object",
         "properties" : {
@@ -875,16 +889,22 @@
             "type" : "string",
             "format" : "date-time"
           }
-        }
+        },
+        "required" : [ "createdAt", "current", "deviceName", "id", "lastUsedAt" ]
       },
       "JoinTableRequest" : {
         "type" : "object",
         "properties" : {
           "buyIn" : {
             "type" : "integer",
-            "format" : "int64"
+            "format" : "int64",
+            "description" : "Points put on the table: a multiple of 5, the smallest chip.",
+            "maximum" : 1000000,
+            "minimum" : 5,
+            "multipleOf" : 5.0
           }
-        }
+        },
+        "required" : [ "buyIn" ]
       },
       "LoginRequest" : {
         "type" : "object",
@@ -910,7 +930,11 @@
         "properties" : {
           "bigBlind" : {
             "type" : "integer",
-            "format" : "int64"
+            "format" : "int64",
+            "description" : "Points: a multiple of 5, at least the small blind.",
+            "maximum" : 1000000,
+            "minimum" : 5,
+            "multipleOf" : 5.0
           },
           "maxSeats" : {
             "type" : "integer",
@@ -925,10 +949,14 @@
           },
           "smallBlind" : {
             "type" : "integer",
-            "format" : "int64"
+            "format" : "int64",
+            "description" : "Points: a multiple of 5.",
+            "maximum" : 1000000,
+            "minimum" : 5,
+            "multipleOf" : 5.0
           }
         },
-        "required" : [ "name" ]
+        "required" : [ "bigBlind", "maxSeats", "name", "smallBlind" ]
       },
       "PlayerResponse" : {
         "type" : "object",
@@ -943,16 +971,8 @@
           "username" : {
             "type" : "string"
           }
-        }
-      },
-      "PointsRequest" : {
-        "type" : "object",
-        "properties" : {
-          "points" : {
-            "type" : "integer",
-            "format" : "int64"
-          }
-        }
+        },
+        "required" : [ "displayName", "id", "username" ]
       },
       "ProblemDetail" : {
         "type" : "object",
@@ -1003,7 +1023,7 @@
           "username" : {
             "type" : "string",
             "minLength" : 1,
-            "pattern" : "[A-Za-z0-9_.-]{3,32}"
+            "pattern" : "^[A-Za-z0-9_.-]{3,32}$"
           }
         },
         "required" : [ "displayName", "inviteCode", "password", "username" ]
@@ -1026,7 +1046,8 @@
             "type" : "integer",
             "format" : "int64"
           }
-        }
+        },
+        "required" : [ "displayName", "playerId", "seatNumber", "stack" ]
       },
       "SessionResponse" : {
         "type" : "object",
@@ -1037,7 +1058,8 @@
           "token" : {
             "type" : "string"
           }
-        }
+        },
+        "required" : [ "device", "token" ]
       },
       "TableResponse" : {
         "type" : "object",
@@ -1074,7 +1096,22 @@
             "type" : "integer",
             "format" : "int64"
           }
-        }
+        },
+        "required" : [ "bigBlind", "hostId", "id", "maxSeats", "name", "open", "seats", "smallBlind" ]
+      },
+      "TopUpRequest" : {
+        "type" : "object",
+        "properties" : {
+          "points" : {
+            "type" : "integer",
+            "format" : "int64",
+            "description" : "Points to add: a multiple of 5, the smallest chip.",
+            "maximum" : 1000000,
+            "minimum" : 5,
+            "multipleOf" : 5.0
+          }
+        },
+        "required" : [ "points" ]
       }
     },
     "securitySchemes" : {
