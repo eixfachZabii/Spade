@@ -5,7 +5,8 @@ Commands only. Rules and reasons: [CLAUDE.md](CLAUDE.md).
 ## Backend (`backend/`)
 ```bash
 (cd backend && ./mvnw spring-boot:test-run -Dspring-boot.run.profiles=testworld)   # throwaway DB (Docker); players ana…fay, password testworld
-cp backend/.env.example backend/.env && backend/run.sh                             # against a real PostgreSQL
+cp -n backend/.env.example backend/.env                                            # once; then fill it in
+backend/run.sh                                                                      # against a real PostgreSQL
 (cd backend && ./mvnw -q verify)                                                    # tests (Docker must run)
 (cd backend && SPADE_CONTRACT_UPDATE=1 ./mvnw -q test -Dtest=ContractTest)         # after a deliberate API change; commit api/
 ```

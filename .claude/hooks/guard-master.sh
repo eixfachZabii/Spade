@@ -19,7 +19,7 @@ except Exception: print("")' 2>/dev/null)"
 [[ "$path" == *.md ]] && exit 0
 
 case "$path" in
-  *"/spadeboot/src/"*|*"/cv/"*|*"/client/src/"*|*"/webapp/src/"*|*"/scripts/"*) ;;
+  *"/backend/src/"*|*"/api/"*|*"/spadeboot/src/"*|*"/cv/"*|*"/client/src/"*|*"/webapp/src/"*|*"/scripts/"*) ;;
   *) exit 0 ;;
 esac
 

@@ -13,6 +13,11 @@ check() { # check <expected-exit> <description> <path> [env]
 BRANCH="$(git -C "$MAIN" rev-parse --abbrev-ref HEAD)"
 if [[ "$BRANCH" == master ]]; then
   check 2 "backend code on master in main tree is blocked" "$MAIN/spadeboot/src/main/java/X.java"
+  check 2 "new backend code on master in main tree is blocked" "$MAIN/backend/src/main/java/com/spade/X.java"
+  check 2 "a new file in a new backend package is blocked (backend/)" "$MAIN/backend/src/main/java/com/spade/newpkg/Foo.java"
+  check 2 "the API contract on master in main tree is blocked" "$MAIN/api/openapi.json"
+  check 2 "an API fixture on master in main tree is blocked" "$MAIN/api/fixtures/players-me.json"
+  check 0 "a markdown file under api/ passes"             "$MAIN/api/README.md"
   check 2 "cv code on master in main tree is blocked"      "$MAIN/cv/app.py"
   check 2 "legacy client code is blocked"                  "$MAIN/client/src/App.js"
   check 2 "a new file in a new backend package is blocked" "$MAIN/spadeboot/src/main/java/com/spadeboot/engine2/Foo.java"
@@ -26,6 +31,8 @@ fi
 WT="$(git -C "$(dirname "$0")" rev-parse --show-toplevel)"
 if [[ -f "$WT/.git" ]]; then
   check 0 "code inside a linked worktree passes" "$WT/spadeboot/src/main/java/X.java"
+  check 0 "backend code inside a linked worktree passes" "$WT/backend/src/main/java/com/spade/X.java"
+  check 0 "the API contract inside a linked worktree passes" "$WT/api/openapi.json"
   check 0 "a new package inside a linked worktree passes" "$WT/spadeboot/src/main/java/com/spadeboot/engine2/Foo.java"
 fi
 check 0 "an empty payload passes" ""
