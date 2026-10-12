@@ -5,6 +5,8 @@ import com.spade.service.PlayerView;
 import com.spade.service.SpadePrincipal;
 import com.spade.service.TableService;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Profile;
@@ -18,11 +20,15 @@ class TestworldSeed implements ApplicationRunner {
 
     static final List<String> PLAYERS = List.of("ana", "ben", "cleo", "dev", "eli", "fay");
 
+    private static final Logger log = LoggerFactory.getLogger(TestworldSeed.class);
+
+    private final TestworldGuard guard;
     private final AccountService accounts;
     private final TableService tables;
     private final JdbcTemplate jdbc;
 
-    TestworldSeed(AccountService accounts, TableService tables, JdbcTemplate jdbc) {
+    TestworldSeed(TestworldGuard guard, AccountService accounts, TableService tables, JdbcTemplate jdbc) {
+        this.guard = guard;
         this.accounts = accounts;
         this.tables = tables;
         this.jdbc = jdbc;
@@ -30,6 +36,10 @@ class TestworldSeed implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
+        log.warn("testworld active: fixed clock, open reset — never use it with real data");
+        if (!guard.isTestworldSafe()) {
+            throw new IllegalStateException(TestworldGuard.REFUSAL);
+        }
         Integer existing = jdbc.queryForObject("select count(*) from player", Integer.class);
         if (existing == null || existing == 0) {
             seed();
