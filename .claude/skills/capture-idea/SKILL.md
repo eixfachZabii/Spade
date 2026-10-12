@@ -11,7 +11,7 @@ An idea said in chat has no state; an issue does. WealthWatcher measured the cos
 ```bash
 gh issue list --repo eixfachZabii/Spade --state all --search "<two or three words>"
 grep -n -i "<word>" docs/handoffs/INDEX.md
-grep -rn -i "<word>" spadeboot/src cv docs/status-quo docs/references | head
+grep -rn -i "<word>" backend/src spadeboot/src cv docs/status-quo docs/references | head
 ```
 - **An open issue covers it**: comment there with the owner's words and the date. No duplicate.
 - **Already shipped**: file it anyway, then close it at once with the label `already-shipped` and a comment saying where it lives.

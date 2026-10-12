@@ -1,0 +1,1125 @@
+{
+  "openapi" : "3.1.0",
+  "info" : {
+    "title" : "Spade API",
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "/"
+  } ],
+  "security" : [ {
+    "bearer" : [ ]
+  } ],
+  "paths" : {
+    "/api/v1/players" : {
+      "post" : {
+        "operationId" : "registerPlayer",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/RegisterPlayerRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PlayerResponse"
+                }
+              }
+            },
+            "description" : "Created"
+          },
+          "400" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "The request was not valid. `detail` names the field and how to fix it."
+          },
+          "403" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "Not allowed for this player."
+          },
+          "409" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "That clashes with the current state (a taken name, a full or closed table, a seat already held)."
+          },
+          "429" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "Too many attempts from this account or address. Wait and try again."
+          },
+          "500" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "Something went wrong on the server."
+          }
+        },
+        "security" : [ ],
+        "tags" : [ "players" ]
+      }
+    },
+    "/api/v1/players/me" : {
+      "get" : {
+        "operationId" : "getMe",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PlayerResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          },
+          "401" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "No valid session (or, for login, wrong username or password). Sign in again."
+          },
+          "500" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "Something went wrong on the server."
+          }
+        },
+        "tags" : [ "players" ]
+      }
+    },
+    "/api/v1/players/me/devices" : {
+      "get" : {
+        "operationId" : "listDevices",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/DeviceResponse"
+                  }
+                }
+              }
+            },
+            "description" : "OK"
+          },
+          "401" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "No valid session (or, for login, wrong username or password). Sign in again."
+          },
+          "500" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "Something went wrong on the server."
+          }
+        },
+        "tags" : [ "players" ]
+      }
+    },
+    "/api/v1/players/me/devices/{sessionId}" : {
+      "delete" : {
+        "operationId" : "revokeDevice",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "sessionId",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "No Content"
+          },
+          "400" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "The request was not valid. `detail` names the field and how to fix it."
+          },
+          "401" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "No valid session (or, for login, wrong username or password). Sign in again."
+          },
+          "404" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "There is no such thing."
+          },
+          "500" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "Something went wrong on the server."
+          }
+        },
+        "tags" : [ "players" ]
+      }
+    },
+    "/api/v1/sessions" : {
+      "post" : {
+        "operationId" : "login",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SessionResponse"
+                }
+              }
+            },
+            "description" : "Created"
+          },
+          "400" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "The request was not valid. `detail` names the field and how to fix it."
+          },
+          "401" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "No valid session (or, for login, wrong username or password). Sign in again."
+          },
+          "429" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "Too many attempts from this account or address. Wait and try again."
+          },
+          "500" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "Something went wrong on the server."
+          }
+        },
+        "security" : [ ],
+        "tags" : [ "sessions" ]
+      }
+    },
+    "/api/v1/sessions/current" : {
+      "delete" : {
+        "operationId" : "logout",
+        "responses" : {
+          "204" : {
+            "description" : "No Content"
+          },
+          "401" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "No valid session (or, for login, wrong username or password). Sign in again."
+          },
+          "500" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "Something went wrong on the server."
+          }
+        },
+        "tags" : [ "sessions" ]
+      }
+    },
+    "/api/v1/tables" : {
+      "get" : {
+        "operationId" : "listTables",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/TableResponse"
+                  }
+                }
+              }
+            },
+            "description" : "OK"
+          },
+          "401" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "No valid session (or, for login, wrong username or password). Sign in again."
+          },
+          "500" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "Something went wrong on the server."
+          }
+        },
+        "tags" : [ "tables" ]
+      },
+      "post" : {
+        "operationId" : "openTable",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OpenTableRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TableResponse"
+                }
+              }
+            },
+            "description" : "Created"
+          },
+          "400" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "The request was not valid. `detail` names the field and how to fix it."
+          },
+          "401" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "No valid session (or, for login, wrong username or password). Sign in again."
+          },
+          "409" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "That clashes with the current state (a taken name, a full or closed table, a seat already held)."
+          },
+          "500" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "Something went wrong on the server."
+          }
+        },
+        "tags" : [ "tables" ]
+      }
+    },
+    "/api/v1/tables/{tableId}" : {
+      "get" : {
+        "operationId" : "getTable",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "tableId",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TableResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          },
+          "400" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "The request was not valid. `detail` names the field and how to fix it."
+          },
+          "401" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "No valid session (or, for login, wrong username or password). Sign in again."
+          },
+          "404" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "There is no such thing."
+          },
+          "500" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "Something went wrong on the server."
+          }
+        },
+        "tags" : [ "tables" ]
+      }
+    },
+    "/api/v1/tables/{tableId}/close" : {
+      "post" : {
+        "operationId" : "closeTable",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "tableId",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TableResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          },
+          "400" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "The request was not valid. `detail` names the field and how to fix it."
+          },
+          "401" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "No valid session (or, for login, wrong username or password). Sign in again."
+          },
+          "403" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "Not allowed for this player."
+          },
+          "404" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "There is no such thing."
+          },
+          "409" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "That clashes with the current state (a taken name, a full or closed table, a seat already held)."
+          },
+          "500" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "Something went wrong on the server."
+          }
+        },
+        "tags" : [ "tables" ]
+      }
+    },
+    "/api/v1/tables/{tableId}/seats" : {
+      "post" : {
+        "operationId" : "joinTable",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "tableId",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/JoinTableRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TableResponse"
+                }
+              }
+            },
+            "description" : "Created"
+          },
+          "400" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "The request was not valid. `detail` names the field and how to fix it."
+          },
+          "401" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "No valid session (or, for login, wrong username or password). Sign in again."
+          },
+          "404" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "There is no such thing."
+          },
+          "409" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "That clashes with the current state (a taken name, a full or closed table, a seat already held)."
+          },
+          "500" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "Something went wrong on the server."
+          }
+        },
+        "tags" : [ "tables" ]
+      }
+    },
+    "/api/v1/tables/{tableId}/seats/me/buy-ins" : {
+      "post" : {
+        "operationId" : "topUp",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "tableId",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/TopUpRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TableResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          },
+          "400" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "The request was not valid. `detail` names the field and how to fix it."
+          },
+          "401" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "No valid session (or, for login, wrong username or password). Sign in again."
+          },
+          "404" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "There is no such thing."
+          },
+          "409" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "That clashes with the current state (a taken name, a full or closed table, a seat already held)."
+          },
+          "500" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "Something went wrong on the server."
+          }
+        },
+        "tags" : [ "tables" ]
+      }
+    },
+    "/api/v1/tables/{tableId}/seats/me/cash-out" : {
+      "post" : {
+        "operationId" : "cashOut",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "tableId",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CashOutRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TableResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          },
+          "400" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "The request was not valid. `detail` names the field and how to fix it."
+          },
+          "401" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "No valid session (or, for login, wrong username or password). Sign in again."
+          },
+          "404" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "There is no such thing."
+          },
+          "409" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "That clashes with the current state (a taken name, a full or closed table, a seat already held)."
+          },
+          "500" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "Something went wrong on the server."
+          }
+        },
+        "tags" : [ "tables" ]
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "CashOutRequest" : {
+        "type" : "object",
+        "properties" : {
+          "points" : {
+            "type" : "integer",
+            "format" : "int64",
+            "description" : "The chips counted at the seat: a multiple of 5, or 0.",
+            "maximum" : 1000000,
+            "minimum" : 0,
+            "multipleOf" : 5.0
+          }
+        },
+        "required" : [ "points" ]
+      },
+      "DeviceResponse" : {
+        "type" : "object",
+        "properties" : {
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "current" : {
+            "type" : "boolean"
+          },
+          "deviceName" : {
+            "type" : "string"
+          },
+          "id" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "lastUsedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        },
+        "required" : [ "createdAt", "current", "deviceName", "id", "lastUsedAt" ]
+      },
+      "JoinTableRequest" : {
+        "type" : "object",
+        "properties" : {
+          "buyIn" : {
+            "type" : "integer",
+            "format" : "int64",
+            "description" : "Points put on the table: a multiple of 5, the smallest chip.",
+            "maximum" : 1000000,
+            "minimum" : 5,
+            "multipleOf" : 5.0
+          }
+        },
+        "required" : [ "buyIn" ]
+      },
+      "LoginRequest" : {
+        "type" : "object",
+        "properties" : {
+          "deviceName" : {
+            "type" : "string",
+            "maxLength" : 60,
+            "minLength" : 0
+          },
+          "password" : {
+            "type" : "string",
+            "minLength" : 1
+          },
+          "username" : {
+            "type" : "string",
+            "minLength" : 1
+          }
+        },
+        "required" : [ "deviceName", "password", "username" ]
+      },
+      "OpenTableRequest" : {
+        "type" : "object",
+        "properties" : {
+          "bigBlind" : {
+            "type" : "integer",
+            "format" : "int64",
+            "description" : "Points: a multiple of 5, at least the small blind.",
+            "maximum" : 1000000,
+            "minimum" : 5,
+            "multipleOf" : 5.0
+          },
+          "maxSeats" : {
+            "type" : "integer",
+            "format" : "int32",
+            "maximum" : 10,
+            "minimum" : 2
+          },
+          "name" : {
+            "type" : "string",
+            "maxLength" : 40,
+            "minLength" : 0
+          },
+          "smallBlind" : {
+            "type" : "integer",
+            "format" : "int64",
+            "description" : "Points: a multiple of 5.",
+            "maximum" : 1000000,
+            "minimum" : 5,
+            "multipleOf" : 5.0
+          }
+        },
+        "required" : [ "bigBlind", "maxSeats", "name", "smallBlind" ]
+      },
+      "PlayerResponse" : {
+        "type" : "object",
+        "properties" : {
+          "displayName" : {
+            "type" : "string"
+          },
+          "id" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "username" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "displayName", "id", "username" ]
+      },
+      "ProblemDetail" : {
+        "type" : "object",
+        "description" : "An error, as RFC 9457 problem details. Show `detail` to the person.",
+        "properties" : {
+          "detail" : {
+            "type" : "string",
+            "description" : "What went wrong and how to fix it, in English."
+          },
+          "instance" : {
+            "type" : "string",
+            "format" : "uri",
+            "description" : "The request path."
+          },
+          "status" : {
+            "type" : "integer",
+            "format" : "int32",
+            "description" : "The HTTP status."
+          },
+          "title" : {
+            "type" : "string",
+            "description" : "The status's reason phrase."
+          },
+          "type" : {
+            "type" : "string",
+            "format" : "uri",
+            "description" : "Always about:blank for now."
+          }
+        }
+      },
+      "RegisterPlayerRequest" : {
+        "type" : "object",
+        "properties" : {
+          "displayName" : {
+            "type" : "string",
+            "maxLength" : 40,
+            "minLength" : 0
+          },
+          "inviteCode" : {
+            "type" : "string",
+            "minLength" : 1
+          },
+          "password" : {
+            "type" : "string",
+            "maxLength" : 72,
+            "minLength" : 8
+          },
+          "username" : {
+            "type" : "string",
+            "minLength" : 1,
+            "pattern" : "^[A-Za-z0-9_.-]{3,32}$"
+          }
+        },
+        "required" : [ "displayName", "inviteCode", "password", "username" ]
+      },
+      "SeatResponse" : {
+        "type" : "object",
+        "properties" : {
+          "displayName" : {
+            "type" : "string"
+          },
+          "playerId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "seatNumber" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "stack" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        },
+        "required" : [ "displayName", "playerId", "seatNumber", "stack" ]
+      },
+      "SessionResponse" : {
+        "type" : "object",
+        "properties" : {
+          "device" : {
+            "$ref" : "#/components/schemas/DeviceResponse"
+          },
+          "token" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "device", "token" ]
+      },
+      "TableResponse" : {
+        "type" : "object",
+        "properties" : {
+          "bigBlind" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "hostId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "id" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "maxSeats" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "open" : {
+            "type" : "boolean"
+          },
+          "seats" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SeatResponse"
+            }
+          },
+          "smallBlind" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        },
+        "required" : [ "bigBlind", "hostId", "id", "maxSeats", "name", "open", "seats", "smallBlind" ]
+      },
+      "TopUpRequest" : {
+        "type" : "object",
+        "properties" : {
+          "points" : {
+            "type" : "integer",
+            "format" : "int64",
+            "description" : "Points to add: a multiple of 5, the smallest chip.",
+            "maximum" : 1000000,
+            "minimum" : 5,
+            "multipleOf" : 5.0
+          }
+        },
+        "required" : [ "points" ]
+      }
+    },
+    "securitySchemes" : {
+      "bearer" : {
+        "description" : "The token from POST /api/v1/sessions, sent as `Authorization: Bearer <token>`.",
+        "scheme" : "bearer",
+        "type" : "http"
+      }
+    }
+  }
+}

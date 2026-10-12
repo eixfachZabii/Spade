@@ -4,6 +4,7 @@
 > **Changed since:**
 > - Phase 01: secrets moved to env (`spadeboot/.env`, template `.env.example`); `JwtUtils` fails fast without a 32-byte secret; seed users only in the `dev` profile, with a password from env; the `info` file is gone.
 > - Phase 03: flush, straight flush and full house fixed and pinned by `HandEvaluationTest`; `GameServiceTest` repaired. `./mvnw verify` is green.
+> - Phase 06: frozen; the gate and CI build `backend/` instead (ADR 0012).
 >
 > Evidence: [audit](../handoffs/done/Version0.0/V0_audits/audit-backend.md). Salvage verdicts: [salvage.md](salvage.md).
 

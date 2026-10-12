@@ -55,6 +55,7 @@ A whole hand runs on the server from events: blinds, four streets, all-ins and s
   - void the hand.
 - **Table views and the stream** (ADR 0009):
   - `PublicTableView` has no hole-card field; it carries the revealed hands at showdown.
+    - The private hole-card type is named `HoleCards`. The ArchUnit rule `publicViewsNeverNameHoleCards` (Phase 06) forbids it in any `Public*View` / `*PublicView`, nested types included; this phase re-plants the rule against its real types.
   - `PlayerTableView` = the public view + your own seat (cards, to-call, legal actions).
   - `GET /api/v1/tables/{id}/view` and `GET /api/v1/tables/{id}/stream` (SSE):
     - a full snapshot on connect and after every commit;
@@ -106,6 +107,16 @@ A whole hand runs on the server from events: blinds, four streets, all-ins and s
 ## Not proven by this phase (expected)
 - no human has played through a client (08, 09);
 - the stream through Cloudflare (10).
+
+## Carried from Phase 06
+Found by Phase 06's final review; nobody reads that doc again once it is archived.
+- A `Card` crosses the API as its label string (`"AS"`, ADR 0010). Map it in the `api` DTOs; `domain` stays Jackson-free.
+- A `DomainException` thrown inside a Jackson creator (a card parsed while reading a request body) arrives as `HttpMessageNotReadableException` and answers the generic 400 "The request body isn't valid JSON.": the domain message is lost. Unwrap a `DomainException` cause in `ApiExceptionHandler.handleHttpMessageNotReadable`. A `ConstraintViolationException` (from `@Validated` beans) still reaches the catch-all and becomes a 500: handle it when validated beans arrive.
+- `ProblemAuthenticationEntryPoint` sets no character encoding, so its 401 is served `charset=ISO-8859-1`. The text is ASCII today; set UTF-8 before it gets an em dash or a curly quote.
+- `Showdown.winners` callers pass a seat-ordered map and only the hands eligible for that pot. Its hand-size message prints the map key: rephrase it without the key when seat keys arrive.
+- `SeatEntity.leave` zeroes the stack, so the mirror at cash-out is lost. ADR 0006 ("the mirror only flags a difference") needs it kept, for example on `cash_out`.
+- The "Not a card" message echoes the raw input, uncapped. Cap it once cards come from clients.
+- The same catch-all would turn an `AccessDeniedException` into a 500 once HOST and HUB roles exist (also phase 09).
 
 ## What shipped, against what was scoped
 *(filled in at ship)*
