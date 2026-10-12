@@ -19,7 +19,7 @@ Spade is an AI poker dealer for **our own poker nights**: real cards on the tabl
 ## The repo
 | Path | What | State |
 |---|---|---|
-| `backend/` | Spring Boot 4.1 / Java 21: accounts, device sessions, tables; the hand engine from phase 07 | in use (ADR 0012) |
+| `backend/` | Spring Boot 4.1 / Java 21: accounts, sessions, tables, cards, evaluator, showdown; the hand engine is phase 07 | in use (ADR 0012) |
 | `spadeboot/` | Spring Boot 3 / Java 17: auth, lobby, tables, Hold'em engine, cheatsheet, Spotify | **frozen** since Phase 06; deleted when V1 ships |
 | `cv/` | Python card detection (YOLOv8, socket.io), from `lucabzt/spadeAI` | in use; community cards are a stub |
 | `client/`, `webapp/` | legacy React apps (hub, phone) | **frozen**: never edit; replaced in V1 by a new web hub and a native iOS player app ([ADR 0005](docs/adr/0005-rebuild-dont-repair.md)) |
@@ -46,7 +46,7 @@ Green means:
 - the `scripts/` tests passed;
 - no unpushed commit uses a negated close keyword.
 
-**Read the "not proven" block every time.** The legacy apps, card-reading accuracy, real phones and cameras, and Docker are never covered. CI (`.github/workflows/gate.yml`) runs the same blocks on every push. Before claiming anything works: the `verify-change` skill.
+**Read the "not proven" block every time.** The legacy apps, card-reading accuracy, real phones and cameras, and the Docker image are never covered. CI (`.github/workflows/gate.yml`) runs the same blocks on every push. Before claiming anything works: the `verify-change` skill.
 
 ## Secrets
 They live only in the untracked `backend/.env` (template `backend/.env.example`), which `backend/run.sh` loads: `SPADE_DB_PASSWORD`, `SPADE_INVITE_CODE_SHA256`. A missing hash stops the backend at startup, on purpose.
